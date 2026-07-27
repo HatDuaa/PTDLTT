@@ -13,7 +13,7 @@ Dữ liệu: hóa đơn của **một cửa hàng tiện lợi tại TP.HCM**, 1
 | 📊 **Báo cáo** | [Chương 4 — Thiết kế](bao-cao/chuong-04-thiet-ke-nhan-qua.md) · [Chương 5 — Kết quả](bao-cao/chuong-05-ket-qua.md) · [Chương 6 — Sức mạnh & cơ chế](bao-cao/chuong-06-suc-manh-va-co-che.md) |
 | 🔒 **Đặc tả khóa** | [`dac-ta-khoa.md`](plans/2026-07-23-thue-gtgt-passthrough/dac-ta-khoa.md) — đọc trước khi sửa bất kỳ tham số nào |
 | 🌐 **Web** | `web/` — chạy nội bộ, xem [hướng dẫn](#web) |
-| 📄 **Bản tin nhóm** | [Trang tóm tắt một mặt](https://claude.ai/code/artifact/72f8be5f-574a-414a-ace6-838b4812c62a) *(riêng tư — cần được chia sẻ mới mở được)* |
+| 📄 **Bản tin nhóm** | [`bao-cao/ban-tin-nhom.html`](bao-cao/ban-tin-nhom.html) — trang tóm tắt một mặt, tự chứa, mở bằng trình duyệt là xong |
 
 ---
 

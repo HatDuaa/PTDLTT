@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Đồ án VAT — Bản tin nhóm</title>
+<meta name="description" content="Bản tin trạng thái đồ án đánh giá tác động giảm thuế GTGT lên giá bán lẻ: kết quả, ba cổng chẩn đoán, và việc còn lại của từng người.">
+<style>
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+</style>
+</head>
+<body>
+<style>
+  :root {
+    --nen: #eff1f3;
+    --nen-2: #e5e8eb;
+    --the: #f8f9fa;
+    --muc: #15181d;
+    --muc-nhat: #69717b;
+    --vien: #d4d9de;
+    --da: #3d4c5e;
+    --reu: #4a6b52;
+    --gach: #8e3b2f;
+    --vang: #8a6d2f;
+    --serif: Cambria, Constantia, "Times New Roman", Georgia, serif;
+    --sans: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", sans-serif;
+    --mono: Consolas, ui-monospace, "SF Mono", Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --nen: #14161a; --nen-2: #1b1e23; --the: #1a1d22;
+      --muc: #e6e9ec; --muc-nhat: #9aa2ab; --vien: #2c3138;
+      --da: #8fa6bd; --reu: #7ca687; --gach: #cf8272; --vang: #c4a463;
+    }
+  }
+  :root[data-theme="dark"] {
+    --nen: #14161a; --nen-2: #1b1e23; --the: #1a1d22;
+    --muc: #e6e9ec; --muc-nhat: #9aa2ab; --vien: #2c3138;
+    --da: #8fa6bd; --reu: #7ca687; --gach: #cf8272; --vang: #c4a463;
+  }
+  :root[data-theme="light"] {
+    --nen: #eff1f3; --nen-2: #e5e8eb; --the: #f8f9fa;
+    --muc: #15181d; --muc-nhat: #69717b; --vien: #d4d9de;
+    --da: #3d4c5e; --reu: #4a6b52; --gach: #8e3b2f; --vang: #8a6d2f;
+  }
+
+  body {
+    background: var(--nen); color: var(--muc);
+    font-family: var(--sans); font-size: 16px; line-height: 1.65;
+    margin: 0; padding: 0 1.25rem 6rem;
+    -webkit-font-smoothing: antialiased;
+  }
+  .bao { max-width: 54rem; margin: 0 auto; }
+  .van { max-width: 38rem; }
+
+  h1, h2, h3 { font-family: var(--serif); font-weight: 600; text-wrap: balance; margin: 0; }
+  h1 { font-size: clamp(1.9rem, 4vw, 2.6rem); line-height: 1.15; letter-spacing: -0.01em; }
+  h2 {
+    font-size: 1.42rem; margin: 3.5rem 0 0.4rem;
+    padding-top: 1.4rem; border-top: 1px solid var(--vien);
+  }
+  h3 { font-size: 1.06rem; margin: 2rem 0 0.3rem; }
+  p { margin: 0.7rem 0; }
+
+  .nhan {
+    font-family: var(--sans); font-size: 0.7rem; font-weight: 600;
+    letter-spacing: 0.11em; text-transform: uppercase; color: var(--muc-nhat);
+  }
+
+  header { padding: 3.5rem 0 0; }
+  header .nhan { display: block; margin-bottom: 0.9rem; }
+  .phu { color: var(--muc-nhat); font-size: 1.02rem; margin-top: 0.9rem; max-width: 34rem; }
+
+  .chot {
+    background: var(--the); border: 1px solid var(--vien);
+    border-left: 3px solid var(--da);
+    padding: 1.4rem 1.5rem; margin: 2.5rem 0 0;
+  }
+  .chot p { margin: 0; font-family: var(--serif); font-size: 1.14rem; line-height: 1.55; }
+  .chot p + p { margin-top: 0.8rem; }
+
+  .cuon { overflow-x: auto; margin: 1.2rem 0; }
+  table { border-collapse: collapse; width: 100%; font-size: 0.9rem; }
+  th, td {
+    text-align: left; padding: 0.55rem 0.9rem 0.55rem 0;
+    border-bottom: 1px solid var(--vien); vertical-align: baseline;
+  }
+  th {
+    font-size: 0.7rem; font-weight: 600; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--muc-nhat);
+    border-bottom-color: var(--muc-nhat);
+  }
+  td.so, th.so { font-family: var(--mono); font-variant-numeric: tabular-nums; text-align: right; padding-right: 1.1rem; }
+  tbody tr:last-child td { border-bottom: none; }
+
+  .the-luoi { display: grid; gap: 0.7rem; margin: 1.2rem 0; }
+  @media (min-width: 40rem) { .the-luoi.ba { grid-template-columns: repeat(3, 1fr); } }
+
+  .cong {
+    background: var(--the); border: 1px solid var(--vien);
+    border-left: 3px solid var(--muc-nhat); padding: 0.95rem 1.1rem;
+  }
+  .cong.dat { border-left-color: var(--reu); }
+  .cong.truot { border-left-color: var(--gach); }
+  .cong .ten { font-family: var(--serif); font-size: 1rem; font-weight: 600; }
+  .cong .tt { font-size: 0.74rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin: 0.3rem 0 0.45rem; }
+  .cong.dat .tt { color: var(--reu); }
+  .cong.truot .tt { color: var(--gach); }
+  .cong p { margin: 0; font-size: 0.86rem; color: var(--muc-nhat); line-height: 1.5; }
+
+  ul { padding-left: 1.1rem; margin: 0.7rem 0; }
+  li { margin: 0.35rem 0; }
+  li::marker { color: var(--muc-nhat); }
+
+  code {
+    font-family: var(--mono); font-size: 0.86em;
+    background: var(--nen-2); padding: 0.1em 0.36em; border-radius: 2px;
+  }
+  pre {
+    font-family: var(--mono); font-size: 0.82rem; background: var(--nen-2);
+    border: 1px solid var(--vien); padding: 0.9rem 1.1rem;
+    overflow-x: auto; margin: 1rem 0; line-height: 1.55;
+  }
+  pre code { background: none; padding: 0; }
+
+  .canh {
+    border-left: 3px solid var(--gach); background: var(--the);
+    padding: 0.9rem 1.1rem; margin: 1.3rem 0;
+  }
+  .canh p { margin: 0; font-size: 0.92rem; }
+  .canh .nhan { color: var(--gach); display: block; margin-bottom: 0.35rem; }
+
+  .viec { border-top: 1px solid var(--vien); padding: 1.1rem 0 0.3rem; }
+  .viec:first-of-type { border-top: none; }
+  .viec .ai { font-family: var(--serif); font-size: 1.02rem; font-weight: 600; }
+  .viec .ai span { font-family: var(--sans); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muc-nhat); margin-left: 0.6rem; }
+
+  footer {
+    margin-top: 4rem; padding-top: 1.4rem; border-top: 1px solid var(--vien);
+    font-size: 0.84rem; color: var(--muc-nhat);
+  }
+  a { color: var(--da); text-underline-offset: 2px; }
+  a:focus-visible, :focus-visible { outline: 2px solid var(--da); outline-offset: 2px; }
+</style>
+
+<div class="bao">
+
+<header>
+  <span class="nhan">Đồ án cuối kỳ · Phân tích dữ liệu · Bản tin nhóm</span>
+  <h1>Tác động của việc giảm thuế GTGT lên giá bán lẻ</h1>
+  <p class="phu">
+    Dữ liệu hóa đơn một cửa hàng tiện lợi TP.HCM, 12/2024–08/2025.
+    Chính sách giảm thuế 10% → 8% có hiệu lực 01/07/2025.
+  </p>
+</header>
+
+<div class="chot">
+  <p><strong>Kết luận của đồ án:</strong> không tìm thấy bằng chứng giá giảm trong các so sánh có điều chỉnh; dữ liệu không đủ để quy chênh lệch quan sát cho chính sách một cách đáng tin cậy.</p>
+  <p>Đây là một kết quả <em>null</em>, và giá trị của đồ án nằm ở chỗ chỉ ra <strong>chính xác vì sao</strong> không kết luận mạnh hơn được — chứ không phải ở việc tìm ra một con số đẹp.</p>
+</div>
+
+<h2>Bốn ước lượng chính</h2>
+<p class="van">
+  So sánh theo <code>Z</code> — nhóm đủ điều kiện giảm thuế <em>theo luật</em> (155 SKU)
+  đối chiếu nhóm chịu thuế tiêu thụ đặc biệt bị loại trừ ở cả hai nghị quyết (132 SKU).
+  Đơn vị: điểm log ×100.
+</p>
+
+<div class="cuon">
+<table>
+  <thead>
+    <tr>
+      <th scope="col">Phương pháp</th>
+      <th scope="col" class="so">Ước lượng</th>
+      <th scope="col" class="so">p</th>
+      <th scope="col" class="so">Khoảng tin cậy 95%</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>Hồi quy thô</td><td class="so">−0,398</td><td class="so">0,507</td><td class="so">[−1,57 ; +0,78]</td></tr>
+    <tr><td>Hồi quy có hiệp biến</td><td class="so">−0,270</td><td class="so">0,713</td><td class="so">[−1,71 ; +1,17]</td></tr>
+    <tr><td>g-computation (ATT)</td><td class="so">−0,664</td><td class="so">0,398</td><td class="so">[−2,20 ; +0,84]</td></tr>
+    <tr><td>Phân tầng 5 phân vị giá</td><td class="so">−0,257</td><td class="so">0,661</td><td class="so">[−1,41 ; +0,91]</td></tr>
+  </tbody>
+</table>
+</div>
+
+<p class="van">
+  <strong>Cả bốn khoảng tin cậy đều chứa 0.</strong> Kết quả ổn định qua bốn cửa sổ thời gian,
+  ba cách xử lý SKU chưa phân loại, và hai cách xử lý SKU có thuế suất mơ hồ.
+</p>
+
+<div class="canh">
+  <span class="nhan">Không được viết</span>
+  <p>“Chính sách không có tác động” hay “tác động bằng 0”. Không bác bỏ được giả thuyết
+  không có nghĩa là giả thuyết đúng — và kiểm định tương đương ở đây không có sức mạnh
+  để chứng minh điều đó (xem mục dưới).</p>
+</div>
+
+<h2>Ba cổng chẩn đoán</h2>
+<p class="van">
+  Ba tiêu chí này được khóa <em>trước</em> khi chạy kết quả, kèm hành động cố định nếu trượt.
+  Chúng <strong>không phải ba lá phiếu</strong> — cổng đạt không bù được cổng trượt.
+</p>
+
+<div class="the-luoi ba">
+  <div class="cong truot">
+    <div class="ten">1 · Cân bằng sau phân tầng</div>
+    <div class="tt">Trượt</div>
+    <p>12/15 cặp có |SMD| &gt; 0,25. Đã thử sáu cách chia tầng khác, không cách nào đạt.</p>
+  </div>
+  <div class="cong dat">
+    <div class="ten">2 · Giả dược tiền kỳ</div>
+    <div class="tt">Đạt</div>
+    <p>Chênh lệch lớn nhất 0,562, dưới ngưỡng 0,918 đã định trước.</p>
+  </div>
+  <div class="cong truot">
+    <div class="ten">3 · Tương đương tiền xu hướng</div>
+    <div class="tt">Không đạt</div>
+    <p>Không chứng minh được xu hướng song song. Biên kiểm định vốn quá hẹp.</p>
+  </div>
+</div>
+
+<p class="van">
+  Vì cổng 1 trượt, cả hai phương pháp được trình bày là <strong>so sánh có điều chỉnh</strong>,
+  không phải ước lượng nhân quả sạch. Đây là quy tắc đã khóa từ trước, không phải quyết định
+  đưa ra sau khi thấy số.
+</p>
+
+<h2>Bốn điều phải nói rõ khi trình bày</h2>
+
+<h3>1. Kiểm định tương đương không có cơ hội thành công</h3>
+<p class="van">
+  Biên ±0,918 nhỏ hơn mức cần cho 80% sức mạnh ở cả bốn đặc tả (cần ±1,73 đến ±2,27).
+  Sức mạnh thực tế là <strong>0,0%</strong> — kể cả khi tác động thật đúng bằng 0.
+  Nghĩa là “kiểm định tương đương thất bại” <em>không</em> phải bằng chứng chống lại
+  sự tương đương; nó phản ánh thiết kế không đủ chính xác.
+</p>
+
+<h3>2. Việc bác bỏ mức chuyển thuế hoàn toàn phụ thuộc phương pháp</h3>
+<p class="van">
+  Ba đặc tả bác bỏ (p từ 0,008 đến 0,033), g-computation thì không (p = 0,131).
+  <strong>Không lấy “3 trên 4” làm biểu quyết.</strong> Đây từng là kết luận mạnh nhất
+  của đồ án và đã bị hạ xuống thành kết quả nhạy với mô hình.
+</p>
+
+<h3>3. Mẫu đã bị chọn lọc theo khả năng sống sót</h3>
+<p class="van">
+  Giá hậu kỳ chỉ quan sát được khi SKU còn được bán. Tỉ lệ còn bán của hai nhóm
+  chênh nhau <strong>7,2 điểm phần trăm</strong> (82,0% so với 89,2%). Vì vậy kết quả
+  không phải tác động vô điều kiện cho toàn bộ nhóm ban đầu, mà là
+  <em>so sánh trong nhóm SKU có giá quan sát được ở cả hai kỳ</em>. Phải ghi rõ mỗi lần nêu số.
+</p>
+
+<h3>4. Nhóm đối chứng không hoàn toàn do luật định</h3>
+<p class="van">
+  20 trong 155 SKU đủ điều kiện giảm thuế vẫn bị tính 10% — cửa hàng không cập nhật
+  thuế suất. Tỉ lệ tuân thủ 87,1%. Bằng chứng rõ nhất: cùng dòng dao cạo Gillette
+  nằm ở hai nhóm khác nhau. Đây là lý do đồ án so sánh theo <code>Z</code> (luật)
+  thay vì theo thuế suất cửa hàng thực áp.
+</p>
+
+<h2>Sản phẩm đã có</h2>
+
+<div class="cuon">
+<table>
+  <thead>
+    <tr><th scope="col">Thành phần</th><th scope="col">Trạng thái</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Pipeline phân tích — một lệnh, từ file gốc</td><td>Xong · 22 đầu ra, chạy hai lần ra hash giống hệt</td></tr>
+    <tr><td>Báo cáo — chương 4, 5, 6</td><td>Xong</td></tr>
+    <tr><td>Báo cáo — chương 1, 2, 3, 7</td><td><strong>Chưa viết</strong></td></tr>
+    <tr><td>Web — backend phục vụ số liệu</td><td>Xong · 14 endpoint</td></tr>
+    <tr><td>Web — giao diện 7 trang, 5 biểu đồ</td><td>Xong</td></tr>
+    <tr><td>Slide</td><td>Có bản web · <strong>chưa xuất PDF</strong></td></tr>
+  </tbody>
+</table>
+</div>
+
+<p class="van">
+  Nguyên tắc xuyên suốt: <strong>không con số nào được gõ tay.</strong> Web đọc thẳng
+  từ kết quả pipeline sinh ra, nên nó không thể lệch khỏi phân tích.
+</p>
+
+<h2>Chạy thử</h2>
+<pre><code>python code/chay_tat_ca.py        # phân tích, sinh mọi bảng kết quả
+python code/b6_ra_soat_ngon_ngu.py   # rà câu cấm và số của đặc tả cũ
+
+cd web/backend  &amp;&amp; uvicorn main:app     # cổng 8000
+cd web/frontend &amp;&amp; npm run dev          # cổng 3000</code></pre>
+
+<h2>Việc còn lại</h2>
+
+<div class="viec">
+  <div class="ai">Người A <span>Dữ liệu &amp; mô tả</span></div>
+  <p class="van">Viết chương 1 (đặt vấn đề), chương 2 (cơ sở pháp lý — Nghị quyết 174/2024
+  và 204/2025), chương 3 (thống kê mô tả). Số liệu và biểu đồ đã sẵn trong <code>ket-qua/</code>,
+  chỉ cần viết văn.</p>
+</div>
+
+<div class="viec">
+  <div class="ai">Người B <span>Lý thuyết &amp; đồ thị</span></div>
+  <p class="van">Rà lại chương 4, đặc biệt phần đồ thị nhân quả và bảng đường backdoor.
+  Viết chương 7 nếu nhóm quyết định giữ phần phụ lục.</p>
+</div>
+
+<div class="viec">
+  <div class="ai">Người C <span>Lõi nhân quả</span></div>
+  <p class="van">Kiểm tra chương 5 khớp với bảng kết quả. Chuẩn bị trả lời câu hỏi
+  chắc chắn sẽ bị hỏi: <em>vì sao hai phương pháp không phải hai bằng chứng độc lập?</em></p>
+</div>
+
+<div class="viec">
+  <div class="ai">Người D <span>Suy diễn &amp; trình bày</span></div>
+  <p class="van">Xuất slide ra PDF, kiểm tra tỉ lệ 16:9 không lệch. Rà lại chương 6,
+  đặc biệt phần sức mạnh kiểm định tương đương.</p>
+</div>
+
+<div class="viec">
+  <div class="ai">Cả nhóm</div>
+  <p class="van">Chạy <code>b6_ra_soat_ngon_ngu.py</code> trước khi nộp. Thử giải nén
+  gói nộp vào thư mục sạch rồi chạy lại từ đầu — đây là phép thử thật, không phải hình thức.</p>
+</div>
+
+<footer>
+  <p>Mọi con số trong bản tin này sinh từ <code>code/chay_tat_ca.py</code> và đã được đối chiếu
+  với kết quả pipeline. Chi tiết đầy đủ ở <code>bao-cao/</code> và
+  <code>plans/2026-07-23-thue-gtgt-passthrough/dac-ta-khoa.md</code> — văn bản khóa đặc tả,
+  nên đọc trước khi sửa bất kỳ tham số nào.</p>
+</footer>
+
+</div>
+</body>
+</html>
