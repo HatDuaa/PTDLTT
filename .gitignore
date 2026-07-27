@@ -1,0 +1,27 @@
+# Dữ liệu trung gian — sinh lại được bằng `python code/chay_tat_ca.py`
+# (156 MB, không có lý do gì để đẩy lên)
+du-lieu-tam/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Node
+node_modules/
+.next/
+out/
+*.tsbuildinfo
+.env*.local
+
+# Backend
+web/backend/du-lieu-tinh/
+
+# Hệ điều hành / trình soạn thảo
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+~$*.xlsx

@@ -1,0 +1,17 @@
+import pandas as pd
+c=pd.read_csv("chitiet.csv",dtype=str,low_memory=False)
+print("CHITIET cols:", list(c.columns))
+for col in c.columns:
+    print(f"{col:24s} nonnull={c[col].notna().sum():7d} uniq={c[col].nunique():7d} ex={list(c[col].dropna().unique()[:5])}"[:200])
+print()
+print("tyle_vat_ct dist:\n", c['tyle_vat_ct'].value_counts(dropna=False).head(10))
+print("loai_vat_ct dist:\n", c['loai_vat_ct'].value_counts(dropna=False).head(10))
+print("tyle_ck dist:\n", c['tyle_ck'].value_counts(dropna=False).head(10))
+print("ten_dvt dist:\n", c['ten_dvt_ct'].value_counts(dropna=False).head(15))
+print("soluong dist:\n", c['soluong_ct'].value_counts(dropna=False).head(10))
+g=pd.read_csv("goc.csv",dtype=str,low_memory=False)
+g['d']=pd.to_datetime(g['ngayct'])
+print("date range", g['d'].min(), g['d'].max())
+print(g['d'].dt.to_period('M').value_counts().sort_index())
+print("diachi_ban:\n", g['diachi_ban'].value_counts())
+print("kyhieu x ncc:\n", pd.crosstab(g['hoadon_kyhieu'], g['ma_ncc_hddt']))

@@ -1,0 +1,12 @@
+buoc,quy_tac,dong_vao,dong_ra,mat,ghi_chu
+0,Dữ liệu thô sheet chitiet,233996,233996,0,
+1,Nối với sheet goc theo soid (m:1),233996,233996,0,nối 100.0%
+2,§3.1 Chỉ hóa đơn bán ra,233996,198361,35635,loại hóa đơn mua vào
+3,§3.2 Bỏ bản ghi có cờ xóa (goc.daxoa),198361,188416,9945,
+4,§3.3a Giữ từ 2025-04-01 (mọi cửa sổ),188416,106926,81490,cửa sổ cụ thể áp ở bước 2
+5,§3.4 Số lượng dương,106926,106926,0,loại trả hàng
+6,§3.5 Thành tiền dương,106926,104320,2606,cần để lấy log
+7,§3.6 Có mã vạch,104320,104316,4,mã vạch chỉ điền từ 21/04/2025
+8,§6 Cửa sổ 'chinh' từ 2025-05-01,104316,88231,16085,loại tháng 4 — xem §11
+9,§7 SKU có mặt ở cả tiền kỳ và hậu kỳ,88231,84982,3249,"2,314 SKU"
+10,§5 Đường chuyển thuế thuộc T/C10/C8,84982,82109,2873,

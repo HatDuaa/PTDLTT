@@ -1,0 +1,106 @@
+{
+  "nguon": {
+    "file": "60.xlsx",
+    "sha256_16": "c69acb0633cfa10f"
+  },
+  "moi_truong": {
+    "python": "3.14.0",
+    "pandas": "2.3.3",
+    "numpy": "2.3.5"
+  },
+  "tham_so": {
+    "ngay_chinh_sach": "2025-07-01",
+    "cua_so_chinh_bat_dau": "2025-05-01",
+    "seed": 42,
+    "so_lan_bootstrap": 5000,
+    "nguong_tuan_chinh": 1
+  },
+  "dau_ra": {
+    "dong-hang-sach.csv": {
+      "sha256_16": "097cd3de6035c1a4",
+      "so_dong": 104316
+    },
+    "dong-hang-phan-tich.csv": {
+      "sha256_16": "eedb97a10a2557ed",
+      "so_dong": 82109
+    },
+    "roster-sku.csv": {
+      "sha256_16": "17026684454ed107",
+      "so_dong": 2218
+    },
+    "mau-phan-tich-chinh.csv": {
+      "sha256_16": "0226836b4ca26a5a",
+      "so_dong": 2218
+    },
+    "bang-luong-mau.csv": {
+      "sha256_16": "950a1620117ae3d2",
+      "so_dong": 11
+    },
+    "chan-doan-bien-type.csv": {
+      "sha256_16": "db4252aeeb3fb35f",
+      "so_dong": 9
+    },
+    "eda-can-bang-tien-ky.csv": {
+      "sha256_16": "83713708f51e568d",
+      "so_dong": 12
+    },
+    "eda-co-cau-loai-san-pham.csv": {
+      "sha256_16": "3a4d264bbaf3cb57",
+      "so_dong": 3
+    },
+    "eda-do-phu-theo-thang.csv": {
+      "sha256_16": "274638876bf2c25f",
+      "so_dong": 9
+    },
+    "eda-ho-tro-phan-tang.csv": {
+      "sha256_16": "428b613853260d6b",
+      "so_dong": 20
+    },
+    "eda-luoi-survivorship.csv": {
+      "sha256_16": "72603f86eafa816d",
+      "so_dong": 15
+    },
+    "eda-ma-tran-chuyen-thue.csv": {
+      "sha256_16": "d344e0385775d9c1",
+      "so_dong": 4
+    },
+    "kq-cong-chan-doan.csv": {
+      "sha256_16": "dd89ce2675a49104",
+      "so_dong": 8
+    },
+    "kq-do-nhay.csv": {
+      "sha256_16": "a6cc545d2b95df1c",
+      "so_dong": 30
+    },
+    "kq-mde-va-suc-manh.csv": {
+      "sha256_16": "e88295a2b5ac9d0a",
+      "so_dong": 10
+    },
+    "kq-mo-phong-lam-tron.csv": {
+      "sha256_16": "1699677164757342",
+      "so_dong": 3
+    },
+    "kq-san-luong.csv": {
+      "sha256_16": "4c0bb7b648073e5b",
+      "so_dong": 2
+    },
+    "kq-smd-sau-phan-tang.csv": {
+      "sha256_16": "a081652cf545f69c",
+      "so_dong": 15
+    },
+    "kq-theo-tang.csv": {
+      "sha256_16": "8422b2cf3c670e9d",
+      "so_dong": 10
+    },
+    "kq-uoc-luong-chinh.csv": {
+      "sha256_16": "a53fe302f4acff4d",
+      "so_dong": 8
+    },
+    "eda-chong-lan-tien-ky.png": {
+      "sha256_16": "f8e3dfce41ba1317"
+    },
+    "eda-do-phu-du-lieu.png": {
+      "sha256_16": "3f63adc2d92bcd3c"
+    }
+  }
+}
