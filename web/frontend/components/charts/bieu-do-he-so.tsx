@@ -2,9 +2,8 @@
 
 /**
  * Biểu đồ hệ số (bắt buộc #1): cả bốn ước lượng chính + KTC 95%, cùng hai đường
- * tham chiếu — 0 (không đổi) và mốc chuyển hoàn toàn phần giảm thuế. Cố ý KHÔNG tô
- * màu thắng/thua: cả bốn điểm dùng cùng một màu trung tính, đường tham chiếu dùng
- * nét đứt xám, không xanh/đỏ.
+ * tham chiếu — 0 (không đổi) và mốc chuyển hoàn toàn phần giảm thuế. Cả bốn điểm
+ * dùng cùng một màu vì cùng biểu diễn một estimand; màu không mã hóa thắng/thua.
  */
 import {
   CartesianGrid,
@@ -49,7 +48,7 @@ export function BieuDoHeSo() {
   return (
     <KhoiBieuDo
       tieuDe="Biểu đồ hệ số — bốn ước lượng chính"
-      moTa="Mỗi điểm là một ước lượng ATT khác nhau về đặc tả mô hình, không phải bốn nghiên cứu độc lập. Đường nét đứt bên trái là mốc chuyển hoàn toàn phần giảm thuế; đường nét đứt tại 0 là không đổi."
+      moTa="ATT là chênh lệch trung bình cần ước lượng cho nhóm được luật cho giảm thuế. Mỗi điểm dùng một cách tính khác nhau, không phải bốn nghiên cứu độc lập; g-computation là dùng mô hình để dự đoán mỗi SKU dưới cả hai trạng thái rồi lấy chênh lệch."
       vaiTro="chinh"
       moTaChoBieuDo="Biểu đồ chấm ngang thể hiện bốn ước lượng ATT (PP1-A thô, PP1-A có hiệp biến, PP1-B g-computation, PP2 phân tầng) kèm khoảng tin cậy 95%, cùng hai đường tham chiếu dọc tại 0 và tại mốc chuyển hoàn toàn phần giảm thuế. Cả bốn khoảng tin cậy đều phủ qua đường 0."
       bangThayThe={
@@ -92,7 +91,12 @@ function NoiDungBieuDo({ hang }: { hang: UocLuongChinhRow[] }) {
           type="number"
           dataKey="uoc_luong"
           domain={[Math.floor(bienDuoi - 0.3), Math.ceil(bienTren + 0.3)]}
-          label={{ value: "Điểm log ×100", position: "insideBottom", offset: -4 }}
+          label={{
+            value: "Điểm log ×100",
+            position: "insideBottom",
+            offset: -4,
+            fill: "var(--muted-foreground)",
+          }}
           tickFormatter={(v: number) => dinhDangSo(v, 1)}
         />
         <YAxis

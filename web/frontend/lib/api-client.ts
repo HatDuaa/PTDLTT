@@ -5,6 +5,7 @@
  */
 import { API_BASE_URL, API_ROUTES, type EdaTen } from "./config";
 import type {
+  BamChuanRow,
   CongChanDoanRow,
   DoNhayRow,
   EdaTenRowMap,
@@ -64,6 +65,7 @@ export const apiClient = {
   layDoNhay: () => goiApi<DoNhayRow[]>(API_ROUTES.doNhay),
   layMde: () => goiApi<MdeRawRow[]>(API_ROUTES.mde),
   layLamTron: () => goiApi<LamTronRow[]>(API_ROUTES.lamTron),
+  layBamChuan: () => goiApi<BamChuanRow[]>(API_ROUTES.bamChuan),
   laySanLuong: () => goiApi<SanLuongRow[]>(API_ROUTES.sanLuong),
   layLuongMau: () => goiApi<LuongMauRow[]>(API_ROUTES.luongMau),
   laySmdSauPhanTang: () => goiApi<SmdSauPhanTangRow[]>(API_ROUTES.smdSauPhanTang),

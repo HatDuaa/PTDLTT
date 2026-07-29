@@ -53,7 +53,7 @@ Một DAG duy nhất. Các đỉnh **bắt buộc**:
 | `pre_p`, `pre_q`, `pre_w` | **Chỉ báo quan sát được** của biến ẩn trên | |
 | `Chi phí đầu vào` | **Không quan sát được** | Hóa đơn mua vào chỉ có 03–04/2025, toàn bộ trước chính sách |
 | `Chi phí thực đơn / làm tròn giá` | Cơ chế chặn | |
-| `Dời địa điểm 06/2025` | Cú sốc trùng thời gian | |
+| `Thay đổi liên quan địa điểm 06/2025` | Cú sốc trùng thời gian | |
 
 **Bốn đường phải vẽ được:**
 
@@ -89,7 +89,7 @@ Lập bảng: mỗi đường backdoor một dòng, ghi **chặn được bằng
 | **SUTVA** | Không lan tỏa giữa SKU. **Đáng ngờ**: hàng thay thế nhau trong cùng cửa hàng — nếu khăn ướt giảm giá, khăn giấy có thể bị điều chỉnh theo |
 | **No-anticipation** | Cửa hàng không đổi giá trước 01/07 để đón chính sách. Kiểm được phần nào bằng giả dược tiền kỳ |
 | **Ổn định thành phần mẫu** | Bộ SKU không đổi hệ thống quanh ngày cắt |
-| **Cú sốc trùng thời gian** | Dời địa điểm 06/2025 — có cửa sổ độ nhạy riêng |
+| **Cú sốc trùng thời gian** | Dữ liệu trống 02–10/06; địa chỉ hóa đơn đổi hẳn từ 24/06. Cửa sổ từ 11/06 gồm cả hai địa chỉ |
 | Xu hướng song song | Chính "điều kiện bổ sung" mà chương 8.6 nói tới |
 
 🔴 Bắt buộc nói thẳng: **hai phương pháp ở Phase 3 dùng chung một chiến lược nhận dạng.** Hai con số khớp nhau **không** xác nhận nhân quả — cả hai cùng sai nếu xu hướng không song song ([§14](dac-ta-khoa.md)).

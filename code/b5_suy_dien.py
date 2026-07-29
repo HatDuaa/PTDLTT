@@ -6,6 +6,7 @@ thích kết quả. Thi hành kế hoạch phase-04.
 🔴 Toàn bộ nhánh sản lượng và cơ chế là KHÁM PHÁ (đặc tả §13 bậc 4).
 🔴 CẤM sức mạnh hậu kiểm — nó chỉ là phép biến đổi đơn điệu của p-value.
 """
+import math
 import sys
 import numpy as np
 import pandas as pd
@@ -16,6 +17,8 @@ import b4_uoc_luong as b4
 CSV_MDE = cf.THU_MUC_KET_QUA / "kq-mde-va-suc-manh.csv"
 CSV_LAM_TRON = cf.THU_MUC_KET_QUA / "kq-mo-phong-lam-tron.csv"
 CSV_SAN_LUONG = cf.THU_MUC_KET_QUA / "kq-san-luong.csv"
+CSV_BAM_CHUAN = cf.THU_MUC_KET_QUA / "kq-bam-chuan-co-hoc.csv"
+CSV_BAM_CHUAN_CT = cf.THU_MUC_KET_QUA / "kq-bam-chuan-co-hoc-chi-tiet.csv"
 
 Z_A = stats.norm.ppf(0.975)      # 1,960
 Z_B = stats.norm.ppf(0.80)       # 0,842
@@ -90,6 +93,71 @@ def mo_phong_lam_tron(gia_tien_ky, luoi=(1000, 500, 100)):
         print(f"      lưới {buoc:>5,}đ: {int(doi.sum()):>3}/{len(gia_tien_ky)} SKU"
               f" ({doi.mean()*100:>5.1f}%) sẽ đổi mức giá")
     return pd.DataFrame(ra)
+
+
+# ──────────────────── giá thực tế có bám chuẩn không ────────────────────
+
+def _lam_tron(x, buoc=1000):
+    """Làm tròn về mức gần nhất; điểm hòa làm tròn LÊN."""
+    return np.floor(x / buoc + 0.5) * buoc
+
+
+def _ktc_wilson(k, n, z=1.96):
+    """Khoảng Wilson — vẫn dùng được khi tử số bằng 0 hoặc 1.
+
+    Wald (p ± z·√(p(1−p)/n)) sụp về [0;0] khi k=0 và cho cận dưới âm khi k=1,
+    tức là bảo cả hai đầu đều chắc chắn trong khi n chỉ hơn trăm.
+    """
+    if n == 0:
+        return float("nan"), float("nan")
+    p = k / n
+    d = 1 + z * z / n
+    tam = (p + z * z / (2 * n)) / d
+    nua = z * math.sqrt(p * (1 - p) / n + z * z / (4 * n * n)) / d
+    return max(0.0, tam - nua), min(1.0, tam + nua)
+
+
+def bam_chuan_co_hoc(mau, buoc=1000, nguong_dong=1.0):
+    """Giá hậu kỳ có rơi đúng mức mà chuyển hoàn toàn đòi hỏi không?
+
+    `mo_phong_lam_tron` ở trên mới trả lời "bao nhiêu SKU LẼ RA phải đổi mức
+    giá" — một câu hỏi thuần giả định, không hề đụng tới giá hậu kỳ thật. Hàm
+    này làm nốt vế còn lại: đối chiếu giá thật với mức đó.
+
+    Nhóm Z=0 chạy cùng phép tính làm GIẢ DƯỢC. Chúng không được giảm thuế nên
+    mức chuẩn với chúng vô nghĩa về mặt pháp lý — đó chính là điều làm nó thành
+    giả dược tốt: tỉ lệ bám chuẩn ở đây là mức trùng hợp ngẫu nhiên nền.
+
+    Chỉ báo cáo tỉ lệ kèm khoảng Wilson, KHÔNG kiểm định giữa hai nhóm: đây là
+    một cửa hàng, không có phân phối ngẫu nhiên hóa nào để dựa vào, và một
+    p-value ở đây sẽ bị đọc nhầm thành kiểm định tác động chính sách.
+    """
+    d = mau[mau["Z"].isin([0, 1])].copy()
+    d["gia_chuan"] = _lam_tron(d["pre_p"] * (1.08 / 1.10), buoc)
+    d["gia_tien_lam_tron"] = _lam_tron(d["pre_p"], buoc)
+    d["du_bao_doi_muc"] = d["gia_chuan"] != d["gia_tien_lam_tron"]
+    d["sai_lech_voi_chuan"] = (d["pg_hau"] - d["gia_chuan"]).abs()
+    d["bam_chuan"] = d["sai_lech_voi_chuan"] < nguong_dong
+
+    tong = []
+    for z, vai in [(1, "nhóm được giảm thuế"), (0, "giả dược")]:
+        s = d[d.Z == z]
+        c = s[s.du_bao_doi_muc]
+        k, n = int(c.bam_chuan.sum()), len(c)
+        duoi, tren = _ktc_wilson(k, n)
+        tong.append({"vai_tro": vai, "Z": z, "n_sku_toan_nhom": len(s),
+                     "n_du_bao_doi_muc": n, "n_bam_chuan": k,
+                     "ti_le_bam_chuan": k / n if n else float("nan"),
+                     "ktc95_wilson_duoi": duoi, "ktc95_wilson_tren": tren,
+                     "n_giu_nguyen_gia": int((c["pg_hau"] - c["pre_p"]).abs().lt(nguong_dong).sum()),
+                     "buoc_lam_tron": buoc, "nguong_bam_chuan_dong": nguong_dong})
+        print(f"      {vai:<22} {k:>3}/{n:<4} bám chuẩn ({k/n*100 if n else 0:>4.1f}%)"
+              f"  KTC95 [{duoi*100:.1f}%; {tren*100:.1f}%]"
+              f"  · giữ nguyên giá {tong[-1]['n_giu_nguyen_gia']}/{n}")
+
+    cot = ["sku", "ten_hang", "Z", "pre_p", "pg_hau", "gia_tien_lam_tron",
+           "gia_chuan", "du_bao_doi_muc", "sai_lech_voi_chuan", "bam_chuan"]
+    return pd.DataFrame(tong), d[[c for c in cot if c in d.columns]]
 
 
 # ───────────────────────── nhánh sản lượng ─────────────────────────
@@ -185,12 +253,26 @@ def chay():
     mde_mp = np.interp(0.80, dc.suc_manh, -dc.delta)
     print(f"\n    MDE từ mô phỏng ≈ {mde_mp:.2f}"
           f"  |  MDE giải tích (đặc tả hiệp biến) = "
-          f"{bang_mde[bang_mde.dac_ta.str.contains('hiep_bien')].mde.iloc[0]:.2f}")
+          # Lọc theo hằng số, không theo chuỗi cứng: `dac_ta` chính là nhãn
+          # hiển thị của b4, nên gõ lại "hiep_bien" ở đây sẽ âm thầm rỗng ngay
+          # lần đổi nhãn kế tiếp — đã hỏng đúng như vậy một lần.
+          f"{bang_mde[bang_mde.dac_ta == b4.TEN_HIEN_THI_PP1A['hiep_bien']].mde.iloc[0]:.2f}")
 
     print("\n" + "=" * 78)
     print("4. MÔ PHỎNG LÀM TRÒN — chuẩn CƠ HỌC, không phải phản thực")
     print("=" * 78)
     bang_lt = mo_phong_lam_tron(itt[itt.Z == 1]["pre_p"].to_numpy())
+
+    print("\n    Giá THẬT có rơi đúng mức đó không (giả dược = nhóm không được giảm):")
+    bang_bc, ct_bc = bam_chuan_co_hoc(m)
+    _z1 = bang_bc[bang_bc.Z == 1].iloc[0]
+    _z0 = bang_bc[bang_bc.Z == 0].iloc[0]
+    cf.khang_dinh(int(_z1.n_du_bao_doi_muc) == 135 and int(_z1.n_bam_chuan) == 1,
+                  f"bám chuẩn Z=1 lệch: {int(_z1.n_du_bao_doi_muc)}/{int(_z1.n_bam_chuan)}"
+                  " — kỳ vọng 135 dự báo đổi mức, 1 bám chuẩn")
+    cf.khang_dinh(int(_z0.n_du_bao_doi_muc) == 92 and int(_z0.n_bam_chuan) == 1,
+                  f"giả dược Z=0 lệch: {int(_z0.n_du_bao_doi_muc)}/{int(_z0.n_bam_chuan)}"
+                  " — kỳ vọng 92 dự báo đổi mức, 1 bám chuẩn")
 
     print("\n" + "=" * 78)
     print("5. NHÁNH SẢN LƯỢNG — khám phá, chuẩn hóa theo phơi nhiễm")
@@ -232,9 +314,11 @@ def chay():
     pd.concat([bang_mde, dc.assign(dac_ta="đường cong mô phỏng")]).to_csv(
         CSV_MDE, index=False, encoding="utf-8")
     bang_lt.to_csv(CSV_LAM_TRON, index=False, encoding="utf-8")
+    bang_bc.to_csv(CSV_BAM_CHUAN, index=False, encoding="utf-8")
+    ct_bc.to_csv(CSV_BAM_CHUAN_CT, index=False, encoding="utf-8")
     bang_sl.drop(columns=["boot"], errors="ignore").to_csv(
         CSV_SAN_LUONG, index=False, encoding="utf-8")
-    for p in (CSV_MDE, CSV_LAM_TRON, CSV_SAN_LUONG):
+    for p in (CSV_MDE, CSV_LAM_TRON, CSV_BAM_CHUAN, CSV_BAM_CHUAN_CT, CSV_SAN_LUONG):
         print(f"\n→ {p.relative_to(cf.GOC_REPO)}")
     return True
 

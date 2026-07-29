@@ -62,89 +62,15 @@ Nghị quyết 204/2025/QH15 bỏ "sản phẩm hóa chất" khỏi danh mục l
 
 ## 4.5 Đồ thị nhân quả
 
-```mermaid
-graph TD
-    NQ["NQ 204/2025/QH15"]
-    DT["Đặc tính SKU / cầu nền<br/>(loại hàng, độ bán chạy)<br/><i>không quan sát trực tiếp</i>"]
-    Z["Z — đủ điều kiện theo luật"]
-    CN["Cửa hàng cập nhật<br/>thuế suất?"]
-    D["D — thuế suất thực áp"]
-    G["G — nhóm quan sát<br/>T / C10 / C8"]
-    PRE["pre_p, pre_q, pre_w<br/><i>chỉ báo quan sát được</i>"]
-    CP["Chi phí đầu vào<br/><i>KHÔNG quan sát được</i>"]
-    MC["Chi phí thực đơn<br/>làm tròn giá"]
-    DD["Dời địa điểm 06/2025"]
-    Y["Giá gồm thuế<br/>(kết quả)"]
-    S["S — được quan sát<br/>ở cả hai kỳ"]
+Đồ thị cho thấy ba rủi ro chính: đặc tính SKU khác nhau giữa hai nhóm, quyết định cập nhật thuế của cửa hàng, và việc mẫu chỉ giữ SKU còn bán ở cả hai kỳ. Vì vậy nhóm chỉ điều chỉnh bằng các biến tiền kỳ và không điều chỉnh cho `D`, nhóm quan sát hay trạng thái sống sót.
 
-    NQ --> Z
-    DT --> Z
-    DT --> PRE
-    DT --> CN
-    DT --> Y
-    DT --> S
-    Z --> CN
-    CN --> D
-    D --> G
-    D --> MC
-    MC --> Y
-    CP --> Y
-    DD --> Y
-    Y --> S
-
-    classDef an fill:#f5e6e6,stroke:#a33,stroke-dasharray:5 3
-    classDef nguy fill:#fdf3e0,stroke:#b5651d
-    class DT,CP an
-    class CN,G,S nguy
-```
-
-**Bốn đường phải đọc được từ đồ thị:**
-
-| # | Đường | Ý nghĩa |
-|---|---|---|
-| 1 | `Đặc tính SKU → Z` | Nghị quyết **không tự tạo ra** `Z`. Nghị quyết **kết hợp với loại sản phẩm** mới xác định đủ điều kiện |
-| 2 | `Z → cửa hàng không cập nhật → D=10% → xếp vào C10` | Cơ chế ô nhiễm nhóm đối chứng |
-| 3 | `Đặc tính SKU → pre_q, pre_w` **và** `→ Y` | Cùng một nguyên nhân ẩn vừa gây mất cân bằng, vừa ảnh hưởng xu hướng giá phản thực |
-| 4 | `Đặc tính SKU → S ← Y` | Collider: mẫu chỉ giữ SKU có mặt ở cả hai kỳ, mà điều đó phụ thuộc chính giá |
-
-Đường 1 là chỗ dễ vẽ sai nhất. Một DAG chỉ có `NQ → Z` sẽ làm can thiệp trông ngoại sinh hơn thực tế.
-
-### Đường backdoor — cái nào chặn được
-
-| Đường | Chặn bằng | Trạng thái |
-|---|---|---|
-| `Z ← Đặc tính SKU → Y` | `pre_p`, `pre_q`, `pre_w` (chỉ báo của đặc tính) | ⚠️ **Chặn không hoàn toàn** — chúng chỉ là chỉ báo, không phải biến ẩn |
-| `D ← Cửa hàng cập nhật → Y` | — | 🔴 **Không chặn được.** Đây là lý do so sánh theo `Z` thay vì `D` |
-| `Y ← Chi phí đầu vào` | — | 🔴 **Không quan sát được.** Hóa đơn mua vào chỉ có 03–04/2025, toàn bộ trước chính sách |
-| `Y ← Dời địa điểm` | Cửa sổ độ nhạy từ 11/06 | ⚠️ Giảm nhẹ, không loại bỏ |
-| Điều kiện hóa trên `S` | — | 🔴 **Không sửa được** bằng dữ liệu này |
-
-**Không được điều chỉnh** cho `D`, `G`, `S`, hay bất kỳ biến nào sau can thiệp.
+Toàn bộ đồ thị, bốn đường cần đọc và bảng backdoor được giữ tại [Phụ lục A.1](phu-luc-ky-thuat.md#a1).
 
 ## 4.6 Khung Kết quả tiềm năng
 
-Ký hiệu phải tách `Z` và `D`, nếu không thì phần lý thuyết nói tách nhưng ký hiệu lại gộp:
+Mỗi SKU chỉ cho thấy giá dưới trạng thái thực tế, nên giá trong trạng thái còn lại phải được ước lượng. Cả PP1 và PP2 đều cần giả định rằng nếu không có chính sách, xu hướng giá của hai nhóm sẽ song song sau khi đã điều chỉnh.
 
-| Ký hiệu | Nghĩa |
-|---|---|
-| `D_i(z)` | Thuế thực nhận của SKU *i* nếu trạng thái đủ điều kiện là `z` |
-| `Y_i(z, d)` | Thay đổi giá dưới chỉ định `z` và thuế thực nhận `d` |
-| `Y_i(z=1)`, `Y_i(z=0)` | Dạng rút gọn cho so sánh theo `Z`. ⚠️ Trong đồ án này, mẫu đã điều kiện hóa **sống sót** nên đây không phải ITT vô điều kiện — xem [chương 6.5](chuong-06-suc-manh-va-co-che.md) |
-
-Chỉ **dưới exclusion restriction** — `Z` không ảnh hưởng giá qua kênh nào khác ngoài `D` — mới rút gọn được về `Y_i(d)`.
-
-**Vấn đề dữ liệu khuyết:** với mỗi SKU chỉ quan sát được một trong hai. `Y_i(z=0)` của nhóm đủ điều kiện là thứ **không bao giờ** quan sát được. Toàn bộ công việc còn lại là dựng ước lượng cho nó.
-
-### Các giả định — và chúng đáng tin đến đâu
-
-| Giả định | Nội dung | Đánh giá |
-|---|---|---|
-| **Xu hướng song song** | Nếu không có chính sách, giá hai nhóm biến động song song | ⚠️ Không kiểm chứng được đầy đủ. Chỉ có 2 hệ số dẫn |
-| **Phân loại `Z` đúng** | Định danh sản phẩm phản ánh đúng địa vị pháp lý | ⚠️ 23 SKU chưa phân loại được → báo cáo 3 biến thể |
-| **SUTVA** | Không lan tỏa giữa các SKU | 🔴 **Đáng ngờ.** Khăn ướt và khăn giấy thay thế nhau trong cùng cửa hàng; giảm giá nhóm này có thể kéo theo điều chỉnh nhóm kia |
-| **No-anticipation** | Cửa hàng không đổi giá trước 01/07 để đón chính sách | ⚠️ Kiểm được phần nào bằng giả dược tiền kỳ |
-| **Ổn định thành phần mẫu** | Bộ SKU không đổi hệ thống quanh ngày cắt | ⚠️ Có chọn lọc sống sót, xem đường 4 |
-| **Không cú sốc trùng thời gian** | | 🔴 Cửa hàng **dời địa điểm** ~10/06/2025 |
+Ký hiệu Kết quả tiềm năng và bảng đánh giá đầy đủ các giả định nằm tại [Phụ lục B.1](phu-luc-ky-thuat.md#b1).
 
 ## 4.7 Hai phương pháp — và điều chúng KHÔNG chứng minh được
 
@@ -161,28 +87,6 @@ Dữ liệu này chỉ hỗ trợ một chiến lược nhận dạng: không c�
 
 ## 4.8 Nghịch lý Simpson và lý do phân tầng
 
-Nghịch lý Simpson: một xu hướng xuất hiện trên toàn mẫu có thể **đảo chiều** khi tách theo nhóm nhỏ. Nguyên nhân là cơ cấu nhóm khác nhau giữa hai bên so sánh.
+PP2 so sánh trong từng tầng giá để tránh việc cơ cấu giá khác nhau che mất xu hướng bên trong. Tuy vậy, phân tầng theo giá không làm hai nhóm cân bằng về sản lượng và tần suất bán.
 
-Phân tầng xử lý trực tiếp hiện tượng này: so sánh **trong từng tầng đồng nhất**, rồi trung bình có trọng số.
-
-⚠️ **Phân tầng không tự động "xử lý Simpson" nếu chọn sai biến tầng.** Nhóm đã suýt chọn sai: thiết kế ban đầu định chia tầng theo biến `type`, cho tới khi phát hiện `type` là nhãn cấp **dòng hóa đơn** — 85% SKU mang nhiều hơn một nhãn, "Ly đá vừa" xuất hiện với cả ba nhãn *Nước uống*, *Đồ ăn*, *Sản phẩm khác*.
-
-### Và trong đồ án này, phân tầng **không đạt cân bằng**
-
-Cổng chẩn đoán được khóa **trước** khi chạy. Kết quả:
-
-| Biến tiền kỳ | Trước phân tầng | Sau phân tầng theo giá |
-|---|---|---|
-| log(giá nền) | +0,010 ✅ | 3/5 tầng vượt ngưỡng |
-| log(1+sản lượng) | **−0,870** 🔴 | 5/5 tầng vượt ngưỡng |
-| Số tuần xuất hiện | **−0,601** 🔴 | 4/5 tầng vượt ngưỡng |
-
-Đã thử **sáu** phương án chia tầng khác — theo sản lượng, theo số tuần, theo điểm tổng hợp, theo lưới hai chiều. **Không phương án nào đạt cân bằng.**
-
-Đây là đặc điểm thật của dữ liệu chứ không phải lỗi kỹ thuật: rượu bia và hàng chăm sóc cá nhân khác nhau về bản chất luân chuyển. Không cách chia tầng nào theo biến quan sát được làm chúng giống nhau.
-
-**Hệ quả — theo đúng quy tắc đã khóa trước:**
-
-> Nhóm can thiệp và nhóm đối chứng khác nhau đáng kể về sản lượng và tần suất bán trước chính sách, và không phương án phân tầng nào theo biến quan sát được khắc phục được. Kết luận nhân quả của đồ án vì vậy **phụ thuộc hoàn toàn vào giả định xu hướng song song**, thứ mà dữ liệu này không cho phép kiểm chứng đầy đủ.
-
-Cả hai phương pháp được trình bày là **so sánh có điều chỉnh**, không phải ước lượng nhân quả sạch.
+Vì vậy cả PP1 và PP2 chỉ được trình bày là **so sánh có điều chỉnh**, không phải ước lượng nhân quả sạch. Giải thích Simpson, các phương án phân tầng đã thử và bảng cân bằng đầy đủ nằm tại [Phụ lục A.2](phu-luc-ky-thuat.md#a2).

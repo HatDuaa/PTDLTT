@@ -20,8 +20,15 @@ export function ChanTrang() {
           Nghị quyết 204/2025/QH15 (thuế suất 8%, hiệu lực từ 01/07/2025).
         </p>
         <p className="mt-1">
-          Đơn vị hiệu ứng: điểm log ×100. Đơn vị phân tích: SKU (mã vạch), một cửa hàng tiện lợi
-          TP.HCM — không suy rộng ra ngành bán lẻ Việt Nam.
+          <strong className="font-medium text-foreground">Đọc đơn vị &ldquo;điểm log ×100&rdquo;
+          thế nào:</strong> với các mức thay đổi nhỏ, con số này xấp xỉ phần trăm — −1,8 điểm log
+          ×100 tương đương giá giảm khoảng 1,8%. Với mức lớn thì lệch dần: −31,5 điểm là giảm
+          khoảng 27%, còn +31,5 điểm là tăng khoảng 37%. Dùng đơn vị này vì nó làm tăng và giảm
+          đối xứng nhau.
+        </p>
+        <p className="mt-1">
+          Đơn vị phân tích: SKU (mã vạch), một cửa hàng tiện lợi TP.HCM — không suy rộng ra ngành
+          bán lẻ Việt Nam.
         </p>
         {manifest && (
           <p className="mt-1">

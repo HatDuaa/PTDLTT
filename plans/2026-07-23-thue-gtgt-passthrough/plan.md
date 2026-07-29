@@ -86,7 +86,7 @@ Bốn nguồn, mỗi nguồn một vai trò khác nhau:
 - Khớp hoàn hảo với dữ liệu: treated = khăn ướt/VPP/chăm sóc cá nhân; đối chứng = bia/rượu/thuốc lá
 
 ### Giai đoạn 3 — Làm sạch dữ liệu
-Xử lý xong 5 vấn đề: hóa đơn mua vào lẫn trong mẫu · hóa đơn tổng hợp 12/2024–01/2025 · cửa hàng dời địa điểm 06/2025 · cờ `daxoa=2` · **mã vạch chỉ có từ ~04/2025** (vấn đề nghiêm trọng nhất — kỳ tiền can thiệp thực chỉ 3 tháng)
+Xử lý xong 5 vấn đề: hóa đơn mua vào lẫn trong mẫu · hóa đơn tổng hợp 12/2024–01/2025 · khoảng trống 02–10/06 và địa chỉ hóa đơn đổi từ 24/06 · cờ `daxoa=2` · **mã vạch chỉ có từ ~04/2025** (vấn đề nghiêm trọng nhất — kỳ tiền can thiệp thực chỉ 3 tháng)
 
 ### Giai đoạn 4 — Ba vòng phản biện
 | Vòng | Nguồn | Thay đổi lớn nhất |

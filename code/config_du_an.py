@@ -3,7 +3,15 @@
 Mọi giá trị ở đây phải khớp với plans/2026-07-23-thue-gtgt-passthrough/dac-ta-khoa.md.
 Không script nào được tự định nghĩa lại các hằng số này.
 """
+import sys
 from pathlib import Path
+
+# --- Console Windows mặc định là cp1252: mọi print() tiếng Việt sẽ ném
+# UnicodeEncodeError và giết cả pipeline giữa chừng. Ép UTF-8 tại đây vì mọi
+# script đều import module này, nên không nơi nào phải nhớ tự làm.
+for _luong in (sys.stdout, sys.stderr):
+    if hasattr(_luong, "reconfigure"):
+        _luong.reconfigure(encoding="utf-8", errors="replace")
 
 # --- Đường dẫn: suy ra từ vị trí file, không phụ thuộc thư mục đang đứng ---
 GOC_REPO = Path(__file__).resolve().parent.parent
@@ -90,6 +98,27 @@ LUOI_NGUONG_TUAN = [1, 2, 3, 4, 5]
 # --- Đặc tả khóa §9: phân tầng ---
 # Nhãn mẫu so sánh chính — HỢP ĐỒNG với web/frontend/lib/hang-so-chinh-sach.ts
 NHAN_MAU_SO_SANH_CHINH = "so sánh theo Z"
+
+# Nhãn trục/mức của lưới độ nhạy — cũng là HỢP ĐỒNG với frontend.
+# Frontend tra cứu bằng chuỗi khớp chính xác; lệch một ký tự thì ô số biến thành
+# "—" mà không có lỗi nào được ném ra. `b6_ra_soat_ngon_ngu.kiem_tra_hop_dong_nhan`
+# đối chiếu từng giá trị dưới đây với file hằng số của frontend VÀ với CSV đã ghi.
+NHAN_DO_NHAY = {
+    "chua_ro_truc": "23 SKU chưa rõ [ITT]",
+    "chua_ro_co_so": "cơ sở (loại 23 SKU)",
+    "chua_ro_z1": "gán tất cả Z=1",
+    "chua_ro_z0": "gán tất cả Z=0",
+}
+
+# Số SKU nằm trong nhãn ở trên. Nhãn có con số gắn cứng, nên nếu bộ lọc đổi mà
+# nhãn không đổi thì nhãn sẽ nói dối — b4 khẳng định lại con số này lúc chạy.
+SO_SKU_CHUA_RO = 23
+
+# Nhãn hiển thị của hai biến thể PP1-A. Đặt ở đây vì b4 GHI ra, b5 LỌC theo, và
+# báo cáo/web ĐỌC — ba nơi phải khớp tuyệt đối. Bản trước ghép thẳng khóa dict
+# ("tho"/"hiep_bien") vào nhãn, nên web hiện "PP1-A tho" trong khi báo cáo viết
+# "PP1-A thô"; lúc sửa lại thì bộ lọc chuỗi cứng trong b5 rỗng và pipeline chết.
+TEN_HIEN_THI_PP1A = {"tho": "PP1-A thô", "hiep_bien": "PP1-A hiệp biến"}
 
 SO_PHAN_VI_GIA = 5          # phân vị của pre_p. KHÔNG dùng `type` — xem §9
 TOI_THIEU_SKU_MOI_TANG = 3

@@ -21,6 +21,7 @@ export const API_ROUTES = {
   doNhay: "/api/do-nhay",
   mde: "/api/mde",
   lamTron: "/api/lam-tron",
+  bamChuan: "/api/bam-chuan",
   sanLuong: "/api/san-luong",
   luongMau: "/api/luong-mau",
   eda: (ten: EdaTen) => `/api/eda/${ten}`,

@@ -117,6 +117,15 @@ def lam_tron():
     return _lay("kq-mo-phong-lam-tron.csv")
 
 
+@app.get("/api/bam-chuan")
+def bam_chuan():
+    """Giá thật có rơi đúng mức chuyển hoàn toàn không — kq-bam-chuan-co-hoc.csv.
+
+    Mô tả hậu kiểm, KHÔNG phải ước lượng tác động. Hàng `Z=0` là giả dược.
+    """
+    return _lay("kq-bam-chuan-co-hoc.csv")
+
+
 @app.get("/api/san-luong")
 def san_luong():
     """Kết quả ước lượng theo sản lượng — kq-san-luong.csv."""
@@ -186,6 +195,7 @@ def tat_ca():
         "do_nhay": _lay("kq-do-nhay.csv"),
         "mde": _lay("kq-mde-va-suc-manh.csv"),
         "lam_tron": _lay("kq-mo-phong-lam-tron.csv"),
+        "bam_chuan": _lay("kq-bam-chuan-co-hoc.csv"),
         "san_luong": _lay("kq-san-luong.csv"),
         "luong_mau": _lay("bang-luong-mau.csv"),
         "chan_doan_type": _lay("chan-doan-bien-type.csv"),

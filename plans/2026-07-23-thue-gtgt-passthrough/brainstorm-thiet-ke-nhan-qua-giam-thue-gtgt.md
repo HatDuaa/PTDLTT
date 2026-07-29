@@ -40,7 +40,7 @@ Kỳ dữ liệu: 12/2024 – 17/08/2025.
 |---|---|---|---|
 | 1 | 13.335 hóa đơn tháng 3–4/2025 là `THUE_MUAVAO` (mua vào từ NCC) | `ma_ncc_hddt` | Chỉ giữ `THUE_BANRA` |
 | 2 | 12/2024–01/2025: 31 và 34 hóa đơn nhưng 44k dòng chi tiết (có hóa đơn 1.469 dòng) → hóa đơn tổng hợp | Số dòng/hóa đơn | Cắt mẫu từ 01/02/2025 |
-| 3 | Cửa hàng dời địa điểm ~10/06/2025: 08 Vũ Tông Phan (Thủ Đức) → The Opera Residence (Thủ Thiêm). Một cửa hàng đổi chỗ | `diachi_ban` theo tháng | Giả dược tại mốc dời + cửa sổ hẹp chỉ địa điểm mới |
+| 3 | Dữ liệu trống 02–10/06; địa chỉ trên hóa đơn đổi hẳn từ 24/06. Không xác định được ngày dời vật lý | `diachi_ban` theo ngày | Cửa sổ từ 11/06, gồm cả hai địa chỉ |
 | 4 | ✅ **`daxoa=2` = bản ghi trùng lặp** | 3.917 HĐ, chỉ 01–16/05/2025; `nguoitao=BOT` 100% (bản còn lại `DNCS` 100%); 1.589/3.917 trùng số hóa đơn; tiền TB 66.300 vs 68.636 | Loại `daxoa=2` |
 | 5 | ⚠️ **Mã vạch `ma_hh_ct` chỉ được điền từ ~04/2025** (138.982/233.996 dòng có mã). Nhóm treated và đối chứng 10% có **0 SKU giao dịch trong tháng 2–3** | Số SKU theo tháng | **Kỳ tiền can thiệp hiệu dụng chỉ 04–06/2025 (3 tháng)** — hạn chế nghiêm trọng, phải nêu rõ |
 
@@ -104,7 +104,7 @@ Lưu ý: KS p lớn chỉ có nghĩa "chưa phát hiện khác biệt ở đặc
 | 1 | Xu hướng song song | ⚠️ **Không phát hiện bằng chứng khác biệt** (hệ số lead tháng 4: −0,727 điểm %, p=0,373; tháng 5: −0,003, p=0,996), **nhưng chỉ 2 kỳ lead và giá thưa → kiểm định sức mạnh thấp**. Không được viết "pre-trend đạt" |
 | 2 | SUTVA | Rủi ro thấp cho giá (giá không đổi → không thay thế chéo giá). Kênh còn lại — trưng bày/nhập hàng — chỉ ảnh hưởng sản lượng |
 | 3 | Không dự đoán trước | Giả dược mốc 1/6: β=0,314, p=0,580 |
-| 4 | Thành phần nhóm ổn định | ✅ 152/158 SKU treated bán ở cả hai địa điểm; 0 SKU chỉ bán ở chỗ cũ |
+| 4 | Thành phần nhóm ổn định | ✅ 152/158 SKU treated có hóa đơn ghi cả hai địa chỉ; 0 SKU chỉ gắn với địa chỉ cũ |
 | 5 | Ngoại sinh của can thiệp | ✅ Do Quốc hội quyết định |
 
 ### 4.2 Vấn đề chọn mẫu chưa giải quyết
@@ -146,8 +146,8 @@ Kiểm định hoán vị Monte Carlo (10.000 lần): p=0,983 — lưu ý đây 
 
 | Kiểm định | Kết quả |
 |---|---|
-| Giả dược mốc dời cửa hàng 1/6 | β=0,314, p=0,580 |
-| Cửa sổ hẹp, chỉ địa điểm mới | β=−0,289, p=0,655 |
+| Giả dược tại mốc 01/06 | β=0,314, p=0,580 |
+| Cửa sổ từ 11/06, gồm cả hai địa chỉ | β=−0,289, p=0,655 |
 | Giả dược mốc 1/5 | β=1,330, p=0,061 ⚠️ chạy lại sau khi đã xác định `daxoa=2` là bản trùng |
 
 ### 5.3 Sản lượng — phân tích phụ

@@ -85,6 +85,7 @@ function NoiDungBieuDo({ buoc }: { buoc: BuocLuong[] }) {
                 position="right"
                 formatter={(v) => dinhDangSoNguyen(Number(v))}
                 fontSize={12}
+                fill="var(--foreground)"
               />
             </Bar>
           </BarChart>
@@ -110,6 +111,7 @@ function NoiDungBieuDo({ buoc }: { buoc: BuocLuong[] }) {
                 position="right"
                 formatter={(v) => dinhDangSoNguyen(Number(v))}
                 fontSize={12}
+                fill="var(--foreground)"
               />
             </Bar>
           </BarChart>

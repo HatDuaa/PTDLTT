@@ -16,6 +16,8 @@ from scipy import stats
 import config_du_an as cf
 
 HIEP_BIEN = ["log_pre_p", "log1p_pre_q", "pre_w"]   # KHÓA — không thêm không bớt
+
+TEN_HIEN_THI_PP1A = cf.TEN_HIEN_THI_PP1A   # nguồn duy nhất, xem config_du_an
 CSV_KQ = cf.THU_MUC_KET_QUA / "kq-uoc-luong-chinh.csv"
 CSV_TANG = cf.THU_MUC_KET_QUA / "kq-theo-tang.csv"
 CSV_NHAY = cf.THU_MUC_KET_QUA / "kq-do-nhay.csv"
@@ -283,12 +285,17 @@ def chay():
     _mo_ta("(1a) thô", a["tho"])
     _mo_ta("(1b) có hiệp biến", a["hiep_bien"])
     for k, v in a.items():
-        ket.append({"vai_tro": "chính", "uoc_luong": "ITT", "pp": f"PP1-A {k}", **v})
+        # `k` là khóa dict nội bộ ("tho"/"hiep_bien"). Ghép thẳng vào nhãn hiển
+        # thị làm web và slide hiện "PP1-A tho" trong khi báo cáo viết "PP1-A
+        # thô" — cùng một ước lượng mà hai nơi gọi hai tên.
+        ket.append({"vai_tro": "chính", "uoc_luong": "ITT",
+                    "pp": TEN_HIEN_THI_PP1A[k], **v})
 
     print("\n  PP1 cách B — g-computation cho ATT (bootstrap):")
     b = pp1_cach_b(itt, "Z")
     _mo_ta("ATT chuẩn hóa", b)
-    ket.append({"vai_tro": "chính", "uoc_luong": "ITT", "pp": "PP1-B g-comp", **b})
+    ket.append({"vai_tro": "chính", "uoc_luong": "ITT",
+                "pp": "PP1-B g-computation", **b})
 
     print("\n  PP2 — phân tầng 5 phân vị giá nền (bootstrap toàn bộ estimator):")
     p2, bang = pp2_bootstrap(itt, "Z")
@@ -423,11 +430,15 @@ def chay():
     tangs.append(bang_a)
 
     chua_ro = m["grp"].isin(["T", "C10"]) & (m["loai_sp"] == "khong_ro")
-    for muc, Zv in [("cơ sở (loại 23 SKU)", m["Z"]),
-                    ("gán tất cả Z=1", np.where(chua_ro, 1, m["Z"])),
-                    ("gán tất cả Z=0", np.where(chua_ro, 0, m["Z"]))]:
+    cf.khang_dinh(int(chua_ro.sum()) == cf.SO_SKU_CHUA_RO,
+                  f"nhãn lưới độ nhạy ghi {cf.SO_SKU_CHUA_RO} SKU chưa rõ "
+                  f"nhưng bộ lọc cho {int(chua_ro.sum())} — nhãn đang nói dối")
+    nd = cf.NHAN_DO_NHAY
+    for muc, Zv in [(nd["chua_ro_co_so"], m["Z"]),
+                    (nd["chua_ro_z1"], np.where(chua_ro, 1, m["Z"])),
+                    (nd["chua_ro_z0"], np.where(chua_ro, 0, m["Z"]))]:
         s = m.assign(Zv=Zv)
-        ghi("23 SKU chưa rõ [ITT]", muc, s[s.Zv >= 0].rename(columns={"Zv": "Zx"}), "Zx")
+        ghi(nd["chua_ro_truc"], muc, s[s.Zv >= 0].rename(columns={"Zv": "Zx"}), "Zx")
 
     for nhan, base, ct in [("[ITT]", itt, "Z"), ("[per-protocol]", s_a, "D")]:
         for k in cf.LUOI_NGUONG_TUAN:

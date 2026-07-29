@@ -12,14 +12,21 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { BieuDoHeSo } from "@/components/charts/bieu-do-he-so";
 import { TrangThaiDuLieu } from "@/components/site/trang-thai-du-lieu";
 import { NhanVaiTro } from "@/components/site/nhan-vai-tro";
-import { useDoNhay, useTheoTang } from "@/lib/hooks";
+import { useBamChuan, useDoNhay, useTheoTang, useUocLuongChinh } from "@/lib/hooks";
 import { dinhDangSoNguyen } from "@/lib/format";
-import type { DoNhayRow, TheoTangRow } from "@/lib/types";
-import { MAU_SO_SANH_CHINH } from "@/lib/hang-so-chinh-sach";
+import type { BamChuanRow, DoNhayRow, TheoTangRow, UocLuongChinhRow } from "@/lib/types";
+import {
+  DO_NHAY_CHUA_RO_CO_SO,
+  DO_NHAY_CHUA_RO_TRUC,
+  DO_NHAY_CHUA_RO_Z1,
+  MAU_SO_SANH_CHINH,
+} from "@/lib/hang-so-chinh-sach";
 
 export default function TrangChu() {
   const theoTang = useTheoTang();
   const doNhay = useDoNhay();
+  const bamChuan = useBamChuan();
+  const uocLuong = useUocLuongChinh();
 
   return (
     <div className="grid gap-8">
@@ -31,7 +38,8 @@ export default function TrangChu() {
           <AlertDescription className="mt-2 space-y-2 text-sm">
             <p>
               Đồ án này đánh giá thí nghiệm tự nhiên <strong>không hoàn hảo</strong>: cửa hàng có
-              không tuân thủ khi cập nhật thuế, nhóm đối chứng từng bị ô nhiễm, và{" "}
+              không tuân thủ khi cập nhật thuế, nhóm đối chứng từng bị ô nhiễm — tức có mặt hàng
+              luật cho giảm nhưng bị xếp theo thuế cửa hàng thực áp — và{" "}
               <TrangThaiDuLieu dangTai={doNhay.dangTai} loi={doNhay.loi} duLieu={doNhay.duLieu} inline>
                 {(hang) => <SoSkuChuaPhanLoai hang={hang} />}
               </TrangThaiDuLieu>{" "}
@@ -39,8 +47,9 @@ export default function TrangChu() {
             </p>
             <p>
               Cân bằng tiền kỳ giữa nhóm can thiệp và nhóm đối chứng <strong>thất bại</strong> sau
-              phân tầng, và kiểm định tương đương tiền xu hướng <strong>không đạt</strong>. Theo quy
-              tắc khóa trước của đồ án, kết luận nhân quả vì vậy chỉ có điều kiện — xem đầy đủ ở{" "}
+              phân tầng. Kiểm định tương đương tiền xu hướng — kiểm tra xem hai nhóm trước chính
+              sách có đủ giống nhau hay không — cũng <strong>không đạt</strong>. Theo quy tắc khóa
+              trước của đồ án, kết luận nhân quả vì vậy chỉ có điều kiện — xem đầy đủ ở{" "}
               <Link href="/han-che" className="underline underline-offset-2">
                 trang Hạn chế
               </Link>
@@ -58,8 +67,9 @@ export default function TrangChu() {
         <p className="text-muted-foreground">
           Đồ án dùng Nghị quyết 204/2025/QH15 làm thí nghiệm tự nhiên: quyết định giảm thuế do Quốc
           hội ban hành, không do cửa hàng — nhưng dữ liệu cho thấy việc thực thi không hoàn hảo. Đơn
-          vị phân tích: SKU (mã vạch) sai phân trước–sau, tại <strong>một</strong> cửa hàng tiện lợi
-          TP.HCM. Đơn vị hiệu ứng: <strong>điểm log ×100</strong>.
+          vị phân tích: SKU (mã vạch) sai phân trước–sau, tức so sánh mức thay đổi của cùng một mã
+          hàng, tại <strong>một</strong> cửa hàng tiện lợi TP.HCM. Đơn vị hiệu ứng:{" "}
+          <strong>điểm log ×100</strong>, có thể đọc gần như phần trăm khi mức thay đổi nhỏ.
         </p>
       </section>
 
@@ -68,9 +78,20 @@ export default function TrangChu() {
           Kết luận
         </h2>
         <p>
-          <strong>Không tìm thấy bằng chứng giá giảm</strong> trong các so sánh có điều chỉnh này.
-          Dữ liệu không đủ để quy chênh lệch quan sát cho chính sách một cách đáng tin cậy. Đây
-          KHÔNG phải &ldquo;tác động bằng 0&rdquo; — kiểm định tương đương cũng không đạt.
+          Kết quả rõ nhất của đồ án là{" "}
+          <strong>cửa hàng đã không chuyển hết phần giảm thuế vào giá bán lẻ</strong>.
+        </p>
+        <TrangThaiDuLieu dangTai={bamChuan.dangTai} loi={bamChuan.loi} duLieu={bamChuan.duLieu} chieuCaoTai="h-12">
+          {(hang) => <CauBamChuan hang={hang} />}
+        </TrangThaiDuLieu>
+        <TrangThaiDuLieu dangTai={uocLuong.dangTai} loi={uocLuong.loi} duLieu={uocLuong.duLieu} chieuCaoTai="h-12">
+          {(hang) => <CauPassThrough hang={hang} />}
+        </TrangThaiDuLieu>
+        <p className="text-sm text-muted-foreground">
+          Điều đồ án <strong>chưa</strong> nói được là chính xác bao nhiêu phần chênh lệch này{" "}
+          <em>do chính sách gây ra</em>. Hai nhóm hàng khác nhau về sức bán từ trước, nên phép so
+          sánh nhân quả chưa đủ chắc. Giới hạn đó ảnh hưởng tới <em>độ lớn</em> của tác động, không
+          làm thay đổi điều quan sát được ở trên.
         </p>
         <BieuDoHeSo />
       </section>
@@ -88,7 +109,7 @@ export default function TrangChu() {
           <TheChuyenTiep
             href="/thiet-ke"
             tieuDe="2. Thiết kế"
-            moTa="Khung Z/D, đồ thị nhân quả, giả định và đường backdoor."
+            moTa="Bản đồ cái gì ảnh hưởng cái gì, vì sao hai nhóm chưa thể so sánh hoàn toàn công bằng."
           />
           <TheChuyenTiep
             href="/ket-qua"
@@ -98,7 +119,7 @@ export default function TrangChu() {
           <TheChuyenTiep
             href="/suc-manh"
             tieuDe="4. Sức mạnh & cơ chế"
-            moTa="MDE, sức mạnh TOST, mô phỏng làm tròn, sản lượng — mọi thứ chỉ mang tính khám phá."
+            moTa="Dữ liệu phát hiện được thay đổi nhỏ đến đâu, có đủ sức kiểm tra giá gần như không đổi không."
           />
           <TheChuyenTiep
             href="/han-che"
@@ -134,9 +155,49 @@ export default function TrangChu() {
   );
 }
 
+/** Bằng chứng đếm được: giá thật gần như không bám mức lẽ ra phải có. */
+function CauBamChuan({ hang }: { hang: BamChuanRow[] }) {
+  const duocGiam = hang.find((h) => h.Z === 1);
+  if (!duocGiam) return null;
+  return (
+    <p>
+      Nếu cửa hàng giảm giá đúng theo phần thuế được giảm,{" "}
+      <strong>{dinhDangSoNguyen(duocGiam.n_du_bao_doi_muc)}</strong> mặt hàng lẽ ra phải đổi giá.
+      Thực tế chỉ <strong>{dinhDangSoNguyen(duocGiam.n_bam_chuan)}</strong> mặt hàng đạt đúng mức
+      đó, còn <strong>{dinhDangSoNguyen(duocGiam.n_giu_nguyen_gia)}</strong> mặt hàng giữ nguyên
+      giá cũ.
+    </p>
+  );
+}
+
+/**
+ * `pass_through` là tỉ lệ phần giảm thuế đi vào giá, do pipeline tính sẵn.
+ * Chỉ lấy khoảng nhỏ nhất–lớn nhất trong bốn đặc tả chính, không chọn một con số.
+ */
+function CauPassThrough({ hang }: { hang: UocLuongChinhRow[] }) {
+  const ty = hang
+    .filter((h) => h.vai_tro === "chính" && h.pass_through != null)
+    .map((h) => h.pass_through as number);
+  if (ty.length === 0) return null;
+  const pct = (v: number) => `${(v * 100).toFixed(0)}%`;
+  return (
+    <p>
+      Theo bốn cách tính, phần giảm thuế thực sự đi vào giá chỉ khoảng{" "}
+      <strong>
+        {pct(Math.min(...ty))} – {pct(Math.max(...ty))}
+      </strong>{" "}
+      mức chuyển hoàn toàn — thấp hơn nhiều so với mức chuyển hết.
+    </p>
+  );
+}
+
 function SoSkuChuaPhanLoai({ hang }: { hang: DoNhayRow[] }) {
-  const coSo = hang.find((h) => h.truc === "23 SKU chưa phân loại" && h.muc === "loại (cơ sở)");
-  const ganZ1 = hang.find((h) => h.truc === "23 SKU chưa phân loại" && h.muc === "gán tất cả Z=1");
+  const coSo = hang.find(
+    (h) => h.truc === DO_NHAY_CHUA_RO_TRUC && h.muc === DO_NHAY_CHUA_RO_CO_SO
+  );
+  const ganZ1 = hang.find(
+    (h) => h.truc === DO_NHAY_CHUA_RO_TRUC && h.muc === DO_NHAY_CHUA_RO_Z1
+  );
   if (!coSo || !ganZ1) return <span>—</span>;
   return <strong>{dinhDangSoNguyen(ganZ1.n - coSo.n)}</strong>;
 }

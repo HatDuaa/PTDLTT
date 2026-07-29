@@ -23,7 +23,7 @@ export const MO_TA_VAI_TRO: Record<VaiTro, string> = {
   "kham-pha":
     "Không có địa vị nhân quả — chỉ mô tả cơ chế/biên độ khả dĩ, chưa kiểm định như estimand chính.",
   "co-hoc":
-    "Kết quả của một phép tính/mô phỏng thuần túy (quy tắc làm tròn), không suy luận về hành vi định giá thật.",
+    "Phép tính hoặc đối chiếu theo một chuẩn cơ học (kể cả quy tắc làm tròn), không có địa vị suy diễn nhân quả.",
   "chan-doan":
     "Dùng để đọc mức độ tin cậy của giả định xu hướng song song — không dùng để tính hiệu ứng.",
 };

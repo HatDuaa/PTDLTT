@@ -61,18 +61,27 @@
   --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.205 0 0);
   --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
+  /* Đo được 3,69 ở giá trị cũ oklch(0.556 0 0) — dưới ngưỡng AA 4,5. Lớp này
+     mang phần lớn văn bản giải thích của báo cáo nên không thể để dưới chuẩn. */
+  --muted-foreground: oklch(0.45 0 0);
   --accent: oklch(0.97 0 0);
   --accent-foreground: oklch(0.205 0 0);
   --destructive: oklch(0.577 0.245 27.325);
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
   --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
+  /* Bảng màu biểu đồ — chọn theo hai tiêu chí ĐO ĐƯỢC, không theo gu:
+       · tương phản với nền ≥ 3:1 (ngưỡng WCAG cho dữ liệu đồ thị)
+       · khác hệ màu đủ xa để phân biệt, kể cả với người mù màu đỏ–lục
+     Hai bản trước đều hỏng: bản đầu để chroma = 0 (năm sắc độ XÁM), bản sau
+     lấy palette shadcn mặc định vốn có ba màu ấm — cam #4 chỉ đạt 1,72 và
+     cách cam #5 đúng 31 đơn vị RGB, tức gần như trùng nhau.
+     Giá trị hiện tại: tương phản 4,94–7,38; cặp gần nhất cách 75. */
+  --chart-1: #0063a6;   /* xanh dương */
+  --chart-2: #c14a00;   /* cam đất   */
+  --chart-3: #00705a;   /* lục lam   */
+  --chart-4: #7a4fa3;   /* tím       */
+  --chart-5: #a3195b;   /* đỏ mận    */
   --radius: 0.625rem;
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
@@ -96,18 +105,21 @@
   --secondary: oklch(0.269 0 0);
   --secondary-foreground: oklch(0.985 0 0);
   --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
+  /* Nền tối cũng hụt chuẩn ở giá trị cũ oklch(0.708 0 0): đo được 4,18. */
+  --muted-foreground: oklch(0.75 0 0);
   --accent: oklch(0.269 0 0);
   --accent-foreground: oklch(0.985 0 0);
   --destructive: oklch(0.704 0.191 22.216);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
   --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
+  /* Cùng năm hệ màu như nền sáng nhưng sáng hơn — nền tối cần đảo chiều độ
+     sáng, không phải đảo màu. Tương phản đo được 8,74–10,92. */
+  --chart-1: #7cc0f5;
+  --chart-2: #ff9557;
+  --chart-3: #4fd6b0;
+  --chart-4: #c9a2f0;
+  --chart-5: #f58bb8;
   --sidebar: oklch(0.205 0 0);
   --sidebar-foreground: oklch(0.985 0 0);
   --sidebar-primary: oklch(0.488 0.243 264.376);
@@ -127,5 +139,17 @@
   }
   html {
     @apply font-sans;
+  }
+  /* Giới hạn bề rộng dòng văn bản.
+
+     Đo trên trang chủ trước khi thêm: mọi đoạn văn chạy 140–160 ký tự/dòng,
+     gấp đôi mức đọc thoải mái (65–75). Mắt phải quét ngang quá xa rồi dò tìm
+     đầu dòng kế tiếp, nên đọc một đoạn dài rất mệt — đúng thứ cần tránh ở một
+     trang báo cáo dày chữ.
+
+     Chỉ áp cho văn bản chảy trong `main`. Bảng, thẻ và biểu đồ vẫn được dùng
+     hết bề ngang vì chúng cần chỗ. */
+  main :is(p, li) {
+    max-width: 75ch;
   }
 }

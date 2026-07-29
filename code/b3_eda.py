@@ -77,7 +77,13 @@ def do_phu_du_lieu(goc, chitiet):
     ax[1].set_ylim(-5, 105)
     moc = [("2025-03-13", "Bắt đầu lỗ hổng 39 ngày", "#c0392b"),
            ("2025-04-21", "Mã vạch bắt đầu được điền", "#b5651d"),
-           ("2025-06-10", "Cửa hàng dời địa điểm", "#7d3c98"),
+           # Dữ liệu cho HAI mốc khác nhau, đừng gộp làm một:
+           #   02–10/06 — 9 ngày không có hóa đơn nào, hợp với việc đóng cửa dọn
+           #   24/06    — `diachi_ban` đổi hẳn sang địa chỉ mới (trước đó 12–23/06
+           #              vẫn ghi địa chỉ cũ, kể cả sau lỗ hổng)
+           # Không suy được ngày dời VẬT LÝ: địa chỉ trên hóa đơn có thể được cập
+           # nhật trễ so với lúc chuyển thật. Chỉ ghi thứ quan sát được.
+           ("2025-06-24", "Địa chỉ trên hóa đơn đổi", "#7d3c98"),
            ("2025-07-01", "Chính sách giảm VAT", "#1e8449")]
     for i, (ng, nhan, mau) in enumerate(moc):
         for a in ax:
@@ -89,8 +95,75 @@ def do_phu_du_lieu(goc, chitiet):
     return theo_thang
 
 
+def doanh_thu_theo_lich(goc):
+    """Mô tả doanh thu toàn cửa hàng theo lịch, không so sánh nhóm T/C.
+
+    Chỉ lọc hóa đơn bán ra chưa bị xóa, đúng theo yêu cầu của khảo sát mô tả.
+    Các hàng được gộp theo thứ trong tuần và nhóm ngày trong tháng vào cùng một
+    CSV; cột `truc` cho biết mỗi hàng thuộc bảng nào.
+    """
+    print("  [2] Doanh thu theo thứ trong tuần và ngày trong tháng")
+    g = goc[
+        (goc["daxoa"] == "0") & (goc["ma_ncc_hddt"] == "THUE_BANRA")
+    ].copy()
+    cf.khang_dinh(g["soid"].is_unique,
+                  "goc.soid không duy nhất — số hóa đơn theo lịch sẽ bị đếm sai")
+    g["ngay"] = pd.to_datetime(g["ngayct"], errors="raise")
+    g["doanh_thu"] = pd.to_numeric(g["sotien_sauvat"], errors="raise")
+    cf.khang_dinh(g["doanh_thu"].notna().all(),
+                  "sotien_sauvat bị thiếu sau khi lọc hóa đơn bán ra")
+
+    nhan_thu = {
+        0: "Thứ Hai",
+        1: "Thứ Ba",
+        2: "Thứ Tư",
+        3: "Thứ Năm",
+        4: "Thứ Sáu",
+        5: "Thứ Bảy",
+        6: "Chủ nhật",
+    }
+    g["ma_nhom"] = g["ngay"].dt.dayofweek
+    theo_thu = g.groupby("ma_nhom", sort=True).agg(
+        so_hoa_don=("soid", "nunique"),
+        tong_doanh_thu=("doanh_thu", "sum"),
+    ).reset_index()
+    theo_thu.insert(0, "truc", "thứ trong tuần")
+    theo_thu["nhan"] = theo_thu["ma_nhom"].map(nhan_thu)
+
+    nhom_ngay = ["1-5", "6-10", "11-15", "16-20", "21-25", "26-31"]
+    g["ma_nhom_ngay"] = pd.cut(
+        g["ngay"].dt.day,
+        bins=[0, 5, 10, 15, 20, 25, 31],
+        labels=nhom_ngay,
+    )
+    theo_ngay = g.groupby("ma_nhom_ngay", observed=True, sort=True).agg(
+        so_hoa_don=("soid", "nunique"),
+        tong_doanh_thu=("doanh_thu", "sum"),
+    ).reset_index().rename(columns={"ma_nhom_ngay": "ma_nhom"})
+    theo_ngay.insert(0, "truc", "ngày trong tháng")
+    theo_ngay["nhan"] = "Ngày " + theo_ngay["ma_nhom"].astype(str)
+
+    ket_qua = pd.concat([theo_thu, theo_ngay], ignore_index=True)
+    ket_qua["trung_binh_moi_hoa_don"] = (
+        ket_qua["tong_doanh_thu"] / ket_qua["so_hoa_don"]
+    ).round().astype("int64")
+    ket_qua["tong_doanh_thu"] = ket_qua["tong_doanh_thu"].round().astype("int64")
+    ket_qua = ket_qua[
+        ["truc", "ma_nhom", "nhan", "so_hoa_don",
+         "tong_doanh_thu", "trung_binh_moi_hoa_don"]
+    ]
+    _ghi(ket_qua, "eda-doanh-thu-theo-lich.csv",
+         f"{len(g):,} hóa đơn bán ra chưa bị xóa")
+
+    for truc, bang in [("thứ", theo_thu), ("nhóm ngày", theo_ngay)]:
+        tb = bang["tong_doanh_thu"] / bang["so_hoa_don"]
+        cao, thap = bang.loc[tb.idxmax()], bang.loc[tb.idxmin()]
+        print(f"      {truc}: cao nhất {cao['nhan']}, thấp nhất {thap['nhan']}")
+    return ket_qua
+
+
 def ma_tran_chuyen_thue(dong):
-    print("  [2] Ma trận chuyển thuế tiền kỳ → hậu kỳ")
+    print("  [3] Ma trận chuyển thuế tiền kỳ → hậu kỳ")
     mode_h = lambda x: (x.mode().iloc[0] if len(x.mode()) == 1 else -1)
     vat = dong.groupby(["sku", "post"])["tyle_vat_ct"].agg(mode_h).unstack()
     vat.columns = ["vat_tien", "vat_hau"]
@@ -105,7 +178,7 @@ def ma_tran_chuyen_thue(dong):
 
 def can_bang_tien_ky(mau):
     """Bảng cân bằng — CHỈ biến tiền can thiệp. Xem quy tắc chống rò rỉ ở đầu file."""
-    print("  [3] Cân bằng tiền can thiệp (chỉ biến tiền kỳ)")
+    print("  [4] Cân bằng tiền can thiệp (chỉ biến tiền kỳ)")
     mau = mau.copy()
     mau["log_pre_p"] = np.log(mau["pre_p"])
     mau["log1p_pre_q"] = np.log1p(mau["pre_q"])
@@ -158,7 +231,7 @@ def can_bang_tien_ky(mau):
 
 def ho_tro_phan_tang(mau):
     """Bảng hỗ trợ 5 tầng cho từng định nghĩa đối chứng — §9."""
-    print("  [4] Hỗ trợ phân tầng PP2 (5 phân vị giá nền)")
+    print("  [5] Hỗ trợ phân tầng PP2 (5 phân vị giá nền)")
     dc = {"DC-A": (mau["grp"] == "C10") & (mau["loai_sp"] == "ruou_bia_thuoc"),
           "DC-B": (mau["grp"] == "C10") & (mau["loai_sp"] != "hoa_chat"),
           "DC-C": (mau["grp"] == "C10"),
@@ -183,7 +256,7 @@ def ho_tro_phan_tang(mau):
 
 def luoi_survivorship(mau):
     """Không chỉ đếm SKU: so sánh SKU giữ vs bị loại trên biến tiền kỳ."""
-    print("  [5] Lưới survivorship + so sánh SKU giữ/bị loại")
+    print("  [6] Lưới survivorship + so sánh SKU giữ/bị loại")
     hang = []
     for k in cf.LUOI_NGUONG_TUAN:
         giu = mau["pre_w"] >= k
@@ -216,6 +289,7 @@ def chay():
     mau = pd.read_csv(cf.CSV_MAU_PHAN_TICH, dtype={"sku": str})
 
     do_phu_du_lieu(goc, chitiet)
+    doanh_thu_theo_lich(goc)
     ma_tran_chuyen_thue(dong)
     can_bang_tien_ky(mau)
     ho_tro_phan_tang(mau)

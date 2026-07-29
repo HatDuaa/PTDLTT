@@ -39,7 +39,7 @@ export function TostPlot() {
   return (
     <KhoiBieuDo
       tieuDe={`Biểu đồ tương đương TOST — biên rộng ±${bienChuoi}`}
-      moTa={`KTC 90% của bốn ước lượng chính so với vùng tương đương [−${bienChuoi}; +${bienChuoi}] điểm log ×100 (biên rộng, bằng 1/2 mốc chuyển hoàn toàn).`}
+      moTa={`TOST là hai kiểm định một phía để hỏi chênh lệch có đủ nhỏ để xem là gần như tương đương không. KTC 90% được so với vùng [−${bienChuoi}; +${bienChuoi}] điểm log ×100.`}
       vaiTro="chinh"
       moTaChoBieuDo={`Biểu đồ chấm ngang với khoảng tin cậy 90% của bốn ước lượng ATT, đặt trên nền vùng tương đương từ −${bienChuoi} đến +${bienChuoi} điểm log ×100. Không khoảng tin cậy nào nằm gọn trong vùng tương đương, nhưng điều này chủ yếu do biên hẹp so với độ chính xác dữ liệu, không phải bằng chứng chống lại sự tương đương.`}
       ghiChu={
@@ -89,7 +89,12 @@ function NoiDungBieuDo({ hang }: { hang: UocLuongChinhRow[] }) {
           type="number"
           dataKey="uoc_luong"
           domain={[-bien, bien]}
-          label={{ value: "Điểm log ×100", position: "insideBottom", offset: -4 }}
+          label={{
+            value: "Điểm log ×100",
+            position: "insideBottom",
+            offset: -4,
+            fill: "var(--muted-foreground)",
+          }}
           tickFormatter={(v: number) => dinhDangSo(v, 1)}
         />
         <YAxis type="category" dataKey="pp" width={150} tick={{ fontSize: 12 }} interval={0} />
@@ -102,7 +107,7 @@ function NoiDungBieuDo({ hang }: { hang: UocLuongChinhRow[] }) {
         />
         <ReferenceLine x={-BIEN_TOST_RONG} stroke="var(--muted-foreground)" strokeDasharray="4 4" />
         <ReferenceLine x={BIEN_TOST_RONG} stroke="var(--muted-foreground)" strokeDasharray="4 4" />
-        <ReferenceLine x={0} stroke="var(--border)" />
+        <ReferenceLine x={0} stroke="var(--muted-foreground)" />
         <ChartTooltip
           content={
             <ChartTooltipContent

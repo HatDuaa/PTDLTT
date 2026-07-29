@@ -20,7 +20,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="vi" className="h-full antialiased">
+    // `suppressHydrationWarning` chỉ đặt ở thẻ <html>, và chỉ vì tiện ích trình
+    // duyệt: nhiều tiện ích chèn thêm class vào <html> (đã gặp `mdl-js`) TRƯỚC
+    // khi React hydrate, nên HTML máy chủ và DOM máy khách lệch nhau ở đúng
+    // thuộc tính này. Không phải lỗi ứng dụng, không sửa được từ phía ứng dụng.
+    //
+    // Cờ này KHÔNG lan xuống cây con — mọi lệch hydrate thật bên trong vẫn được
+    // React báo như thường. Đừng thêm nó ở chỗ khác để "cho hết đỏ".
+    <html lang="vi" className="h-full antialiased" suppressHydrationWarning>
       <body className="flex min-h-full flex-col">
         <TooltipProvider delayDuration={150}>
           <DieuHuong />

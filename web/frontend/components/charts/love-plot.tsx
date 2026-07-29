@@ -55,7 +55,7 @@ export function LovePlot() {
   return (
     <KhoiBieuDo
       tieuDe="Love plot — SMD sau phân tầng theo 5 tầng giá"
-      moTa="Độ lệch chuẩn hóa trung bình (SMD) của ba hiệp biến tiền kỳ, tính RIÊNG trong từng tầng giá, SAU khi đã chia tầng — dữ liệu chính thức của Cổng 1."
+      moTa="SMD là thước đo hai nhóm khác nhau bao xa trước chính sách; càng gần 0 càng giống nhau. Love plot đặt các SMD cạnh nhau để nhìn nhanh chỗ nào còn mất cân bằng sau khi chia tầng giá."
       vaiTro="chan-doan"
       moTaChoBieuDo="Biểu đồ chấm thể hiện SMD của từng cặp (tầng, hiệp biến) sau phân tầng, cùng hai đường tham chiếu dọc tại ±0,25. Phần lớn điểm vượt ngưỡng. Panel thứ hai bên dưới vẽ SMD trước phân tầng để so sánh: phân tầng theo giá không làm cân bằng tốt hơn, mà ở nhiều tầng còn làm SMD của sản lượng và số tuần xuất hiện tệ hơn."
       ghiChu={
@@ -121,11 +121,16 @@ function BieuDoChung({ diem, chieuCaoNhan }: { diem: DiemLove[]; chieuCaoNhan: n
           type="number"
           dataKey="SMD"
           domain={[-bien, bien]}
-          label={{ value: "SMD", position: "insideBottom", offset: -4 }}
+          label={{
+            value: "SMD",
+            position: "insideBottom",
+            offset: -4,
+            fill: "var(--muted-foreground)",
+          }}
           tickFormatter={(v: number) => dinhDangSo(v, 2)}
         />
         <YAxis type="category" dataKey="nhan" width={190} tick={{ fontSize: 11 }} interval={0} />
-        <ReferenceLine x={0} stroke="var(--border)" />
+        <ReferenceLine x={0} stroke="var(--muted-foreground)" />
         <ReferenceLine x={NGUONG_SMD} stroke="var(--muted-foreground)" strokeDasharray="4 4" />
         <ReferenceLine x={-NGUONG_SMD} stroke="var(--muted-foreground)" strokeDasharray="4 4" />
         <ChartTooltip
@@ -147,7 +152,7 @@ function BieuDoChung({ diem, chieuCaoNhan }: { diem: DiemLove[]; chieuCaoNhan: n
         />
         <Scatter data={diem} dataKey="SMD">
           {diem.map((d) => (
-            <Cell key={d.nhan} fill="var(--color-SMD)" fillOpacity={d.vuotNguong ? 1 : 0.4} />
+            <Cell key={d.nhan} fill="var(--color-SMD)" />
           ))}
         </Scatter>
       </ScatterChart>

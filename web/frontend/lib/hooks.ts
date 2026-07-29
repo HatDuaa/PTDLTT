@@ -67,6 +67,10 @@ export function useLamTron() {
   return useApi("lam-tron", apiClient.layLamTron);
 }
 
+export function useBamChuan() {
+  return useApi("bam-chuan", apiClient.layBamChuan);
+}
+
 export function useSanLuong() {
   return useApi("san-luong", apiClient.laySanLuong);
 }

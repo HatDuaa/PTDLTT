@@ -157,7 +157,7 @@ Sáu vấn đề đã phát hiện, phải mô tả đầy đủ chứ không gi
 |---|---|---|
 | 1 | 13.335 hóa đơn mua vào lẫn trong mẫu | Đã lọc |
 | 2 | Hóa đơn tổng hợp 12/2024–01/2025 (31 hóa đơn / 44k dòng) | Ngoài cửa sổ chính |
-| 3 | Cửa hàng **dời địa điểm** ~10/06/2025 | Có cửa sổ độ nhạy riêng |
+| 3 | Dữ liệu trống 02–10/06; địa chỉ hóa đơn đổi hẳn từ 24/06 | Cửa sổ từ 11/06 gồm cả hai địa chỉ |
 | 4 | Cờ `daxoa=2` — 3.917 bản ghi | Đã lọc, ghi rõ lý do là **ngữ nghĩa cờ xóa** |
 | 5 | Mã vạch chỉ được điền từ **21/04/2025** | Giới hạn tiền kỳ thật còn 2 tháng |
 | 6 | 🔴 **Lỗ hổng 39 ngày 13/03 → 20/04/2025** | **Chưa có trong chương dữ liệu — phải bổ sung** |

@@ -27,7 +27,7 @@ export function DuongCongSucManh() {
   return (
     <KhoiBieuDo
       tieuDe="Đường cong sức mạnh — mô phỏng tái định tâm"
-      moTa="Sức mạnh phát hiện tác động giả định δ, ước lượng bằng mô phỏng tái định tâm dữ liệu về H₀ rồi cộng δ, chạy lại toàn bộ estimator nhiều lần mỗi mức."
+      moTa="Đường cong trả lời: nếu thay đổi thật lớn dần lên thì xác suất phương pháp phát hiện được nó tăng ra sao. Mô phỏng tái định tâm là tạo nhiều bộ dữ liệu giả quanh trường hợp không có chênh lệch rồi chạy lại cách ước lượng."
       vaiTro="chan-doan"
       moTaChoBieuDo="Đường cong tăng dần thể hiện sức mạnh thống kê theo độ lớn hiệu ứng giả định δ; tại δ=0 sức mạnh xấp xỉ mức alpha 0,05, xác nhận mô phỏng tái định tâm đúng; tại mốc chuyển hoàn toàn, sức mạnh chưa đạt 80%."
       bangThayThe={
@@ -67,7 +67,12 @@ function NoiDungBieuDo({
           <XAxis
             type="number"
             dataKey="delta"
-            label={{ value: "δ — điểm log ×100", position: "insideBottom", offset: -4 }}
+            label={{
+              value: "δ — điểm log ×100",
+              position: "insideBottom",
+              offset: -4,
+              fill: "var(--muted-foreground)",
+            }}
             tickFormatter={(v: number) => dinhDangSo(v, 1)}
           />
           <YAxis

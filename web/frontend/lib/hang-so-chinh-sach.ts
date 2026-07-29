@@ -44,3 +44,25 @@ export const BIEN_TOST_HEP = Math.abs(MOC_CHUYEN_HOAN_TOAN) / 4;
  * không báo lỗi khi pipeline đổi nhãn — giữ ở một chỗ duy nhất.
  */
 export const MAU_SO_SANH_CHINH = "so sánh theo Z";
+
+/**
+ * Nhãn trục/mức trong `kq-do-nhay.csv` (cột `truc` và `muc`).
+ *
+ * 🔴 Cùng loại hợp đồng như trên, và đã từng hỏng theo đúng cách đã cảnh báo:
+ * frontend tra cứu "23 SKU chưa phân loại" / "loại (cơ sở)" trong khi pipeline
+ * ghi "23 SKU chưa rõ [ITT]" / "cơ sở (loại 23 SKU)". Không khớp ⇒ hiển thị "—"
+ * ngay câu mở đầu trang chủ, không lỗi, không cảnh báo.
+ *
+ * Nguồn sự thật: `code/config_du_an.py::NHAN_DO_NHAY`.
+ */
+/**
+ * Nhãn hiển thị hai biến thể PP1-A trong cột `pp` của `kq-uoc-luong-chinh.csv`.
+ * Nguồn sự thật: `code/config_du_an.py::TEN_HIEN_THI_PP1A`.
+ */
+export const TEN_PP1A_THO = "PP1-A thô";
+export const TEN_PP1A_HIEP_BIEN = "PP1-A hiệp biến";
+
+export const DO_NHAY_CHUA_RO_TRUC = "23 SKU chưa rõ [ITT]";
+export const DO_NHAY_CHUA_RO_CO_SO = "cơ sở (loại 23 SKU)";
+export const DO_NHAY_CHUA_RO_Z1 = "gán tất cả Z=1";
+export const DO_NHAY_CHUA_RO_Z0 = "gán tất cả Z=0";

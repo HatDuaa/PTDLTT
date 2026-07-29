@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { KhoiKetQua } from "@/components/site/khoi-ket-qua";
 import { BangDuLieu } from "@/components/site/bang-du-lieu";
 import { TrangThaiDuLieu } from "@/components/site/trang-thai-du-lieu";
+import { DienGiai } from "@/components/site/dien-giai";
 import { useCongChanDoan, useSmdSauPhanTang } from "@/lib/hooks";
 import { dinhDangDiemLog, dinhDangP, dinhDangPhanTram, dinhDangSmd, dinhDangSo, dinhDangSoNguyen } from "@/lib/format";
 import { BIEN_TOST_RONG } from "@/lib/hang-so-chinh-sach";
@@ -42,7 +43,7 @@ function CongMot() {
   return (
     <KhoiKetQua
       tieuDe="Cổng 1 — Cân bằng"
-      moTa={`Tiêu chí khóa trước: ≤ ${dinhDangPhanTram(TY_LE_TOI_DA_VUOT_NGUONG_SMD, 0)} cặp |SMD| > ${dinhDangSo(NGUONG_SMD, 2)} SAU phân tầng theo 5 tầng giá.`}
+      moTa={`SMD đo hai nhóm khác nhau bao xa trên các hiệp biến, tức đặc điểm có sẵn trước chính sách; càng gần 0 càng cân bằng. Tiêu chí khóa trước: ≤ ${dinhDangPhanTram(TY_LE_TOI_DA_VUOT_NGUONG_SMD, 0)} cặp |SMD| > ${dinhDangSo(NGUONG_SMD, 2)} sau phân tầng.`}
     >
       <TrangThaiDuLieu dangTai={dangTai} loi={loi} duLieu={duLieu} thuLai={thuLai} chieuCaoTai="h-40">
         {(hang) => {
@@ -57,6 +58,17 @@ function CongMot() {
                 </strong>{" "}
                 cặp (tầng × hiệp biến) vượt ngưỡng SAU phân tầng → <TrangThaiCong dat={dat} />.
               </p>
+              <DienGiai>
+                <p>
+                  &ldquo;Vượt ngưỡng&rdquo; nghĩa là ở đặc điểm đó, hai nhóm hàng lệch nhau nhiều
+                  hơn mức coi là so sánh được. Phân tầng vốn để kéo chúng lại gần nhau — ở đây nó
+                  chưa làm được.
+                </p>
+                <p>
+                  Hệ quả: mọi so sánh về sau phải đọc là <em>có điều chỉnh</em>, không phải hai
+                  nhóm giống hệt đem cân đo.
+                </p>
+              </DienGiai>
               <BangDuLieu<SmdSauPhanTangRow>
                 cot={[
                   { khoa: "tang", nhan: "Tầng" },
@@ -79,7 +91,7 @@ function CongHai() {
   return (
     <KhoiKetQua
       tieuDe="Cổng 2 — Giả dược 05→06"
-      moTa={`Tiêu chí khóa trước: |ước lượng giả dược| ≤ ${dinhDangDiemLog(BIEN_TOST_RONG)}.`}
+      moTa={`Giả dược là giả vờ chính sách xảy ra sớm để xem phương pháp có tạo ra chênh lệch khi chưa có chính sách thật không. Tiêu chí khóa trước: |ước lượng giả dược| ≤ ${dinhDangDiemLog(BIEN_TOST_RONG)}.`}
     >
       <TrangThaiDuLieu dangTai={dangTai} loi={loi} duLieu={duLieu} thuLai={thuLai} chieuCaoTai="h-40">
         {(hang) => (
@@ -107,7 +119,7 @@ function CongBa() {
   return (
     <KhoiKetQua
       tieuDe="Cổng 3 — TOST tiền xu hướng"
-      moTa={`Tiêu chí khóa trước: p < 0,05 ở biên ±${dinhDangSo(BIEN_TOST_RONG, 3)}.`}
+      moTa={`TOST hỏi chênh lệch trước chính sách có đủ nhỏ để xem hai xu hướng là tương đương không. Tiêu chí khóa trước: p < 0,05 ở biên ±${dinhDangSo(BIEN_TOST_RONG, 3)}.`}
     >
       <TrangThaiDuLieu dangTai={dangTai} loi={loi} duLieu={duLieu} thuLai={thuLai} chieuCaoTai="h-40">
         {(hang) => (

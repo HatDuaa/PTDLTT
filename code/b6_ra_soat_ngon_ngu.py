@@ -76,6 +76,13 @@ KHOI_LIET_KE_TSX = re.compile(r"(CAU_CAM|BAY_|CAM_VIET|KHONG_DUOC)\s*[:=]")
 # viết xong, nên bắt lỗi chúng là sai thời điểm.
 THU_MUC_SAN_PHAM = ("bao-cao", "frontend")
 CAN_KEM_DIEU_KIEN = re.compile(r"\bITT\b")
+
+# "[ITT]" trong ngoặc vuông là hậu tố NHÃN của cột `truc` trong kq-do-nhay.csv
+# ("23 SKU chưa rõ [ITT]"), không phải câu khẳng định về estimand. Văn xuôi luôn
+# viết "ITT" trần. Bỏ token này trước khi soi, nếu không thì chính file hằng số
+# giữ hợp đồng nhãn lại bị báo lỗi — và cách "sửa" duy nhất là đổi nhãn cho khác
+# pipeline, tức phá đúng thứ nó sinh ra để bảo vệ.
+NHAN_ITT_TRONG_NGOAC = re.compile(r"\[ITT\]")
 DAU_HIEU_DIEU_KIEN = re.compile(
     r"sống\s+sót|có\s+giá\s+quan\s+sát|điều\s+kiện\s+mẫu|cả\s+hai\s+kỳ|có\s+điều\s+kiện")
 
@@ -125,7 +132,8 @@ def quet_file(p: Path):
                     continue        # đã tự đính chính — ghi chép lịch sử hợp lệ
                 vi_pham.append(("SỐ CŨ", p, i, d.strip()[:88], ly_do))
         # "ITT" phải có dấu hiệu điều kiện mẫu trong phạm vi ±2 dòng
-        if CAN_KEM_DIEU_KIEN.search(d) and any(x in p.parts for x in THU_MUC_SAN_PHAM):
+        d_van_xuoi = NHAN_ITT_TRONG_NGOAC.sub("", d)
+        if CAN_KEM_DIEU_KIEN.search(d_van_xuoi) and any(x in p.parts for x in THU_MUC_SAN_PHAM):
             quanh = "\n".join(dong[max(0, i - 3):i + 2])
             if not DAU_HIEU_DIEU_KIEN.search(quanh):
                 vi_pham.append(("ITT THIẾU ĐIỀU KIỆN", p, i, d.strip()[:88],
@@ -153,29 +161,53 @@ def kiem_tra_hai_con_so_871(goc: Path):
     return canh_bao
 
 
-def kiem_tra_hop_dong_nhan(goc: Path):
-    """Nhãn mẫu phải khớp giữa pipeline và frontend.
+# Mỗi dòng: (tên hằng phía frontend, giá trị pipeline, CSV phải chứa giá trị đó).
+# Frontend lọc dữ liệu bằng chuỗi khớp chính xác, nên lệch một ký tự là ô số biến
+# thành "—" hoặc biểu đồ rỗng — không ngoại lệ, không log, không ai biết.
+HOP_DONG_NHAN = [
+    ("MAU_SO_SANH_CHINH", cf.NHAN_MAU_SO_SANH_CHINH, "kq-theo-tang.csv"),
+    # Nhãn phương pháp: b5 lọc `kq-mde-va-suc-manh.csv` theo đúng chuỗi này.
+    # Đã hỏng một lần khi đổi "PP1-A hiep_bien" → "PP1-A hiệp biến" — bộ lọc
+    # rỗng và pipeline chết ở `.iloc[0]`. Kiểm ba chiều để không tái diễn.
+    ("TEN_PP1A_THO", cf.TEN_HIEN_THI_PP1A["tho"], "kq-uoc-luong-chinh.csv"),
+    ("TEN_PP1A_HIEP_BIEN", cf.TEN_HIEN_THI_PP1A["hiep_bien"], "kq-uoc-luong-chinh.csv"),
+    ("DO_NHAY_CHUA_RO_TRUC", cf.NHAN_DO_NHAY["chua_ro_truc"], "kq-do-nhay.csv"),
+    ("DO_NHAY_CHUA_RO_CO_SO", cf.NHAN_DO_NHAY["chua_ro_co_so"], "kq-do-nhay.csv"),
+    ("DO_NHAY_CHUA_RO_Z1", cf.NHAN_DO_NHAY["chua_ro_z1"], "kq-do-nhay.csv"),
+    ("DO_NHAY_CHUA_RO_Z0", cf.NHAN_DO_NHAY["chua_ro_z0"], "kq-do-nhay.csv"),
+]
 
-    Đã từng lệch: pipeline đổi "ITT Z" thành "so sánh theo Z" còn frontend vẫn
-    lọc chuỗi cũ → biểu đồ rỗng mà KHÔNG báo lỗi. Đúng loại hỏng âm thầm mà
-    cả đồ án này đang cố loại bỏ.
+
+def kiem_tra_hop_dong_nhan(goc: Path):
+    """Mọi nhãn frontend lọc theo phải khớp pipeline VÀ có thật trong CSV.
+
+    Đã hỏng hai lần theo đúng kịch bản này. Lần một: pipeline đổi "ITT Z" thành
+    "so sánh theo Z", frontend vẫn lọc chuỗi cũ → biểu đồ rỗng. Lần hai: frontend
+    tra "23 SKU chưa phân loại"/"loại (cơ sở)" trong khi pipeline ghi
+    "23 SKU chưa rõ [ITT]"/"cơ sở (loại 23 SKU)" → câu mở đầu trang chủ hiện "—".
+
+    Cả hai lần đều không ném lỗi. Kiểm tra ba chiều: hằng số frontend ↔ hằng số
+    pipeline ↔ dữ liệu đã ghi. Thiếu chiều thứ ba thì hai bên vẫn khớp nhau trong
+    khi cùng sai so với CSV.
     """
     fe = goc / "web/frontend/lib/hang-so-chinh-sach.ts"
     if not fe.exists():
         return []
-    m = re.search(r'MAU_SO_SANH_CHINH\s*=\s*"([^"]+)"', fe.read_text(encoding="utf-8"))
-    if not m:
-        return [("frontend không khai báo MAU_SO_SANH_CHINH",)]
-    if m.group(1) != cf.NHAN_MAU_SO_SANH_CHINH:
-        return [(f'LỆCH: pipeline ghi "{cf.NHAN_MAU_SO_SANH_CHINH}" '
-                 f'nhưng frontend lọc "{m.group(1)}"',)]
-    # nhãn có thật trong dữ liệu không?
-    f = goc / "ket-qua/kq-theo-tang.csv"
-    if f.exists():
-        noi = f.read_text(encoding="utf-8")
-        if cf.NHAN_MAU_SO_SANH_CHINH not in noi:
-            return [(f'nhãn "{cf.NHAN_MAU_SO_SANH_CHINH}" không có trong kq-theo-tang.csv',)]
-    return []
+    noi_fe = fe.read_text(encoding="utf-8")
+    van_de = []
+    for ten, gia_tri, ten_csv in HOP_DONG_NHAN:
+        m = re.search(rf'{ten}\s*=\s*"([^"]+)"', noi_fe)
+        if not m:
+            van_de.append((f"frontend không khai báo {ten}",))
+            continue
+        if m.group(1) != gia_tri:
+            van_de.append((f'LỆCH {ten}: pipeline ghi "{gia_tri}" '
+                           f'nhưng frontend lọc "{m.group(1)}"',))
+            continue
+        f = goc / "ket-qua" / ten_csv
+        if f.exists() and gia_tri not in f.read_text(encoding="utf-8"):
+            van_de.append((f'{ten}: nhãn "{gia_tri}" không có trong {ten_csv}',))
+    return van_de
 
 
 def chay():
@@ -228,7 +260,8 @@ def chay():
     print("=" * 78)
     hd = kiem_tra_hop_dong_nhan(goc)
     if not hd:
-        print(f'  ✅ Khớp: "{cf.NHAN_MAU_SO_SANH_CHINH}"')
+        for ten, gia_tri, _ in HOP_DONG_NHAN:
+            print(f'  ✅ {ten} = "{gia_tri}"')
     else:
         for (msg,) in hd:
             print(f"  🔴 {msg}")

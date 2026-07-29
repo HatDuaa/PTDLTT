@@ -116,6 +116,23 @@ export interface LamTronRow {
 }
 
 // ---------------------------------------------------------------------------
+// /api/bam-chuan — kq-bam-chuan-co-hoc.csv
+// ---------------------------------------------------------------------------
+export interface BamChuanRow {
+  vai_tro: "nhóm được giảm thuế" | "giả dược";
+  Z: 0 | 1;
+  n_sku_toan_nhom: number;
+  n_du_bao_doi_muc: number;
+  n_bam_chuan: number;
+  ti_le_bam_chuan: number;
+  ktc95_wilson_duoi: number;
+  ktc95_wilson_tren: number;
+  n_giu_nguyen_gia: number;
+  buoc_lam_tron: number;
+  nguong_bam_chuan_dong: number;
+}
+
+// ---------------------------------------------------------------------------
 // /api/san-luong — kq-san-luong.csv
 // ---------------------------------------------------------------------------
 export interface SanLuongRow {

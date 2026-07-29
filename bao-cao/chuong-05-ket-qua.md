@@ -21,21 +21,11 @@ Nó cũng **không phải** hiệu ứng trên nhóm "luôn sống sót", vì kh
 
 **Cả bốn khoảng tin cậy đều chứa 0.** Không phát hiện được bằng chứng thống kê về việc giá giảm.
 
-**Chồng lấn hiệp biến:** 2,6% SKU `Z=1` nằm ngoài khoảng của `Z=0` — toàn bộ ở chiều giá nền; sản lượng và số tuần chồng lấn hoàn toàn. g-computation phải ngoại suy ở đúng 2,6% đó.
-
-**Bootstrap PP2:** 5.000/5.000 lần hợp lệ, 0 lần thất bại.
+Chồng lấn hiệp biến và kết quả bootstrap được tách sang [Phụ lục A.3](phu-luc-ky-thuat.md#a3).
 
 ## 5.2 Kết quả theo tầng
 
-| Tầng | Khoảng giá nền | n(Z=1) | n(Z=0) | Trọng số | τ̂_s |
-|---|---|---|---|---|---|
-| 0 | 9.000 – 26.000đ | 19 | 39 | 0,123 | −0,076 |
-| 1 | 27.000 – 42.000đ | 39 | 20 | 0,252 | +0,066 |
-| 2 | 43.000 – 62.000đ | 32 | 24 | 0,206 | −0,256 |
-| **3** | **64.000 – 96.000đ** | 31 | 27 | 0,200 | **−1,662** |
-| 4 | 99.000 – 804.000đ | 34 | 22 | 0,219 | +0,551 |
-
-⚠️ Tầng 3 có chênh lệch âm lớn nhất, nhưng **ước lượng thiếu chính xác và được nhận diện sau khi xem bảng năm tầng**. Sai số chuẩn xấp xỉ 1,36 nên |t| ≈ 1,22 và khoảng tin cậy chứa 0. Bốn tầng còn lại không tạo thành quy luật đơn điệu. **Chưa thể phân biệt dị biệt thật với nhiễu** — không đào sâu riêng tầng này.
+Kết quả giữa năm tầng không tạo thành quy luật rõ ràng. Chưa thể tách dị biệt thật khỏi nhiễu, nên nhóm không đào sâu riêng một tầng. Bảng đầy đủ nằm tại [Phụ lục D.1](phu-luc-ky-thuat.md#d1).
 
 ## 5.3 Hai giả thuyết
 
@@ -54,82 +44,44 @@ Mốc **chuyển hoàn toàn** = `log(1,08/1,10) × 100` = **−1,835**.
 
 Ở bản trước, "bác bỏ chuyển hoàn toàn" là kết luận mạnh nhất của đồ án. Sau khi bổ sung g-computation, nó bị hạ xuống thành **kết quả nhạy với mô hình**.
 
-**TOST — không kết luận được ở mọi biên:**
-
-| Phương pháp | Biên ±0,459 | Biên ±0,918 |
-|---|---|---|
-| PP1-A thô | p = 0,460 | p = 0,193 |
-| PP1-A có hiệp biến | p = 0,398 | p = 0,189 |
-| PP1-B g-computation | p = 0,604 | p = 0,372 |
-| PP2 phân tầng | p = 0,367 | p = 0,132 |
-
-⇒ **Không được kết luận pass-through bằng hoặc gần 0.**
-
-🔴 **Nhưng cũng KHÔNG được đọc "TOST thất bại" như bằng chứng chống lại sự tương đương.** Biên ±0,918 **nhỏ hơn** mức cần cho 80% sức mạnh ở cả bốn đặc tả (±1,73 đến ±2,27). Sức mạnh thực của TOST ở biên này là **0,0%** — nó không có cơ hội nào thành công, kể cả khi tác động thật đúng bằng 0. Xem [chương 6.3](chuong-06-suc-manh-va-co-che.md).
+TOST không cho phép kết luận pass-through bằng hoặc gần 0. Bảng kiểm định và cảnh báo cách đọc nằm tại [Phụ lục B.2](phu-luc-ky-thuat.md#b2).
 
 ## 5.4 Kết quả phụ — per-protocol theo `D`
 
-Cần thêm giả định rằng quyết định cập nhật thuế không liên quan xu hướng giá phản thực.
-
-| Đối chứng | n₀ | Ước lượng | p |
-|---|---|---|---|
-| ĐC-A rượu/bia/thuốc lá | 132 | −0,264 | 0,714 |
-| ĐC-B bỏ hàng hóa chất | 137 | −0,203 | 0,769 |
-| ĐC-C đầy đủ | 157 | −0,076 | 0,903 |
-| ĐC-8% *(độ nhạy)* | 1.908 | +0,927 | 0,134 |
-| PP2 phân tầng, ĐC-A | 132 | −0,343 | 0,563 |
+So sánh theo thuế cửa hàng thực áp cần thêm giả định về quyết định vận hành của cửa hàng, nên chỉ là kết quả phụ. Các định nghĩa đối chứng và bảng đầy đủ nằm tại [Phụ lục D.2](phu-luc-ky-thuat.md#d2).
 
 ## 5.5 Cổng chẩn đoán
 
-| Cổng | Tiêu chí khóa trước | Kết quả |
-|---|---|---|
-| **1 — Cân bằng sau phân tầng** | ≤ 1/3 cặp \|SMD\| > 0,25 | 🔴 **TRƯỢT** — 12/15 cặp |
-| **2 — Giả dược 05→06** | \|ước lượng\| ≤ 0,918 | ✅ **ĐẠT** — lớn nhất 0,562 |
-| **3 — TOST tiền xu hướng** | p < 0,05 ở biên ±0,918 | 🔴 **KHÔNG ĐẠT** — p từ 0,090 đến 0,244 |
+Cổng giả dược đạt, nhưng cổng cân bằng trượt và TOST tiền xu hướng không đạt. Vì vậy giả định xu hướng song song **không được xác nhận**; mọi diễn giải nhân quả chỉ có điều kiện. Tiêu chí, số liệu và cảnh báo rò rỉ nằm tại [Phụ lục A.4](phu-luc-ky-thuat.md#a4).
 
-Giả dược cho so sánh chính `Z`: −0,195 (thô) và +0,101 (có hiệp biến).
-
-⚠️ Hiệp biến của giả dược được tính **lại chỉ trên tháng 05**. Dùng `pre_*` của đặc tả chính sẽ là rò rỉ, vì chúng tính trên 05+06 mà tháng 06 chính là kỳ "hậu" của giả dược.
-
-**Ba cổng không phải ba lá phiếu.** Cổng 2 đạt **không bù** được cổng 1 và 3:
-
-> Không phát hiện chênh lệch giả dược có độ lớn vượt ngưỡng định trước, nhưng kiểm định tương đương không đạt và mất cân bằng tiền kỳ còn nghiêm trọng. Giả định xu hướng song song **không được xác nhận**; mọi diễn giải nhân quả chỉ có điều kiện và đã được hạ cấp.
-
-## 5.6 Lưới độ nhạy — báo cáo toàn bộ
-
-### Cửa sổ thời gian
-
-| Cửa sổ | n | Theo `Z` | p | Per-protocol | p |
-|---|---|---|---|---|---|
-| Chính (05+06 → 07+08) | 287 | −0,270 | 0,713 | −0,264 | 0,714 |
-| **Có tháng 4** | 293 | −0,113 | 0,876 | −0,092 | 0,898 |
-| Hẹp 1 tháng (06 → 07) | 251 | −0,214 | 0,782 | −0,217 | 0,777 |
-| Sau dời địa điểm (từ 11/06) | 248 | −0,212 | 0,790 | −0,214 | 0,785 |
-
-Cửa sổ có tháng 4 — quyết định hậu kiểm ở [chương 4](chuong-04-thiet-ke-nhan-qua.md) — **không** làm đổi kết luận.
-
-### Các trục còn lại
-
-| Trục | Mức | n | Ước lượng | p |
-|---|---|---|---|---|
-| 23 SKU chưa phân loại | loại *(cơ sở)* | 287 | −0,270 | 0,713 |
-| | gán tất cả `Z=1` | 310 | −0,334 | 0,623 |
-| | gán tất cả `Z=0` | 310 | −0,109 | 0,864 |
-| Ngưỡng survivorship | ≥1 tuần *(chính)* | 287 | −0,270 | 0,713 |
-| | ≥2 tuần | 228 | +0,032 | 0,958 |
-| | ≥3 tuần | 189 | −0,298 | 0,623 |
-| | ≥4 tuần | 145 | −0,239 | 0,708 |
-| | **≥5 tuần** | 104 | **+0,875** | 0,290 |
-| 9 SKU hòa VAT | giữ *(T=153)* | 287 | −0,270 | 0,713 |
-| | loại *(T=144)* | 278 | −0,164 | 0,828 |
-| Biến kết quả | giá gồm thuế | 287 | −0,270 | 0,713 |
-| | **giá chưa thuế** | 287 | **+1,286** | **0,082** |
-
-⚠️ Ngưỡng ≥5 tuần đổi dấu, nhưng n giảm còn 104 và khoảng tin cậy rất rộng [−0,75; +2,50].
+## 5.6 Giá chưa thuế và độ nhạy
 
 ⚠️ **Giá chưa thuế tăng** +1,286 điểm log ×100 (p = 0,082). Với per-protocol thì +1,515 (p = 0,036). Đây là hướng phù hợp với việc doanh thu chưa thuế của cửa hàng tăng khi thuế suất giảm mà giá gồm thuế giữ nguyên — nhưng **không được phát biểu thành "cửa hàng giữ lại phần giảm thuế"**: dữ liệu không có chi phí đầu vào để nói về biên lợi nhuận.
 
-## 5.7 Những gì đứng vững và những gì không
+Cửa sổ có tháng 4 — quyết định hậu kiểm ở [chương 4](chuong-04-thiet-ke-nhan-qua.md) — **không** làm đổi kết luận.
+
+Kết luận chung ổn định qua các cửa sổ thời gian và cách xử lý mẫu. Toàn bộ lưới, kể cả trường hợp đổi dấu, nằm tại [Phụ lục C.1](phu-luc-ky-thuat.md#c1).
+
+## 5.7 Giá thực tế có giảm đúng theo phần thuế được giảm không?
+
+Nếu cửa hàng thật sự giảm giá theo thuế, giá mới của từng mặt hàng phải là bao nhiêu? Nhóm lấy giá trước chính sách, giảm theo tỉ lệ thuế từ 10% xuống 8%, rồi làm tròn đến 1.000 đồng. Sau đó so mức giá tính được với giá bán thực tế sau chính sách.
+
+| Nhóm mặt hàng | Lẽ ra phải đổi giá | Giá thực tế đúng mức dự kiến | Tỉ lệ | KTC 95% |
+|---|---:|---:|---:|---|
+| Được giảm thuế (`Z=1`) | **135** | **1** | **0,7%** | [0,1%; 4,1%] |
+| Không được giảm thuế — đối chiếu (`Z=0`) | 92 | 1 | 1,1% | [0,2%; 5,9%] |
+
+Trong 135 mặt hàng được giảm thuế mà lẽ ra phải đổi giá, chỉ **1** mặt hàng đạt đúng mức dự kiến. **110** mặt hàng vẫn giữ nguyên giá cũ.
+
+Cửa hàng đã không thực hiện một đợt giảm giá đồng loạt theo mức giảm thuế. Tỉ lệ khớp ở nhóm được giảm thuế cũng **không cao hơn** nhóm đối chiếu — nhóm này vốn không được giảm thuế nên mức "dự kiến" với chúng chỉ là con số giả định. Vì vậy vài lần giá tình cờ trùng mức dự kiến không tạo thành dấu hiệu cho thấy cửa hàng đã điều chỉnh giá theo thuế.
+
+> **Cách tính.** Giá dự kiến = giá trước chính sách × (1,08/1,10), làm tròn đến 1.000 đồng gần nhất. Xem là khớp nếu chênh dưới 1 đồng. Khoảng tin cậy dùng phương pháp Wilson — Wald sụp về [0; 0] khi tử số nhỏ như ở đây.
+
+⚠️ Đây là **so sánh mô tả với một mức giá giả định**, không phải ước lượng tác động nhân quả. Nó trả lời "giá có bám mức đó không", không trả lời "chính sách gây ra điều gì".
+
+🔴 Phân tích này được **bổ sung sau khi đã xem kết quả** — xem nhật ký sửa đổi §12.
+
+## 5.8 Những gì đứng vững và những gì không
 
 ### Đứng vững
 
@@ -156,6 +108,20 @@ Cửa sổ có tháng 4 — quyết định hậu kiểm ở [chương 4](chuong
 | Dùng p = 0,067 (sản lượng) như "suýt có ý nghĩa" | MDE = 31,5 — thiết kế không đủ lực |
 | Đặt 87,1% *(làm tròn)* cạnh 87,1% *(tuân thủ)* | Hai con số trùng **ngẫu nhiên**, hai tập SKU khác nhau |
 
-### Câu kết luận đúng
+## 5.9 Kết luận chương
 
-> Không tìm thấy bằng chứng giá giảm trong các so sánh có điều chỉnh này; dữ liệu không đủ để quy chênh lệch quan sát cho chính sách một cách đáng tin cậy.
+Kết quả rõ nhất của đồ án là **cửa hàng đã không chuyển hết phần giảm thuế GTGT vào giá bán lẻ**.
+
+Trong 155 mặt hàng được giảm thuế, 126 mặt hàng gần như giữ nguyên giá — cứ 100 mặt hàng thì khoảng **81 mặt hàng không đổi giá** sau ngày giảm thuế. Nếu cửa hàng giảm giá đúng theo phần thuế được giảm và làm tròn đến 1.000 đồng, 135 mặt hàng lẽ ra phải đổi giá. Thực tế chỉ **1** mặt hàng đạt đúng mức đó ([§5.7](#57-giá-thực-tế-có-giảm-đúng-theo-phần-thuế-được-giảm-không)).
+
+Hai phương pháp PP1 và PP2 cho kết quả cùng chiều: cửa hàng chỉ chuyển được khoảng **một phần bảy đến hơn một phần ba** phần giảm thuế vào giá. Các con số này chưa đủ chính xác để nói tỉ lệ thật là bao nhiêu, nhưng đều thấp hơn nhiều so với mức chuyển toàn bộ.
+
+Giá trung bình nhóm được giảm thuế tăng khoảng **0,6%**, nhóm không được giảm tăng khoảng **1,0%**. Có khả năng chính sách đã giúp nhóm được giảm thuế tăng giá ít hơn, nhưng dữ liệu chưa đủ mạnh để xác định bao nhiêu phần chênh lệch này là do chính sách.
+
+Khi giá người mua trả giữ nguyên mà thuế suất giảm từ 10% xuống 8%, phần doanh thu chưa thuế trên mỗi sản phẩm tăng khoảng **1,85%**. Đây là cách khoản tiền người mua trả được chia lại giữa thuế và doanh thu chưa thuế — đồ án **không** dùng con số này để suy ra lợi nhuận, vì không có dữ liệu giá vốn.
+
+### Phạm vi áp dụng
+
+Kết luận áp dụng cho các mặt hàng còn được bán ở **cả hai giai đoạn**, tại **một** cửa hàng tiện lợi TP.HCM, tiền kỳ 05–06/2025 và hậu kỳ 07–08/2025.
+
+Nhóm được giảm thuế và nhóm so sánh có một số khác biệt từ trước (sức bán, tần suất bán), nên cần thận trọng khi nói **chính xác bao nhiêu** là tác động nhân quả. Nhưng các giới hạn này ảnh hưởng tới *độ lớn của tác động*, **không** làm thay đổi phát hiện quan sát được rằng giá thực tế đã không giảm theo phần thuế được giảm.

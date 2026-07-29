@@ -258,7 +258,9 @@ Không xử lý. Nếu một mặt hàng được đổi mã vạch giữa kỳ,
 | **Chính** | 05 + 06/2025 | 07 + 08/2025 | ✅ |
 | Độ nhạy 1 | 04 + 05 + 06/2025 | 07 + 08/2025 | ✅ **song song** |
 | Độ nhạy 2 | chỉ 06/2025 | chỉ 07/2025 | ✅ **song song** |
-| Độ nhạy 3 | từ 11/06/2025 | 07 + 08/2025 | ✅ (chỉ địa điểm mới) |
+| Độ nhạy 3 | từ 11/06/2025 | 07 + 08/2025 | ✅ — gồm cả hai địa chỉ |
+
+Kiểm định "chỉ địa điểm mới" không khả thi với dữ liệu này: nếu đặt cửa sổ bắt đầu từ 24/06 cho đúng, tiền kỳ chỉ còn 7 ngày — quá ngắn để dựng mẫu SKU.
 
 🔴 **Bắt buộc:** báo cáo cả bốn, **kể cả khi độ nhạy 1 cho kết quả xấu**. Chỉ trình bày cửa sổ thuận lợi là gian lận. Tháng 4 đã bị loại **sau khi nhìn thấy kết quả bất thường** — lý do chính đáng có tồn tại (xem §11), nhưng vì thứ tự thời gian như vậy nên **nghĩa vụ báo cáo song song là tuyệt đối**.
 
@@ -529,6 +531,23 @@ Cả ba đều là bất định **có điều kiện ở cấp SKU**. Bất đ�
 - **Bắt buộc** báo cáo cả ba ở mọi bảng, và nói rõ ước lượng điểm dao động từ −0,25 đến −0,40 tùy định nghĩa đối chứng
 - Đây phải được trình bày như một **hạn chế**, không phải một kiểm định vững thành công
 
+### Quyết định hậu kiểm thứ ba — đối chiếu giá thật với mức giá dự kiến
+
+**Phân tích bám chuẩn cơ học (§5.7 chương 5) được thêm SAU khi đã có toàn bộ kết quả PP1 và PP2.** Thứ tự đúng:
+
+1. Chạy PP1, PP2 → mọi khoảng tin cậy chứa 0, kết luận dừng ở "không quy được cho chính sách"
+2. Xem lại phân bố thay đổi giá → phát hiện ~80% SKU không đổi giá một đồng, và **không SKU nào** thay đổi ở mức gần mốc thuế
+3. Nhận ra mô phỏng làm tròn hiện có mới trả lời "bao nhiêu SKU **lẽ ra** phải đổi mức giá", chưa hề đối chiếu với giá hậu kỳ thật
+4. Bổ sung phép đối chiếu → `Z=1` 1/135 bám chuẩn; giả dược `Z=0` 1/92
+
+**Lưới làm tròn 1.000đ và ngưỡng khớp không được chọn theo kết quả:** lưới 1.000đ đã có sẵn trong mô phỏng khóa trước (§7 chương 6, báo cáo cả ba lưới 1.000/500/100đ); ngưỡng <1 đồng là để xử lý phần lẻ do tính VAT, không phải tham số điều chỉnh được.
+
+**Nghĩa vụ kèm theo:**
+
+- Phải dán nhãn **mô tả hậu kiểm** mỗi lần trình bày, không được gọi là ước lượng tác động
+- **Không** thay thế hoặc che kết quả PP1/PP2 đã khóa — hai mô hình nhân quả giữ nguyên vị trí bậc 1
+- Chỉ báo cáo tỉ lệ kèm khoảng Wilson; **cấm** kiểm định giả thuyết giữa `Z=1` và `Z=0`, vì đây là một cửa hàng, không có phân phối ngẫu nhiên hóa để dựa vào và p-value sẽ bị đọc nhầm thành kiểm định tác động chính sách
+
 ---
 
 ## 12. Quy trình sửa đổi
@@ -559,6 +578,9 @@ Nếu sửa đổi bắt nguồn từ việc đã thấy kết quả → phải 
 | 26/07 | §5 | ĐC-A 123→**132**, ĐC-B 142→**137**, hóa chất trong C10 15→**20** | Hệ quả của việc bổ sung từ khóa phân loại ở dòng trên | **Không** |
 | 26/07 | §5 | LATE/Wald từ thân bài → **phụ lục** | Phép chia đúng số học nhưng thiếu giả định IV (monotonicity, exclusion), và KTC phải bootstrap cả tử lẫn mẫu | **Không** — lỗi kỹ thuật, phát hiện qua phản biện |
 | 26/07 | **§9** | Tầng = `type` × phân vị giá (9 tầng) → **phân vị 5 của `pre_p`** (5 tầng) | `type` không phải thuộc tính hàng hóa: 85% SKU có >1 nhãn trong tiền kỳ, riêng nhóm T chỉ 39/153 có nhãn duy nhất | **Không** — biến đầu vào không hợp lệ, phát hiện khi chẩn đoán dữ liệu |
+| 28/07 | **§13, ch.5, bước 5** | Mô phỏng làm tròn chỉ tính "bao nhiêu SKU **lẽ ra** phải đổi mức giá" → bổ sung **đối chiếu với giá hậu kỳ THẬT**, kèm giả dược `Z=0` | Phép cũ thuần giả định, không hề chạm vào giá thật. Dùng lại đúng lưới 1.000đ đã có; thêm ngưỡng khớp <1đ để xử lý phần lẻ do tính VAT. Kết quả: `Z=1` 1/135 bám chuẩn, giả dược `Z=0` 1/92 | 🔴 **Có** — thêm sau khi đã xem kết quả giá. Xem §11 |
+| 28/07 | ch.5 | Câu kết luận chương: *"Không tìm thấy bằng chứng giá giảm…"* → mở đầu bằng **"cửa hàng đã không chuyển hết phần giảm thuế vào giá bán lẻ"**, hạn chế chuyển xuống mục "phạm vi áp dụng" | Câu cũ đúng về suy diễn nhân quả nhưng khiến người đọc hiểu thành "không kết luận được gì", trong khi dữ liệu nói khá rõ về hành vi giá quan sát. **Không con số nào đổi** — chỉ đổi thứ tự trình bày và cách diễn đạt | **Không** — sửa cách trình bày, không dựa vào dấu hay độ lớn kết quả |
+| 28/07 | §6, ch.3, b3_eda | Nhãn cửa sổ "chỉ địa điểm mới" → **"từ 11/06, gồm cả hai địa chỉ"**; mốc dời địa điểm ghi lại thành hai mốc quan sát được (9 ngày trống 02–10/06 · địa chỉ hóa đơn đổi 24/06) | Nhãn cũ sai sự thật: 71% hóa đơn trong cửa sổ ghi địa chỉ cũ. Mốc cũ gộp nhầm ngày dời vật lý với ngày cập nhật địa chỉ trên hóa đơn | **Không** — sửa sai sự thật, không dựa vào kết quả |
 
 ---
 

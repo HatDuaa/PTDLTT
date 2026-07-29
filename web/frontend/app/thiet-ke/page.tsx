@@ -2,7 +2,7 @@
 
 /**
  * Trang Thiết kế — khung Z (đủ điều kiện theo luật) vs D (thuế cửa hàng thực áp),
- * đồ thị nhân quả, giả định, bảng đường backdoor. Nội dung chủ yếu diễn giải
+ * đồ thị nhân quả, giả định và các đường gây nhiễu. Nội dung chủ yếu diễn giải
  * phương pháp luận (chương 4); các con số (n theo Z) vẫn lấy qua API.
  */
 import { KhoiKetQua } from "@/components/site/khoi-ket-qua";
@@ -24,20 +24,20 @@ const GIA_DINH = [
   {
     ten: "Xu hướng song song",
     noiDung: "Nếu không có chính sách, giá hai nhóm biến động song song.",
-    danhGia: "Không kiểm chứng được đầy đủ — chỉ có 2 hệ số dẫn.",
+    danhGia: "Không kiểm chứng được đầy đủ vì dữ liệu tiền kỳ quá ngắn.",
   },
   {
     ten: "Phân loại Z đúng",
     noiDung: "Định danh sản phẩm phản ánh đúng địa vị pháp lý.",
-    danhGia: "23 SKU chưa phân loại được → báo cáo 3 biến thể xử lý.",
+    danhGia: "Các SKU chưa rõ loại được báo cáo theo nhiều cách xử lý.",
   },
   {
-    ten: "SUTVA",
+    ten: "SUTVA — không ảnh hưởng chéo",
     noiDung: "Không lan tỏa giữa các SKU.",
     danhGia: "Đáng ngờ — khăn ướt và khăn giấy có thể thay thế nhau trong cùng cửa hàng.",
   },
   {
-    ten: "No-anticipation",
+    ten: "No-anticipation — không đón trước",
     noiDung: "Cửa hàng không đổi giá trước 01/07 để đón chính sách.",
     danhGia: "Kiểm được phần nào bằng giả dược tiền kỳ (Cổng 2).",
   },
@@ -49,7 +49,7 @@ const GIA_DINH = [
   {
     ten: "Không cú sốc trùng thời gian",
     noiDung: "Không có sự kiện khác trùng thời điểm chính sách.",
-    danhGia: "Cửa hàng dời địa điểm khoảng 10/06/2025.",
+    danhGia: "Dữ liệu trống 02–10/06; địa chỉ trên hóa đơn đổi hẳn từ 24/06.",
   },
 ];
 
@@ -62,7 +62,7 @@ const DUONG_BACKDOOR = [
   {
     duong: "D ← Cửa hàng cập nhật → Y",
     chanBang: "—",
-    trangThai: "Không chặn được — lý do dùng ITT theo Z thay vì D",
+    trangThai: "Không chặn được — lý do dùng ITT theo Z có điều kiện mẫu thay vì D",
   },
   {
     duong: "Y ← Chi phí đầu vào",
@@ -70,9 +70,9 @@ const DUONG_BACKDOOR = [
     trangThai: "Không quan sát được — hóa đơn mua vào chỉ có 03–04/2025, trước chính sách",
   },
   {
-    duong: "Y ← Dời địa điểm",
-    chanBang: "Cửa sổ độ nhạy từ 11/06",
-    trangThai: "Giảm nhẹ, không loại bỏ",
+    duong: "Y ← Thay đổi liên quan địa điểm",
+    chanBang: "Cửa sổ từ 11/06, gồm cả hai địa chỉ",
+    trangThai: "Giảm nhẹ, không tách riêng địa chỉ mới",
   },
   {
     duong: "Điều kiện hóa trên S (được quan sát ở cả hai kỳ)",
@@ -89,9 +89,8 @@ export default function TrangThietKe() {
       <header className="grid gap-2">
         <h1 className="text-2xl font-semibold">Thiết kế nhân quả</h1>
         <p className="text-muted-foreground">
-          Đồ án bắt đầu từ đúng chỗ giáo trình dừng lại: chương 8.6 định nghĩa ATE và dừng ở
-          &ldquo;cần các điều kiện bổ sung để ước lượng ATE khi không có RCT&rdquo;. Ở đây, các điều
-          kiện bổ sung ấy được nêu rõ và áp dụng hai phương pháp ước lượng dưới cùng bộ điều kiện.
+          Trang này giải thích vì sao hai nhóm có thể so sánh với nhau, chúng khác nhau sẵn ở đâu,
+          và điều gì khiến kết quả chưa thể được đọc như một tác động nhân quả chắc chắn.
         </p>
       </header>
 
@@ -125,7 +124,7 @@ export default function TrangThietKe() {
           <p className="text-sm">
             Bằng chứng không tuân thủ rõ nhất: cùng dòng sản phẩm nằm ở hai nhóm khác nhau —{" "}
             <em>Gillette Lưỡi Dao Cạo Mach 3 Clean</em> giữ 10%, trong khi{" "}
-            <em>Gillette Dao cạo Mach 3 Clean</em> và năm dao cạo Gillette khác chuyển sang 8%.
+            <em>Gillette Dao cạo Mach 3 Clean</em> và các dao cạo Gillette khác chuyển sang 8%.
             Không có cách giải thích nào bằng luật. Nếu chỉ so sánh theo D, phân tích đang điều
             kiện hóa trên một quyết định vận hành của cửa hàng, không phải trên luật — đây là lý do
             ước lượng <strong>chính</strong> dùng Z, còn ước lượng theo D chỉ là kết quả{" "}
@@ -150,40 +149,133 @@ export default function TrangThietKe() {
 
       <KhoiKetQua
         tieuDe="Đồ thị nhân quả (DAG)"
-        moTa="Bốn đường phải đọc được từ đồ thị — đường 1 là chỗ dễ vẽ sai nhất."
+        moTa="DAG là bản đồ cho biết yếu tố nào có thể ảnh hưởng đến yếu tố nào."
         vaiTro="chinh"
       >
-        <div className="grid gap-4 text-sm">
-          <div className="rounded-lg border bg-muted/30 p-4">
-            <p className="mb-2 font-medium">Các nút và quan hệ chính</p>
-            <ul className="list-inside list-disc space-y-1">
-              <li>NQ 204/2025/QH15 → Z (đủ điều kiện theo luật)</li>
-              <li>Đặc tính SKU / cầu nền (không quan sát trực tiếp) → Z, pre_p/pre_q/pre_w, cửa hàng cập nhật thuế, Y, S</li>
-              <li>Z → Cửa hàng cập nhật thuế suất? → D (thuế suất thực áp)</li>
-              <li>D → G (nhóm quan sát T/C10/C8) và → chi phí thực đơn làm tròn giá → Y (giá gồm thuế)</li>
-              <li>Chi phí đầu vào (không quan sát được) → Y</li>
-              <li>Dời địa điểm 06/2025 → Y</li>
-              <li>Y → S (được quan sát ở cả hai kỳ)</li>
-            </ul>
+        <div className="grid gap-5 text-sm">
+          <p className="text-base leading-relaxed">
+            Đây là bản đồ &ldquo;cái gì ảnh hưởng cái gì&rdquo;. Vẽ ra để trả lời một câu: phép so
+            sánh của mình có công bằng không, hay đang bị thứ khác làm nhiễu?
+          </p>
+
+          <div>
+            <p className="mb-2 font-medium">Các ký hiệu cần biết</p>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-40">Ký hiệu</TableHead>
+                  <TableHead>Nghĩa</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                <TableRow>
+                  <TableCell className="font-medium">Z</TableCell>
+                  <TableCell>Luật có cho mặt hàng này giảm thuế không</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell className="font-medium">D</TableCell>
+                  <TableCell>Cửa hàng có thực sự áp thuế suất 8% không</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell className="font-medium">Y</TableCell>
+                  <TableCell>Giá thay đổi bao nhiêu</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell className="font-medium">S</TableCell>
+                  <TableCell>Mặt hàng còn được bán ở kỳ sau không</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell className="font-medium">pre_q, pre_w</TableCell>
+                  <TableCell>
+                    Trước chính sách mặt hàng bán chạy cỡ nào và có được bán thường xuyên không
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
           </div>
-          <ol className="list-inside list-decimal space-y-2">
-            <li>
-              <strong>Đặc tính SKU → Z:</strong> Nghị quyết không tự tạo ra Z — nghị quyết kết hợp
-              với loại sản phẩm mới xác định đủ điều kiện.
+
+          <ol className="grid gap-3 md:grid-cols-2">
+            <li className="rounded-lg border p-4">
+              <p className="font-medium">1. Loại sản phẩm quyết định nhóm</p>
+              <p className="mt-1 text-muted-foreground">
+                Luật không chọn ngẫu nhiên. Nhóm được giảm thuế là dầu gội, nước rửa chén, mỹ phẩm.
+                Nhóm không được giảm là bia, rượu, thuốc lá. Hai nhóm khác nhau ở nhiều thứ chứ
+                không chỉ ở thuế — giá bia lên xuống vì lý do của bia. Đây là đường nguy hiểm nhất,
+                và là lý do đồ án không kết luận nhân quả mạnh.
+              </p>
             </li>
-            <li>
-              <strong>Z → cửa hàng không cập nhật → D=10% → xếp vào C10:</strong> cơ chế ô nhiễm
-              nhóm đối chứng.
+            <li className="rounded-lg border p-4">
+              <p className="font-medium">2. Cửa hàng quên cập nhật làm nhóm đối chứng bị ô nhiễm</p>
+              <p className="mt-1 text-muted-foreground">
+                Có những mặt hàng luật cho giảm nhưng cửa hàng để nguyên thuế suất 10%. Nếu chia
+                nhóm theo thuế cửa hàng thực áp, các món này bị xếp nhầm vào nhóm
+                &ldquo;không được giảm&rdquo;. Đó là lý do đồ án chia nhóm theo luật (Z), không theo
+                việc cửa hàng làm gì (D).
+              </p>
             </li>
-            <li>
-              <strong>Đặc tính SKU → pre_q, pre_w và → Y:</strong> cùng một nguyên nhân ẩn vừa gây
-              mất cân bằng, vừa ảnh hưởng xu hướng giá phản thực.
+            <li className="rounded-lg border p-4">
+              <p className="font-medium">3. Cùng một nguyên nhân gây ra hai chuyện</p>
+              <p className="mt-1 text-muted-foreground">
+                Hàng được giảm thuế bán ế và thưa hơn hàng bia rượu. Món bán ế thì cửa hàng đổi giá
+                theo kiểu khác món bán chạy. Vậy chênh lệch đo được có thể do độ bán chạy, không
+                phải do thuế.
+              </p>
             </li>
-            <li>
-              <strong>Đặc tính SKU → S ← Y (collider):</strong> mẫu chỉ giữ SKU có mặt ở cả hai kỳ,
-              mà điều đó phụ thuộc chính giá.
+            <li className="rounded-lg border p-4">
+              <p className="font-medium">4. Chỉ đo được món còn trên kệ</p>
+              <p className="mt-1 text-muted-foreground">
+                Giá kỳ sau chỉ tồn tại nếu món đó còn được bán, mà việc còn được bán lại phụ thuộc
+                một phần vào chính giá của nó. Giống như muốn biết chiều cao trung bình cả trường
+                nhưng chỉ đo được các em còn ở lại lớp bóng rổ — số đo lệch không phải vì đo sai,
+                mà vì chọn nhầm người để đo.
+              </p>
             </li>
           </ol>
+
+          <details className="group rounded-lg border bg-muted/20">
+            <summary className="cursor-pointer px-4 py-3 font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+              Xem dạng ký hiệu kỹ thuật
+            </summary>
+            <div className="grid gap-4 border-t px-4 py-4">
+              <p className="text-muted-foreground">
+                Trong ngôn ngữ kỹ thuật, <strong>collider</strong> là một biến cùng bị hai yếu tố
+                khác tác động; chỉ giữ mẫu theo biến này có thể tạo ra lệch chọn mẫu.{" "}
+                <strong>Đường backdoor</strong> là đường gây nhiễu nối việc được giảm thuế với giá,
+                không đi qua tác động chính sách cần đo. ATE là chênh lệch trung bình nếu xét toàn
+                bộ mặt hàng; ATT là chênh lệch cần ước lượng cho nhóm được luật cho giảm.
+              </p>
+              <div>
+                <p className="mb-2 font-medium">Các nút và quan hệ chính</p>
+                <ul className="list-inside list-disc space-y-1">
+                  <li>NQ 204/2025/QH15 → Z (đủ điều kiện theo luật)</li>
+                  <li>
+                    Đặc tính SKU / cầu nền (không quan sát trực tiếp) → Z, pre_p/pre_q/pre_w, cửa
+                    hàng cập nhật thuế, Y, S
+                  </li>
+                  <li>Z → Cửa hàng cập nhật thuế suất? → D (thuế suất thực áp)</li>
+                  <li>
+                    D → G (nhóm quan sát T/C10/C8) và → chi phí thực đơn làm tròn giá → Y (giá gồm
+                    thuế)
+                  </li>
+                  <li>Chi phí đầu vào (không quan sát được) → Y</li>
+                  <li>Thay đổi liên quan địa điểm 06/2025 → Y</li>
+                  <li>Đặc tính SKU → S ← Y (collider do chỉ giữ SKU có ở cả hai kỳ)</li>
+                  <li>Y → S (được quan sát ở cả hai kỳ)</li>
+                </ul>
+              </div>
+              <div>
+                <p className="mb-2 font-medium">Các đường backdoor và cách xử lý</p>
+                <BangDuLieu<(typeof DUONG_BACKDOOR)[number]>
+                  cot={[
+                    { khoa: "duong", nhan: "Đường" },
+                    { khoa: "chanBang", nhan: "Chặn bằng" },
+                    { khoa: "trangThai", nhan: "Trạng thái" },
+                  ]}
+                  hang={DUONG_BACKDOOR}
+                />
+              </div>
+            </div>
+          </details>
         </div>
       </KhoiKetQua>
 
@@ -199,40 +291,30 @@ export default function TrangThietKe() {
       </KhoiKetQua>
 
       <KhoiKetQua
-        tieuDe="Đường backdoor — cái nào chặn được"
-        moTa="Không được điều chỉnh cho D, G, S hay bất kỳ biến nào sau can thiệp."
-        vaiTro="chinh"
-      >
-        <BangDuLieu<(typeof DUONG_BACKDOOR)[number]>
-          cot={[
-            { khoa: "duong", nhan: "Đường" },
-            { khoa: "chanBang", nhan: "Chặn bằng" },
-            { khoa: "trangThai", nhan: "Trạng thái" },
-          ]}
-          hang={DUONG_BACKDOOR}
-        />
-      </KhoiKetQua>
-
-      <KhoiKetQua
-        tieuDe="Hai phương pháp — cùng một chiến lược nhận dạng"
+        tieuDe="Hai phương pháp — cùng một chiến lược nhận dạng (cách tách ảnh hưởng của thuế)"
         vaiTro="chinh"
       >
         <div className="grid gap-3 text-sm sm:grid-cols-2">
           <div className="rounded-lg border p-3">
             <p className="font-medium">Phương pháp 1 — Hồi quy ước lượng ATT</p>
-            <p className="text-muted-foreground">Neo giáo trình: chương 9, 10.</p>
+            <p className="text-muted-foreground">
+              ATT là chênh lệch trung bình cần ước lượng cho nhóm được luật cho giảm thuế.
+            </p>
           </div>
           <div className="rounded-lg border p-3">
             <p className="font-medium">Phương pháp 2 — Phân tầng theo khung Kết quả tiềm năng</p>
-            <p className="text-muted-foreground">Neo giáo trình: chương 8.4 (Simpson), 8.6 (ATE).</p>
+            <p className="text-muted-foreground">
+              &ldquo;Kết quả tiềm năng&rdquo; là mức giá có thể thấy dưới mỗi trạng thái chính sách;
+              thực tế mỗi SKU chỉ cho thấy một trạng thái.
+            </p>
           </div>
         </div>
         <p className="mt-3 text-sm">
           <strong>Cả hai dùng chung MỘT chiến lược nhận dạng: xu hướng song song.</strong> Hai
           phương pháp cho kết quả tương tự KHÔNG xác nhận quan hệ nhân quả — nếu giả định xu hướng
-          song song sai, cả hai cùng sai theo cùng một hướng. Khung Wald dùng Z theo kiểu công cụ,
-          nhưng Z chỉ hợp lệ nếu đã có xu hướng song song theo Z — nó nằm trong cùng chiến lược,
-          không độc lập với nó.
+          song song sai, cả hai cùng sai theo cùng một hướng. Phép Wald dùng nhóm do luật xác định
+          (Z) để suy ra tác động của việc cửa hàng thực sự cập nhật thuế, nhưng vẫn cần xu hướng
+          song song theo Z. Vì vậy nó không phải một cách kiểm tra độc lập.
         </p>
       </KhoiKetQua>
     </div>

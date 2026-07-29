@@ -17,9 +17,10 @@ interface BangDuLieuProps<T> {
   cot: CotBang<T>[];
   hang: T[];
   chuThich?: string;
+  classNameHang?: (hang: T) => string | undefined;
 }
 
-export function BangDuLieu<T>({ cot, hang, chuThich }: BangDuLieuProps<T>) {
+export function BangDuLieu<T>({ cot, hang, chuThich, classNameHang }: BangDuLieuProps<T>) {
   return (
     <div className="overflow-x-auto rounded-lg border">
       <Table>
@@ -32,7 +33,7 @@ export function BangDuLieu<T>({ cot, hang, chuThich }: BangDuLieuProps<T>) {
         </TableHeader>
         <TableBody>
           {hang.map((h, i) => (
-            <TableRow key={i}>
+            <TableRow key={i} className={classNameHang?.(h)}>
               {cot.map((c) => (
                 <TableCell key={c.khoa}>
                   {c.dinhDang ? c.dinhDang(h) : layGiaTriCot(h, c.khoa)}
