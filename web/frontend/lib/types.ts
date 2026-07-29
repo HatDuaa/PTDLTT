@@ -245,8 +245,20 @@ export interface EdaLuoiSurvivorshipRow {
   sl_loai: number | null;
 }
 
+/** Một hàng của `eda-doanh-thu-theo-lich.csv` — hai trục lịch gộp chung một file. */
+export interface EdaDoanhThuTheoLichRow {
+  /** "thứ trong tuần" hoặc "ngày trong tháng". */
+  truc: string;
+  ma_nhom: string;
+  nhan: string;
+  so_hoa_don: number;
+  tong_doanh_thu: number;
+  trung_binh_moi_hoa_don: number;
+}
+
 export interface EdaTenRowMap {
   "do-phu-theo-thang": EdaDoPhuThangRow;
+  "doanh-thu-theo-lich": EdaDoanhThuTheoLichRow;
   "ma-tran-chuyen-thue": EdaMaTranChuyenTheRow;
   "can-bang-tien-ky": EdaCanBangTienKyRow;
   "co-cau-loai-san-pham": EdaCoCauLoaiRow;

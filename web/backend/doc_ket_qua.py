@@ -74,6 +74,10 @@ SCHEMA_CSV: dict[str, list[str]] = {
         "thang", "so_ngay_co_du_lieu", "so_hoa_don", "so_dong_hang",
         "ti_le_co_ma_vach", "so_sku",
     ],
+    "eda-doanh-thu-theo-lich.csv": [
+        "truc", "ma_nhom", "nhan", "so_hoa_don", "tong_doanh_thu",
+        "trung_binh_moi_hoa_don",
+    ],
     "eda-ho-tro-phan-tang.csv": [
         "doi_chung", "tang", "gia_nen_min", "gia_nen_max", "n_T", "n_C", "mong",
     ],
@@ -91,6 +95,7 @@ BAN_DO_EDA: dict[str, str] = {
     "can-bang-tien-ky": "eda-can-bang-tien-ky.csv",
     "co-cau-loai-san-pham": "eda-co-cau-loai-san-pham.csv",
     "do-phu-theo-thang": "eda-do-phu-theo-thang.csv",
+    "doanh-thu-theo-lich": "eda-doanh-thu-theo-lich.csv",
     "ho-tro-phan-tang": "eda-ho-tro-phan-tang.csv",
     "luoi-survivorship": "eda-luoi-survivorship.csv",
     "ma-tran-chuyen-thue": "eda-ma-tran-chuyen-thue.csv",

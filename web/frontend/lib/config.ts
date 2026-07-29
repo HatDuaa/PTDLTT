@@ -32,6 +32,7 @@ export const API_ROUTES = {
 /** Tên tập dữ liệu EDA hợp lệ — khớp với các file `eda-*.csv` trong `ket-qua/`. */
 export type EdaTen =
   | "do-phu-theo-thang"
+  | "doanh-thu-theo-lich"
   | "ma-tran-chuyen-thue"
   | "can-bang-tien-ky"
   | "co-cau-loai-san-pham"
