@@ -387,7 +387,7 @@ export default function TrangTrinhBay() {
             chữ thêm vào đều lấy mất chiều cao của hình. Đo ở khổ 1600×1000: có
             câu chốt thì hình rộng 823px, bỏ đi thì được 945px. Phần diễn giải
             dồn vào một dòng dưới hình. */}
-        <Slide so={9} tieuDe="Đồ thị nhân quả — bản đồ «cái gì ảnh hưởng cái gì»">
+        <Slide so={9} tieuDe="Đồ thị nhân quả">
           {/* Nền trắng cố định: hình do matplotlib vẽ vốn có nền trắng, đặt lên
               nền tối của giao diện thì lộ ra một khối sáng lệch khung. */}
           <div className="grid gap-[1.4vh]">
