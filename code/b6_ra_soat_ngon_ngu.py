@@ -175,6 +175,9 @@ HOP_DONG_NHAN = [
     ("DO_NHAY_CHUA_RO_CO_SO", cf.NHAN_DO_NHAY["chua_ro_co_so"], "kq-do-nhay.csv"),
     ("DO_NHAY_CHUA_RO_Z1", cf.NHAN_DO_NHAY["chua_ro_z1"], "kq-do-nhay.csv"),
     ("DO_NHAY_CHUA_RO_Z0", cf.NHAN_DO_NHAY["chua_ro_z0"], "kq-do-nhay.csv"),
+    # Slide "Quan sát sơ bộ" tách nhóm hòa ra khỏi phép đếm "đã chuyển sang 8%".
+    # Nhãn lệch ⇒ nhóm hòa lọt vào phần còn lại và tỉ lệ trên slide sai âm thầm.
+    ("NHAN_VAT_HOA", cf.NHAN_VAT_HOA, "eda-ma-tran-chuyen-thue.csv"),
 ]
 
 

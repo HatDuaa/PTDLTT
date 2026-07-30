@@ -42,11 +42,12 @@ interface DiemBieuDo {
   p: number;
 }
 
-export function BieuDoHeSo() {
+export function BieuDoHeSo({ anTieuDe = false }: { anTieuDe?: boolean } = {}) {
   const { duLieu, dangTai, loi, thuLai } = useUocLuongChinh();
 
   return (
     <KhoiBieuDo
+      anTieuDe={anTieuDe}
       tieuDe="Biểu đồ hệ số — bốn ước lượng chính"
       moTa="ATT là chênh lệch trung bình cần ước lượng cho nhóm được luật cho giảm thuế. Mỗi điểm dùng một cách tính khác nhau, không phải bốn nghiên cứu độc lập; g-computation là dùng mô hình để dự đoán mỗi SKU dưới cả hai trạng thái rồi lấy chênh lệch."
       vaiTro="chinh"

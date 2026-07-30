@@ -17,6 +17,11 @@ import matplotlib.pyplot as plt
 import config_du_an as cf
 
 THU_MUC_HINH = cf.THU_MUC_KET_QUA / "hinh"
+# Slide và web đọc hình từ đây. Next.js chỉ phục vụ file tĩnh nằm trong `public/`,
+# mà `ket-qua/` thì nằm ngoài cây frontend — nên hình phải có mặt ở cả hai chỗ.
+# Chép ngay lúc vẽ thay vì thêm một bước thủ công: bước thủ công sẽ bị quên, và
+# hình cũ trên slide trông y hệt hình mới nên không ai phát hiện ra.
+THU_MUC_HINH_WEB = cf.GOC_REPO / "web" / "frontend" / "public" / "hinh"
 CAM = ["y", "yn", "pg_hau", "pn_hau"]      # cột cấm dùng trong chương này
 
 
@@ -24,6 +29,8 @@ def _luu(fig, ten):
     THU_MUC_HINH.mkdir(exist_ok=True)
     fig.tight_layout()
     fig.savefig(THU_MUC_HINH / ten, dpi=140)
+    THU_MUC_HINH_WEB.mkdir(parents=True, exist_ok=True)
+    fig.savefig(THU_MUC_HINH_WEB / ten, dpi=140)
     plt.close(fig)
     print(f"     → hinh/{ten}")
 
@@ -265,7 +272,7 @@ def ma_tran_chuyen_thue(dong):
     mode_h = lambda x: (x.mode().iloc[0] if len(x.mode()) == 1 else -1)
     vat = dong.groupby(["sku", "post"])["tyle_vat_ct"].agg(mode_h).unstack()
     vat.columns = ["vat_tien", "vat_hau"]
-    nhan = lambda v: "hòa 8/10" if v == -1 else f"{int(v)}%"
+    nhan = lambda v: cf.NHAN_VAT_HOA if v == -1 else f"{int(v)}%"
     mt = (vat.assign(tien=vat["vat_tien"].map(nhan), hau=vat["vat_hau"].map(nhan))
           .groupby(["tien", "hau"]).size().rename("so_sku").reset_index())
     _ghi(mt, "eda-ma-tran-chuyen-thue.csv", f"{len(mt)} đường chuyển thuế")

@@ -153,3 +153,31 @@
     max-width: 75ch;
   }
 }
+
+/* Trong bản trình chiếu, bảng phải to bằng chữ thân slide.
+
+   shadcn gắn cứng `text-sm` (14px) lên `<table>`, trong khi chữ thân slide dùng
+   `clamp()` nên phóng tới 20px lúc trình chiếu toàn màn hình. Hệ quả: slide có
+   bảng trông chữ nhỏ hẳn so với slide chỉ có gạch đầu dòng — đúng cảm giác "cái
+   to cái nhỏ" khi lật qua lại. Ép bảng kế thừa cỡ chữ của khung slide.
+
+   Chỉ chạm `table`: `text-sm` trên đoạn văn là chú thích cố ý cho nhỏ, ép luôn
+   thì mất thứ bậc. Con số nổi bật dùng style nội tuyến nên không dính.
+
+   🔴 Để NGOÀI mọi `@layer`. Đã thử đặt trong `@layer base` và đo lại: bảng vẫn
+   14px, vì `text-sm` nằm ở layer `utilities` mà layer sau luôn thắng layer
+   trước, bất kể độ đặc hiệu. CSS không thuộc layer nào thì thắng tất cả. */
+[data-slide-noi-dung] :is(table, th, td) {
+  font-size: inherit;
+}
+
+/* Cho ô bảng xuống dòng trong slide.
+
+   shadcn đặt `whitespace-nowrap` lên `th`/`td` — hợp lý cho bảng số trên trang
+   web cuộn ngang được, nhưng slide thì không cuộn ngang: vài bảng ở đây có ô
+   chứa cả câu ("Một dòng = một mặt hàng trên một hóa đơn"), nên bảng tràn ra
+   ngoài mép slide và phần cuối biến mất khi trình chiếu. Đo được ba bảng tràn
+   ở khổ 1600px trước khi thêm dòng này. */
+[data-slide-noi-dung] :is(th, td) {
+  white-space: normal;
+}

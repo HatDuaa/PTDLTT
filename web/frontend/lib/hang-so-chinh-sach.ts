@@ -66,3 +66,11 @@ export const DO_NHAY_CHUA_RO_TRUC = "23 SKU chưa rõ [ITT]";
 export const DO_NHAY_CHUA_RO_CO_SO = "cơ sở (loại 23 SKU)";
 export const DO_NHAY_CHUA_RO_Z1 = "gán tất cả Z=1";
 export const DO_NHAY_CHUA_RO_Z0 = "gán tất cả Z=0";
+
+/**
+ * Nhãn của SKU có mode thuế suất HÒA giữa 8% và 10% trong cột `hau` của
+ * `eda-ma-tran-chuyen-thue.csv` — cửa hàng xuất cả hai mức với số lần bằng nhau.
+ * Slide Quan sát sơ bộ tách nhóm này ra khỏi phép đếm "đã chuyển sang 8%".
+ * Nguồn sự thật: `code/config_du_an.py::NHAN_VAT_HOA`.
+ */
+export const NHAN_VAT_HOA = "hòa 8/10";

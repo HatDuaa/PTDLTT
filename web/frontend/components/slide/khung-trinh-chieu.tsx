@@ -205,6 +205,7 @@ export function Slide({
         // không tới được; `my-auto` thì căn giữa lúc còn chỗ trống và tự nhả ra
         // khi hết chỗ.
         <div
+          data-slide-noi-dung
           className="flex min-h-0 flex-1 flex-col overflow-y-auto"
           style={{ fontSize: "clamp(0.9rem, 1.15vw, 1.25rem)" }}
         >

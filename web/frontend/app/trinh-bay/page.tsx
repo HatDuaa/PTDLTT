@@ -8,21 +8,30 @@
  * rút gọn tới mức chỉ còn "nhìn thấy giá không đổi rồi kết luận" — không cho
  * thấy nhóm đã làm gì.
  *
- * Bố cục: đặt vấn đề → dữ liệu → khung phương pháp → gắn biến → từng phương
- * pháp → kiểm tra thiết kế → kết quả → kiểm chứng bổ sung → hạn chế → kết luận.
+ * Bố cục: đặt vấn đề → dữ liệu → khung phương pháp → đồ thị nhân quả → gắn biến
+ * → từng cách ước lượng → kiểm tra thiết kế → kết quả → kiểm chứng bổ sung →
+ * hạn chế → kết luận.
  *
- * Hai điểm bố cục đã sửa theo góp ý:
+ * Ba điểm bố cục đã sửa theo góp ý:
  *   · Mô phỏng làm tròn KHÔNG phải phương pháp ước lượng — nó là chuẩn cơ học,
  *     nên chuyển xuống sau kết quả, dán nhãn "kiểm chứng bổ sung".
  *   · Hạn chế đặt TRƯỚC kết luận để kết luận đứng cuối.
+ *   · Bốn cách ước lượng nằm trên BA slide (cách 1 và 2 là cùng một mô hình chạy
+ *     hai lần), nên slide tổng quan phải nói trước điều đó — nếu không người xem
+ *     đếm được ba mà nghe nói bốn.
+ *
+ * Nhãn vai trò (chính / chẩn đoán / cơ học) KHÔNG hiện ở chân slide: trên máy
+ * chiếu đó là một dòng chữ nhỏ không ai đọc, mà lại chiếm chỗ. Ý nghĩa của nó
+ * được nói thẳng trong tiêu đề và câu chốt của từng slide. Bản web và báo cáo
+ * vẫn giữ nhãn đầy đủ.
  *
  * Số liệu lấy qua hook dùng chung với các trang phân tích; file này không giữ
  * bản sao kết quả riêng.
  */
+import Image from "next/image";
 import { BieuDoHeSo } from "@/components/charts/bieu-do-he-so";
 import { KhungTrinhChieu, Slide } from "@/components/slide/khung-trinh-chieu";
 import { BangDuLieu } from "@/components/site/bang-du-lieu";
-import { NhanVaiTro } from "@/components/site/nhan-vai-tro";
 import { ThanhTiLe } from "@/components/site/thanh-ti-le";
 import { TrangThaiDuLieu } from "@/components/site/trang-thai-du-lieu";
 import {
@@ -38,6 +47,7 @@ import {
 import {
   MOC_CHUYEN_HOAN_TOAN,
   MAU_SO_SANH_CHINH,
+  NHAN_VAT_HOA,
   TEN_PP1A_HIEP_BIEN,
   TEN_PP1A_THO,
   THUE_SUAT_SAU_CHINH_SACH,
@@ -57,7 +67,7 @@ import type {
   UocLuongChinhRow,
 } from "@/lib/types";
 
-const TONG = 19;
+const TONG = 20;
 
 /**
  * Thông tin môn học và nhóm — hiện trên slide bìa.
@@ -121,6 +131,23 @@ function thangGon(t: string) {
   return `${thang}/${nam}`;
 }
 
+/**
+ * Nhãn thuế suất đúng như pipeline ghi vào `eda-ma-tran-chuyen-thue.csv`.
+ *
+ * `b3_eda.py` sinh nhãn bằng `f"{int(v)}%"`, tức "10%" / "8%" không có khoảng
+ * trắng. KHÔNG dùng `dinhDangPhanTram` ở đây: hàm đó định dạng cho người đọc và
+ * có thể chèn khoảng trắng không ngắt, đủ để phép so chuỗi trượt âm thầm.
+ * Cũng không nhân trực tiếp `0.1 * 100` vì trong JS ra 10.000000000000002.
+ */
+function nhanThue(tiLe: number) {
+  return `${Math.round(tiLe * 100)}%`;
+}
+
+/** Đổi điểm log ×100 sang phần trăm giá, để nói "≈0,4%" cạnh "−0,398". */
+function phanTramTuDiemLog(diem: number, soLe = 1) {
+  return dinhDangPhanTram(Math.abs(Math.expm1(diem / 100)), soLe);
+}
+
 export default function TrangTrinhBay() {
   const uocLuong = useUocLuongChinh();
   const bamChuan = useBamChuan();
@@ -134,7 +161,12 @@ export default function TrangTrinhBay() {
 
   const truoc = dinhDangPhanTram(THUE_SUAT_TRUOC_CHINH_SACH, 0);
   const sau = dinhDangPhanTram(THUE_SUAT_SAU_CHINH_SACH, 0);
-  const mucGiamLeRa = dinhDangPhanTram(Math.abs(Math.expm1(MOC_CHUYEN_HOAN_TOAN / 100)), 1);
+  const mucGiamLeRa = phanTramTuDiemLog(MOC_CHUYEN_HOAN_TOAN);
+  // Phần thuế quy ra tiền trên hai mức giá điển hình — dùng ở slide phân tầng để
+  // cho thấy vì sao giá nền là biến gây nhiễu chứ không phải chi tiết kỹ thuật.
+  const tiLeGiam = Math.abs(Math.expm1(MOC_CHUYEN_HOAN_TOAN / 100));
+  const giamTrenHangRe = Math.round(10_000 * tiLeGiam);
+  const giamTrenHangDat = Math.round(100_000 * tiLeGiam);
 
   return (
     <div className="grid gap-4">
@@ -215,8 +247,7 @@ export default function TrangTrinhBay() {
         </Slide>
 
         <Slide so={4} tieuDe="Xử lý dữ liệu"
-               chot="Mỗi bước lọc đều ghi rõ lý do và số dòng mất đi, kiểm lại được từng bước."
-               ghiChu={<NhanVaiTro vaiTro="chan-doan" />}>
+               chot="Dữ liệu được xử lý theo từng bước; mỗi bước ghi rõ quy tắc lọc và số dòng còn lại.">
           <TrangThaiDuLieu dangTai={luongMau.dangTai} loi={luongMau.loi} duLieu={luongMau.duLieu}
                            chieuCaoTai="h-56">
             {(hang) => (
@@ -234,8 +265,7 @@ export default function TrangTrinhBay() {
         </Slide>
 
         <Slide so={5} tieuDe="Phân bổ dữ liệu theo thời gian"
-               chot="Dữ liệu có lỗ hổng thật, và nhóm chọn cửa sổ phân tích dựa trên chúng."
-               ghiChu={<NhanVaiTro vaiTro="chan-doan" />}>
+               chot="Nhóm rà độ phủ dữ liệu theo từng tháng, rồi chọn cửa sổ phân tích dựa trên kết quả rà.">
           <TrangThaiDuLieu dangTai={doPhu.dangTai} loi={doPhu.loi} duLieu={doPhu.duLieu}
                            chieuCaoTai="h-56">
             {(hang) => (
@@ -258,27 +288,45 @@ export default function TrangTrinhBay() {
           </TrangThaiDuLieu>
         </Slide>
 
-        <Slide so={6} tieuDe="Quan sát sơ bộ"
-               chot="Nhìn thô đã thấy điều đáng ngờ: nhiều mặt hàng luật cho giảm nhưng hóa đơn vẫn ghi mức thuế cũ."
-               ghiChu={<NhanVaiTro vaiTro="chan-doan" />}>
+        <Slide so={6} tieuDe="Đánh giá sơ bộ dữ liệu"
+               chot="Đếm thuế suất ghi trên hóa đơn của từng mặt hàng, trước và sau ngày chính sách.">
           <TrangThaiDuLieu dangTai={maTran.dangTai} loi={maTran.loi} duLieu={maTran.duLieu}
                            chieuCaoTai="h-48">
-            {(hang) => (
-              <div className="grid gap-[2vh]">
-                <BangDuLieu<EdaMaTranChuyenTheRow>
-                  cot={[
-                    { khoa: "tien", nhan: "Thuế suất trước" },
-                    { khoa: "hau", nhan: "Thuế suất sau" },
-                    { khoa: "so_sku", nhan: "Số mặt hàng", dinhDang: (h) => dinhDangSoNguyen(h.so_sku) },
-                  ]}
-                  hang={hang}
-                />
-                <DanhSach>
-                  <Y>Quan sát này gợi ý câu trả lời, nhưng chưa tách được phần do chính sách.</Y>
-                  <Y>Muốn nói &ldquo;do chính sách&rdquo; thì cần một khung phương pháp — phần tiếp theo.</Y>
-                </DanhSach>
-              </div>
-            )}
+            {(hang) => {
+              const nhanTruoc = nhanThue(THUE_SUAT_TRUOC_CHINH_SACH);
+              const nhanSau = nhanThue(THUE_SUAT_SAU_CHINH_SACH);
+              const tu10 = hang.filter((h) => h.tien === nhanTruoc);
+              const tong10 = tu10.reduce((s, h) => s + h.so_sku, 0);
+              const daChuyen = tu10.find((h) => h.hau === nhanSau)?.so_sku ?? 0;
+              const conHoa = tu10.find((h) => h.hau === NHAN_VAT_HOA)?.so_sku ?? 0;
+              return (
+                <div className="grid gap-[1.8vh]">
+                  <BangDuLieu<EdaMaTranChuyenTheRow>
+                    cot={[
+                      { khoa: "tien", nhan: "Thuế suất trước 01/07" },
+                      { khoa: "hau", nhan: "Thuế suất sau 01/07" },
+                      { khoa: "so_sku", nhan: "Số mặt hàng", dinhDang: (h) => dinhDangSoNguyen(h.so_sku) },
+                    ]}
+                    hang={hang}
+                    chuThich={`«${NHAN_VAT_HOA}»: sau 01/07 cửa hàng xuất cả hai mức với số lần bằng nhau, `
+                      + `nên không xác định được mức nào là chính. Nhóm ${nhanSau}→${nhanSau} đông nhất `
+                      + `nhưng phần lớn là mặt hàng chưa phân loại được theo luật, nên không dùng làm đối chứng.`}
+                  />
+                  {tong10 > 0 && (
+                    <ThanhTiLe
+                      nhan={`Mặt hàng còn ghi ${nhanTruoc} trước 01/07 và đã chuyển sang ${nhanSau}`}
+                      tuSo={daChuyen} mauSo={tong10} noiBat
+                      ghiChu={`Còn lại ${dinhDangSoNguyen(tong10 - daChuyen - conHoa)} mặt hàng vẫn ghi `
+                        + `${nhanTruoc}, và ${dinhDangSoNguyen(conHoa)} mặt hàng thuộc nhóm hòa.`}
+                    />
+                  )}
+                  <DanhSach>
+                    <Y>Đây mới là mô tả: nó chưa tách được phần thay đổi do chính sách khỏi những thay đổi khác cùng thời điểm.</Y>
+                    <Y>Để chứng minh chính xác, nhóm đề xuất một khung phương pháp nhân quả và bốn cách ước lượng.</Y>
+                  </DanhSach>
+                </div>
+              );
+            }}
           </TrangThaiDuLieu>
         </Slide>
 
@@ -303,13 +351,16 @@ export default function TrangTrinhBay() {
 
         <Slide so={8} tieuDe="Khung phương pháp"
                chot="Ước lượng tác động bằng cách so mức đổi giá của hai nhóm, sau khi trừ đi khác biệt sẵn có.">
-          <div className="grid gap-[1.8vh]">
+          <div className="grid gap-[1.6vh]">
             <div className="rounded-md border bg-muted/40 p-3">
               <p className="text-sm font-medium">Mô hình cơ bản</p>
-              <p className="mt-1 font-mono text-sm">Y = β₀ + β₁·Z + γ·X + ε</p>
-              <p className="mt-1.5 text-sm text-muted-foreground">
-                β₁ là con số cần tìm: chênh lệch mức đổi giá giữa hai nhóm sau khi đã tính tới X.
-              </p>
+              <p className="mt-1 font-mono">Y = β₀ + β₁·Z + γ·X + ε</p>
+              <ul className="mt-2 grid gap-0.5 text-sm text-muted-foreground">
+                <li><span className="font-mono text-foreground">β₀</span> — hệ số chặn: mức đổi giá trung bình của nhóm đối chứng</li>
+                <li><span className="font-mono text-foreground">β₁</span> — con số cần tìm: chênh lệch mức đổi giá giữa hai nhóm sau khi đã tính tới X</li>
+                <li><span className="font-mono text-foreground">γ</span> — hệ số của các biến kiểm soát: mỗi biến trong X kéo Y đi bao nhiêu</li>
+                <li><span className="font-mono text-foreground">ε</span> — phần dư: những gì mô hình không giải thích được</li>
+              </ul>
             </div>
             <BangDuLieu<{ k: string; ten: string; vt: string }>
               cot={[
@@ -331,7 +382,35 @@ export default function TrangTrinhBay() {
           </div>
         </Slide>
 
-        <Slide so={9} tieuDe="Gắn biến vào dữ liệu"
+        {/* Slide này CỐ Ý không có câu chốt. Đồ thị có 12 nút kèm nhãn chữ, thu
+            nhỏ thêm là chữ trong nút không đọc nổi trên máy chiếu — mà mỗi dòng
+            chữ thêm vào đều lấy mất chiều cao của hình. Đo ở khổ 1600×1000: có
+            câu chốt thì hình rộng 823px, bỏ đi thì được 945px. Phần diễn giải
+            dồn vào một dòng dưới hình. */}
+        <Slide so={9} tieuDe="Đồ thị nhân quả — bản đồ «cái gì ảnh hưởng cái gì»">
+          {/* Nền trắng cố định: hình do matplotlib vẽ vốn có nền trắng, đặt lên
+              nền tối của giao diện thì lộ ra một khối sáng lệch khung. */}
+          <div className="grid gap-[1.4vh]">
+            <div className="flex justify-center rounded-md border bg-white p-2">
+              <Image
+                src="/hinh/do-thi-nhan-qua.png"
+                alt="Đồ thị nhân quả của đồ án: nghị quyết 204 quyết định Z, Z dẫn tới quyết định cập nhật thuế của cửa hàng rồi tới D, D và chi phí thực đơn dẫn tới Y; đặc tính SKU không quan sát được nối tới Z, tới các biến nền và tới Y."
+                width={1750}
+                height={1148}
+                priority
+                className="h-auto max-h-[62vh] w-auto max-w-full object-contain"
+              />
+            </div>
+            <p className="leading-snug">
+              Mũi tên liền là quan hệ đo được từ hóa đơn;{" "}
+              <strong>mũi tên đứt màu đỏ</strong> xuất phát từ những thứ dữ liệu này không nhìn
+              thấy. Đường nguy hiểm nhất là đặc tính mặt hàng — nó vừa quyết định nhóm (Z) vừa ảnh
+              hưởng tới giá (Y), nên phải kiểm soát X.
+            </p>
+          </div>
+        </Slide>
+
+        <Slide so={10} tieuDe="Gắn biến vào dữ liệu"
                chot="Mỗi biến trong khung được đo bằng một trường cụ thể của hóa đơn.">
           <TrangThaiDuLieu dangTai={theoTang.dangTai} loi={theoTang.loi} duLieu={theoTang.duLieu}
                            chieuCaoTai="h-56">
@@ -345,7 +424,7 @@ export default function TrangTrinhBay() {
                     cot={[{ khoa: "k", nhan: "Biến" }, { khoa: "dl", nhan: "Đo bằng gì trong dữ liệu này" }]}
                     hang={[
                       { k: "Z", dl: `Phân loại theo tên hàng: hóa chất và mỹ phẩm → Z=1 (${dinhDangSoNguyen(n1)} mặt hàng); rượu, bia, thuốc lá → Z=0 (${dinhDangSoNguyen(n0)} mặt hàng)` },
-                      { k: "D", dl: "Thuế suất ghi trên hóa đơn hậu kỳ: đã áp 8% → D=1, còn 10% → D=0" },
+                      { k: "D", dl: `Thuế suất ghi trên hóa đơn hậu kỳ: đã áp ${sau} → D=1, còn ${truoc} → D=0` },
                       { k: "Y", dl: "Log tỉ lệ giá gồm thuế hậu kỳ trên tiền kỳ, nhân 100 (điểm log ×100)" },
                       { k: "X₁ — giá nền", dl: "Log giá trung vị của mặt hàng trước chính sách" },
                       { k: "X₂ — sức bán nền", dl: "Log số lượng bán trước chính sách" },
@@ -362,39 +441,39 @@ export default function TrangTrinhBay() {
           </TrangThaiDuLieu>
         </Slide>
 
-        <Slide so={10} tieuDe="Bốn cách ước lượng — tổng quan"
-               chot="Bốn cách khác nhau ở chỗ xử lý biến kiểm soát X, không khác ở Z hay Y."
-               ghiChu={<NhanVaiTro vaiTro="chinh" />}>
+        <Slide so={11} tieuDe="Bốn cách ước lượng — tổng quan"
+               chot="Bốn cách khác nhau ở chỗ xử lý biến kiểm soát X, không khác ở Z hay Y.">
           <div className="grid gap-[1.6vh]">
-            <p className="text-sm leading-snug">
+            <p className="leading-snug">
               Vấn đề chung của cả bốn: hai nhóm hàng vốn khác nhau từ trước. Muốn phần chênh lệch
               còn lại quy được cho chính sách, phải trừ đi phần khác biệt sẵn có. Bốn cách dưới đây
               là bốn lời giải khác nhau cho đúng bài toán đó.
             </p>
-            <BangDuLieu<{ ten: string; ytuong: string; xl: string; diem: string }>
+            <BangDuLieu<{ so: string; ten: string; ytuong: string; xl: string; diem: string }>
               cot={[
+                { khoa: "so", nhan: "#" },
                 { khoa: "ten", nhan: "Cách tính" },
                 { khoa: "ytuong", nhan: "Ý tưởng" },
                 { khoa: "xl", nhan: "Xử lý X" },
                 { khoa: "diem", nhan: "Điểm yếu" },
               ]}
               hang={[
-                { ten: TEN_PP1A_THO, ytuong: "So trung bình hai nhóm, không điều chỉnh",
+                { so: "1", ten: TEN_PP1A_THO, ytuong: "So trung bình hai nhóm, không điều chỉnh",
                   xl: "Bỏ qua", diem: "Lẫn toàn bộ khác biệt sẵn có" },
-                { ten: TEN_PP1A_HIEP_BIEN, ytuong: "Đưa ba biến nền vào cùng mô hình",
+                { so: "2", ten: TEN_PP1A_HIEP_BIEN, ytuong: "Đưa ba biến nền vào cùng mô hình",
                   xl: "Tuyến tính", diem: "Phải tin quan hệ đúng là tuyến tính" },
-                { ten: "PP1-B g-computation", ytuong: "Dự đoán nhóm Z=1 sẽ ra sao nếu không có chính sách",
+                { so: "3", ten: "PP1-B g-computation", ytuong: "Dự đoán nhóm Z=1 sẽ ra sao nếu không có chính sách",
                   xl: "Dự đoán phản thực", diem: "Phải ngoại suy cho vài mặt hàng" },
-                { ten: "PP2 phân tầng", ytuong: "Chỉ so những mặt hàng có giá nền gần nhau",
+                { so: "4", ten: "PP2 phân tầng", ytuong: "Chỉ so những mặt hàng có giá nền gần nhau",
                   xl: "Ghép cặp theo tầng", diem: "Chỉ xử lý được biến dùng để chia tầng" },
               ]}
+              chuThich="Ba slide tiếp theo trình bày lần lượt bốn cách này. Cách 1 và cách 2 nằm chung một slide vì đó là cùng một mô hình chạy hai lần, khác nhau đúng ở chỗ có đưa X vào hay không."
             />
           </div>
         </Slide>
 
-        <Slide so={11} tieuDe="Cách 1 — Hồi quy chênh lệch"
-               chot="Chạy hai lần: một lần không kiểm soát gì, một lần thêm ba biến X. Nếu lệch nhiều thì X đang chi phối."
-               ghiChu={<NhanVaiTro vaiTro="chinh" />}>
+        <Slide so={12} tieuDe="Cách 1 và 2 — Hồi quy chênh lệch"
+               chot="Chạy hai lần: một lần không kiểm soát gì, một lần thêm ba biến X. Nếu lệch nhiều thì X đang chi phối.">
           <TrangThaiDuLieu dangTai={uocLuong.dangTai} loi={uocLuong.loi} duLieu={uocLuong.duLieu}
                            chieuCaoTai="h-52">
             {(hang) => {
@@ -403,13 +482,13 @@ export default function TrangTrinhBay() {
               return (
                 <div className="grid gap-[1.4vh]">
                   <DanhSach>
-                    <Y><strong>Làm gì.</strong> Ước lượng β₁ — chênh lệch mức đổi giá giữa nhóm được giảm thuế và nhóm không.</Y>
+                    <Y><strong>Ý tưởng.</strong> Ước lượng β₁ — chênh lệch mức đổi giá giữa nhóm được giảm thuế và nhóm không.</Y>
                     <Y><strong>Cách làm.</strong> Chạy hồi quy hai lần trên cùng bộ dữ liệu: lần đầu chỉ có Z, lần sau thêm cả ba biến nền.</Y>
                     <Y><strong>Vì sao chạy hai lần.</strong> Nếu hai kết quả lệch nhau nhiều, nghĩa là đặc điểm sẵn có đang chi phối, không phải chính sách.</Y>
                   </DanhSach>
                   <div className="rounded-md border bg-muted/40 p-3 font-mono text-sm">
-                    <p>thô: Y = β₀ + β₁·Z + ε</p>
-                    <p className="mt-1">hiệp biến: Y = β₀ + β₁·Z + γ₁·X₁ + γ₂·X₂ + γ₃·X₃ + ε</p>
+                    <p>cách 1 — thô: Y = β₀ + β₁·Z + ε</p>
+                    <p className="mt-1">cách 2 — hiệp biến: Y = β₀ + β₁·Z + γ₁·X₁ + γ₂·X₂ + γ₃·X₃ + ε</p>
                   </div>
                   {tho && hb && (
                     <div className="grid grid-cols-2 gap-6">
@@ -427,17 +506,16 @@ export default function TrangTrinhBay() {
           </TrangThaiDuLieu>
         </Slide>
 
-        <Slide so={12} tieuDe="Cách 2 — g-computation"
-               chot="Dựng mô hình từ nhóm đối chứng để dự đoán nhóm được giảm thuế sẽ ra sao nếu không có chính sách."
-               ghiChu={<NhanVaiTro vaiTro="chinh" />}>
+        <Slide so={13} tieuDe="Cách 3 — g-computation"
+               chot="Dựng mô hình từ nhóm đối chứng để dự đoán nhóm được giảm thuế sẽ ra sao nếu không có chính sách.">
           <TrangThaiDuLieu dangTai={uocLuong.dangTai} loi={uocLuong.loi} duLieu={uocLuong.duLieu}
                            chieuCaoTai="h-52">
             {(hang) => {
               const g = hang.find((h) => h.pp.includes("g-computation"));
               return (
                 <div className="grid gap-[1.4vh]">
-                  <p className="text-sm leading-snug">
-                    <strong>Làm gì.</strong> Thay vì so hai nhóm trực tiếp, cách này dựng ra{" "}
+                  <p className="leading-snug">
+                    <strong>Ý tưởng.</strong> Thay vì so hai nhóm trực tiếp, cách này dựng ra{" "}
                     <em>phản thực</em>: mức giá mà nhóm được giảm thuế lẽ ra có nếu chính sách
                     không xảy ra. Đây chính là đại lượng mà định nghĩa nhân quả cần.
                   </p>
@@ -456,17 +534,24 @@ export default function TrangTrinhBay() {
           </TrangThaiDuLieu>
         </Slide>
 
-        <Slide so={13} tieuDe="Cách 3 — Phân tầng theo mức giá"
-               chot="Chỉ so những mặt hàng có giá nền gần nhau, sau đó gộp năm tầng theo trọng số."
-               ghiChu={<NhanVaiTro vaiTro="chinh" />}>
+        <Slide so={14} tieuDe="Cách 4 — Phân tầng theo mức giá"
+               chot="Chỉ so những mặt hàng có giá nền gần nhau, sau đó gộp năm tầng theo trọng số.">
           <TrangThaiDuLieu dangTai={theoTang.dangTai} loi={theoTang.loi} duLieu={theoTang.duLieu}
                            chieuCaoTai="h-52">
             {(hang) => (
               <div className="grid gap-[1.4vh]">
                 <DanhSach>
-                  <Y><strong>Làm gì.</strong> Loại bỏ ảnh hưởng của giá nền mà không cần giả định dạng hàm như hồi quy.</Y>
-                  <Y><strong>Cách làm.</strong> Chia toàn bộ mặt hàng thành năm tầng theo giá trước chính sách, tính chênh lệch riêng trong từng tầng, sau đó gộp lại với trọng số bằng số mặt hàng được giảm thuế trong tầng.</Y>
-                  <Y><strong>Vì sao chia tầng.</strong> Hàng rẻ và hàng đắt không đổi giá theo cùng một kiểu, so chung sẽ lẫn hai hiệu ứng vào nhau.</Y>
+                  <Y><strong>Ý tưởng.</strong> Giá nền là một biến gây nhiễu: hai nhóm có phân bố giá khác nhau, mà chính mức giá lại quyết định cửa hàng có đổi giá hay không.</Y>
+                  <Y>
+                    <strong>Vì sao mức giá quyết định.</strong> Phần thuế được giảm tương đương{" "}
+                    {mucGiamLeRa} giá. Với món {dinhDangSoNguyen(10_000)}đ, đó là khoảng{" "}
+                    {dinhDangSoNguyen(giamTrenHangRe)}đ — nhỏ hơn cả bước giá{" "}
+                    {dinhDangSoNguyen(1_000)}đ, nên gần như không có cách nào đổi giá cho đúng.
+                    Với món {dinhDangSoNguyen(100_000)}đ, đó là khoảng{" "}
+                    {dinhDangSoNguyen(giamTrenHangDat)}đ, tức gần hai bước giá. Hàng rẻ và hàng đắt
+                    vì thế không phản ứng như nhau.
+                  </Y>
+                  <Y><strong>Cách làm.</strong> Chia toàn bộ mặt hàng thành năm tầng theo giá trước chính sách, tính chênh lệch riêng trong từng tầng, rồi gộp lại với trọng số bằng số mặt hàng được giảm thuế trong tầng.</Y>
                 </DanhSach>
                 <BangDuLieu<TheoTangRow>
                   cot={[
@@ -485,9 +570,8 @@ export default function TrangTrinhBay() {
           </TrangThaiDuLieu>
         </Slide>
 
-        <Slide so={14} tieuDe="Kiểm tra thiết kế trước khi tin kết quả"
-               chot="Bốn cách tính dùng chung một giả định gốc, nên chúng không kiểm chứng lẫn nhau."
-               ghiChu={<NhanVaiTro vaiTro="chan-doan" />}>
+        <Slide so={15} tieuDe="Kiểm tra thiết kế trước khi tin kết quả"
+               chot="Bốn cách tính dùng chung một giả định gốc, nên chúng không kiểm chứng lẫn nhau.">
           <TrangThaiDuLieu dangTai={congChanDoan.dangTai} loi={congChanDoan.loi}
                            duLieu={congChanDoan.duLieu} chieuCaoTai="h-48">
             {() => (
@@ -510,15 +594,13 @@ export default function TrangTrinhBay() {
           </TrangThaiDuLieu>
         </Slide>
 
-        <Slide so={15} tieuDe="Kết quả — bốn ước lượng"
-               chot="Bốn cách tính đều cho chênh lệch âm nhưng nhỏ, và khoảng tin cậy đều phủ qua 0."
-               ghiChu={<NhanVaiTro vaiTro="chinh" />}>
-          <BieuDoHeSo />
+        <Slide so={16} tieuDe="Kết quả — bốn ước lượng"
+               chot="Bốn cách tính đều cho chênh lệch âm nhưng nhỏ, và khoảng tin cậy đều phủ qua 0.">
+          <BieuDoHeSo anTieuDe />
         </Slide>
 
-        <Slide so={16} tieuDe="Từ chênh lệch ra tỉ lệ chuyển thuế"
-               chot="Chia chênh lệch quan sát được cho mức lẽ ra phải giảm, ra tỉ lệ phần thuế thật sự vào giá."
-               ghiChu={<NhanVaiTro vaiTro="chinh" />}>
+        <Slide so={17} tieuDe="Từ chênh lệch ra tỉ lệ chuyển thuế"
+               chot="Chia chênh lệch quan sát được cho mức lẽ ra phải giảm, ra tỉ lệ phần thuế thật sự vào giá.">
           <TrangThaiDuLieu dangTai={uocLuong.dangTai} loi={uocLuong.loi} duLieu={uocLuong.duLieu}
                            chieuCaoTai="h-56">
             {(hang) => {
@@ -527,14 +609,21 @@ export default function TrangTrinhBay() {
               const ty = chinh.map((h) => h.pass_through as number);
               if (!tho || !ty.length) return null;
               return (
-                <div className="grid gap-[1.6vh]">
+                <div className="grid gap-[1.5vh]">
                   <div className="grid grid-cols-2 gap-6">
                     <SoLon so={dinhDangSo(MOC_CHUYEN_HOAN_TOAN, 3)} donVi={DON_VI_DIEM_LOG} nhan={`Giá lẽ ra phải giảm — tương đương ${mucGiamLeRa}`} />
-                    <SoLon so={dinhDangSo(tho.uoc_luong, 3)} donVi={DON_VI_DIEM_LOG} nhan={`Chênh lệch thực tế (${tho.pp})`} />
+                    <SoLon so={dinhDangSo(tho.uoc_luong, 3)} donVi={DON_VI_DIEM_LOG} nhan={`Chênh lệch thực tế — tương đương ${phanTramTuDiemLog(tho.uoc_luong)} (${tho.pp})`} />
                   </div>
                   <p className="rounded-md border bg-muted/40 p-3 text-center font-medium tabular-nums">
                     {dinhDangSo(tho.uoc_luong, 3)} ÷ {dinhDangSo(MOC_CHUYEN_HOAN_TOAN, 3)} ={" "}
                     {dinhDangPhanTram(tho.pass_through as number, 0)}
+                  </p>
+                  <p className="rounded-md border-l-4 border-l-foreground/40 bg-muted/30 px-3 py-2 text-sm leading-snug">
+                    <strong>Đọc con số này thế nào.</strong>{" "}
+                    {dinhDangPhanTram(tho.pass_through as number, 0)} không có nghĩa là giá giảm{" "}
+                    {dinhDangPhanTram(tho.pass_through as number, 0)}. Nếu chuyển hết phần thuế thì
+                    giá lẽ ra giảm {mucGiamLeRa}; nhóm chỉ đo được {phanTramTuDiemLog(tho.uoc_luong)}.
+                    Tỉ lệ là phần trăm <em>của mức lẽ ra phải giảm</em>, không phải phần trăm của giá.
                   </p>
                   <BangDuLieu<UocLuongChinhRow>
                     cot={[
@@ -551,9 +640,8 @@ export default function TrangTrinhBay() {
           </TrangThaiDuLieu>
         </Slide>
 
-        <Slide so={17} tieuDe="Kiểm chứng bổ sung — chuẩn giá cơ học"
-               chot="Không dùng nhóm đối chứng: chỉ tính giá lẽ ra phải có, sau đó đối chiếu với giá thật."
-               ghiChu={<NhanVaiTro vaiTro="co-hoc" />}>
+        <Slide so={18} tieuDe="Kiểm chứng bổ sung — chuẩn giá cơ học"
+               chot="Không dùng nhóm đối chứng: chỉ tính giá lẽ ra phải có, sau đó đối chiếu với giá thật.">
           <TrangThaiDuLieu dangTai={bamChuan.dangTai || lamTron.dangTai}
                            loi={bamChuan.loi ?? lamTron.loi}
                            duLieu={bamChuan.duLieu && lamTron.duLieu
@@ -588,15 +676,15 @@ export default function TrangTrinhBay() {
           </TrangThaiDuLieu>
         </Slide>
 
-        <Slide so={18} tieuDe="Hạn chế"
-               chot="Ba hạn chế lớn, và hai trong đó vẫn dẫn tới cùng một kết luận.">
+        <Slide so={19} tieuDe="Hạn chế"
+               chot="Ba hạn chế của đồ án, kèm mức ảnh hưởng của từng cái tới kết luận.">
           <div className="grid gap-[1.8vh] leading-snug">
             <div>
               <p className="font-semibold">Chi phí đổi giá</p>
               <p>
                 Cửa hàng có thể ngại đổi giá vì mỗi lần đổi đều tốn công và ảnh hưởng vận hành.
-                Nhưng dù lý do là gì, <strong>người mua vẫn trả đúng số tiền cũ</strong> — hạn chế
-                này không đổi kết luận.
+                Dữ liệu hóa đơn không quan sát được chi phí này, nên đồ án không tách được phần do
+                ngại đổi giá khỏi phần do chính sách.
               </p>
             </div>
             <div>
@@ -618,9 +706,8 @@ export default function TrangTrinhBay() {
           </div>
         </Slide>
 
-        <Slide so={19} tieuDe="Kết luận"
-               chot="Cửa hàng đã không chuyển hết phần giảm thuế vào giá bán lẻ."
-               ghiChu={<NhanVaiTro vaiTro="chinh" />}>
+        <Slide so={20} tieuDe="Kết luận"
+               chot="Cửa hàng đã không chuyển hết phần giảm thuế vào giá bán lẻ.">
           <TrangThaiDuLieu dangTai={uocLuong.dangTai || bamChuan.dangTai}
                            loi={uocLuong.loi ?? bamChuan.loi}
                            duLieu={uocLuong.duLieu && bamChuan.duLieu

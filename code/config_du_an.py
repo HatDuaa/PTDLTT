@@ -120,6 +120,12 @@ SO_SKU_CHUA_RO = 23
 # "PP1-A thô"; lúc sửa lại thì bộ lọc chuỗi cứng trong b5 rỗng và pipeline chết.
 TEN_HIEN_THI_PP1A = {"tho": "PP1-A thô", "hiep_bien": "PP1-A hiệp biến"}
 
+# Nhãn cho SKU mà mode thuế suất trong kỳ là HÒA giữa 8% và 10% — tức cửa hàng
+# xuất cả hai mức với số lần bằng nhau, không xác định được mức nào là chính.
+# b3 ghi nhãn này vào `eda-ma-tran-chuyen-thue.csv`, slide đọc lại để tách riêng
+# nhóm đó ra khỏi phép đếm "đã chuyển sang 8%" — nên nó là HỢP ĐỒNG với frontend.
+NHAN_VAT_HOA = "hòa 8/10"
+
 SO_PHAN_VI_GIA = 5          # phân vị của pre_p. KHÔNG dùng `type` — xem §9
 TOI_THIEU_SKU_MOI_TANG = 3
 

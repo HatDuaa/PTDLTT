@@ -17,6 +17,15 @@ interface KhoiBieuDoProps {
   children: ReactNode;
   bangThayThe: ReactNode;
   ghiChu?: ReactNode;
+  /**
+   * Bỏ hẳn phần đầu thẻ (tiêu đề · mô tả · nhãn vai trò).
+   *
+   * Chỉ dùng trong bản trình chiếu: ở đó slide đã có tiêu đề và câu chốt nói
+   * đúng nội dung ấy, nên giữ lại thành ra một slide có hai tiêu đề chồng nhau
+   * và một dòng chữ nhỏ không ai đọc từ xa. Trên web thì phần đầu này bắt buộc
+   * phải có — nhãn vai trò là cam kết trung thực của đồ án.
+   */
+  anTieuDe?: boolean;
 }
 
 export function KhoiBieuDo({
@@ -27,16 +36,19 @@ export function KhoiBieuDo({
   children,
   bangThayThe,
   ghiChu,
+  anTieuDe = false,
 }: KhoiBieuDoProps) {
   return (
     <Card>
-      <CardHeader>
-        <div className="flex flex-wrap items-start justify-between gap-2">
-          <CardTitle className="text-base">{tieuDe}</CardTitle>
-          {vaiTro && <NhanVaiTro vaiTro={vaiTro} />}
-        </div>
-        {moTa && <CardDescription>{moTa}</CardDescription>}
-      </CardHeader>
+      {!anTieuDe && (
+        <CardHeader>
+          <div className="flex flex-wrap items-start justify-between gap-2">
+            <CardTitle className="text-base">{tieuDe}</CardTitle>
+            {vaiTro && <NhanVaiTro vaiTro={vaiTro} />}
+          </div>
+          {moTa && <CardDescription>{moTa}</CardDescription>}
+        </CardHeader>
+      )}
       <CardContent>
         <div role="img" aria-label={moTaChoBieuDo}>
           {children}
