@@ -90,8 +90,12 @@ Thí nghiệm tự nhiên **có không tuân thủ**. Điểm mấu chốt là t
 So sánh theo `D` là điều kiện hóa trên một quyết định vận hành của cửa hàng. So sánh theo `Z`
 được nhận dạng bằng luật. Đồ án lấy `Z` làm chính.
 
-**Bốn cách ước lượng** khác nhau ở chỗ xử lý biến kiểm soát, nhưng **chung một chiến lược
-nhận dạng**. Chúng cho kết quả giống nhau *không phải* bốn bằng chứng độc lập.
+Đồ án dùng **hai mô hình phân tích nhân quả khác nhau**: hồi quy có điều chỉnh (PP1) và phân
+tầng theo mức giá (PP2). Nhóm chạy thêm PP1-A thô và PP1-B g-computation để có hai biến thể
+so sánh.
+
+Cả hai mô hình dựa trên **cùng một giả định nhận dạng là xu hướng song song**, nên chúng không
+kiểm chứng lẫn nhau. Nếu giả định sai, cả hai có thể cùng sai theo một hướng.
 
 Ngoài bốn cách đó còn một **chuẩn cơ học** không dùng nhóm đối chứng: tính mức giá lẽ ra phải
 có nếu chuyển thuế hoàn toàn, rồi đối chiếu với giá thật. Đây là kiểm chứng bổ sung, không
@@ -220,8 +224,8 @@ trước, không ai — kể cả chính nhóm — có thể vô tình chọn co
 
 Ghi ở đây vì đó là phần trung thực nhất của công việc:
 
-- **Bốn phương pháp không phải bốn bằng chứng độc lập.** Chúng dùng chung một chiến lược
-  nhận dạng; nếu giả định nền sai thì cả bốn cùng sai theo cùng một hướng.
+- **Hai mô hình và hai biến thể không phải bốn bằng chứng độc lập.** Chúng dùng chung giả định
+  xu hướng song song; nếu giả định này sai thì cả bốn có thể cùng sai theo một hướng.
 - **Cân bằng sau phân tầng thất bại** ở 12/15 cặp. Đã thử sáu cách chia tầng, không cách nào đạt.
 - **Mẫu đã bị chọn lọc theo khả năng sống sót** — tỉ lệ mặt hàng còn được bán ở hậu kỳ chênh
   nhau **7,2 điểm phần trăm** giữa hai nhóm (82,0% so với 89,2%). Vì vậy kết quả không phải

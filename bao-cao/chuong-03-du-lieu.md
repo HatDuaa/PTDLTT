@@ -6,7 +6,18 @@ Dữ liệu là hóa đơn điện tử của một cửa hàng tiện lợi t�
 
 Mỗi dòng chi tiết cho biết mặt hàng, số lượng, thành tiền, thuế suất và mã vạch. Mã vạch được dùng để nhận diện SKU, tức một mã hàng cụ thể. Giá trong phân tích là giá của SKU trên hóa đơn, không phải giá trung bình của cả cửa hàng.
 
-Dữ liệu trải từ **12/2024 đến 08/2025**. Bảng chi tiết ban đầu có **233.996 dòng hàng**. Sau các bước lọc, mẫu dùng cho phân tích chính còn **82.109 dòng hàng**. Tên file nguồn, dấu vân tay của file và phiên bản môi trường chạy được lưu trong [manifest tái lập](../ket-qua/manifest-tai-lap.json).
+Dữ liệu trải từ **12/2024 đến 08/2025**. Quy mô cần được đọc theo bốn thang bậc:
+
+| Thang bậc quan sát | Quy mô | Nghĩa |
+|---|---:|---|
+| Dòng hàng thô | **233.996** | Một mặt hàng trên một hóa đơn |
+| Dòng hàng sau lọc | **82.109** | Các dòng đi vào danh mục phân tích |
+| SKU trong danh mục phân tích | **2.218** | Các mã hàng còn lại sau khi dựng danh mục |
+| SKU trong mẫu so sánh chính | **287** | Các mã hàng thuộc hai nhóm `Z` được so sánh |
+
+Hai quy mô dòng hàng lấy từ [bảng luồng mẫu](../ket-qua/bang-luong-mau.csv); hai quy mô SKU lấy từ số dòng đầu ra trong [manifest tái lập](../ket-qua/manifest-tai-lap.json). Vì vậy, dữ liệu có hơn 2.000 quan sát ở cả cấp dòng hàng và cấp danh mục SKU; 287 SKU là tập con cuối dùng cho phép so sánh chính, không phải toàn bộ dữ liệu đầu vào.
+
+Đơn vị phân tích nhân quả là **SKU sai phân trước–sau**, không phải dòng hóa đơn. Câu hỏi nghiên cứu nói về quyết định định giá theo mặt hàng, nên mỗi SKU được đếm một lần; các dòng hóa đơn được dùng để dựng giá của SKU trong từng kỳ.
 
 ## 3.2 Độ phủ dữ liệu không đều
 
@@ -56,7 +67,7 @@ Nhóm làm sạch theo một luồng cố định. Bảng đầy đủ được 
 | 9 | Giữ SKU có mặt ở cả tiền kỳ và hậu kỳ | 88.231 | 84.982 | 3.249 |
 | 10 | Giữ các đường chuyển thuế dùng trong phân tích | 84.982 | 82.109 | 2.873 |
 
-Ở bước nối bảng, toàn bộ dòng chi tiết đều tìm được hóa đơn tương ứng. Sau bước giữ SKU có mặt ở cả hai kỳ, mẫu có **2.314 SKU**. Điều kiện này giúp so sánh cùng mã hàng trước và sau chính sách, nhưng cũng làm kết quả chỉ áp dụng cho SKU còn được bán ở cả hai kỳ. Giới hạn này được giải thích thêm tại [Chương 6.5](chuong-06-suc-manh-va-co-che.md#65-biên-độ-mở-rộng--sku-có-còn-được-bán-không).
+Ở bước nối bảng, toàn bộ dòng chi tiết đều tìm được hóa đơn tương ứng. Sau bước giữ SKU có mặt ở cả hai kỳ, mẫu có **2.314 SKU**; sau khi dựng danh mục phân tích còn **2.218 SKU**, trong đó **287 SKU** thuộc mẫu so sánh chính. Điều kiện này giúp so sánh cùng mã hàng trước và sau chính sách, nhưng cũng làm kết quả chỉ áp dụng cho SKU còn được bán ở cả hai kỳ. Giới hạn này được giải thích thêm tại [Chương 6.5](chuong-06-suc-manh-va-co-che.md#65-biên-độ-mở-rộng--sku-có-còn-được-bán-không).
 
 ## 3.4 Hai cách nhìn về nhóm thuế
 

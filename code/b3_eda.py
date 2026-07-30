@@ -28,6 +28,104 @@ def _luu(fig, ten):
     print(f"     → hinh/{ten}")
 
 
+def do_thi_nhan_qua():
+    """Vẽ đồ thị nhân quả (DAG) của đồ án ra hình.
+
+    Vì sao cần: bản duy nhất trước đây là khối `mermaid` trong markdown — GitHub
+    render được, nhưng slide, PDF và web thì không. Đề bài yêu cầu trình bày chi
+    tiết lý thuyết, nên đồ thị phải là hình thật, xuất được kèm báo cáo.
+
+    Toạ độ đặt tay: DAG này có một biến gây nhiễu (đặc tính SKU) toả cạnh đi
+    khắp nơi, nên thuật toán tự động xếp sẽ cho ra đống chỉ rối. Đặt tay để ba
+    cạnh dài của nó vòng ra ngoài, không cắt qua trục chính.
+
+    Không phụ thuộc dữ liệu — đây là sơ đồ thiết kế, không phải kết quả.
+    """
+    # (x, y, nhãn, loại): loại quyết định màu và nét viền
+    #   'luat'      — do luật định, ngoại sinh
+    #   'an'        — KHÔNG quan sát được (nét đứt, đây là chỗ thiết kế yếu)
+    #   'nguy'      — quan sát được nhưng là biến hậu can thiệp / vận hành
+    #   'thuong'    — biến quan sát được, dùng bình thường
+    nut = {
+        "NQ":  (1.4, 9.4, "Nghị quyết\n204/2025/QH15", "luat"),
+        "DT":  (6.9, 9.4, "Đặc tính SKU / cầu nền\n(loại hàng, độ bán chạy)", "an"),
+        "Z":   (1.4, 7.7, "Z\nđủ điều kiện theo luật", "luat"),
+        "PRE": (9.4, 7.7, "pre_p, pre_q, pre_w\nchỉ báo quan sát được", "thuong"),
+        "CN":  (1.4, 6.0, "Cửa hàng có\ncập nhật thuế suất?", "nguy"),
+        "D":   (1.4, 4.3, "D\nthuế suất thực áp", "nguy"),
+        "G":   (0.5, 2.6, "G\nnhóm quan sát", "nguy"),
+        "MC":  (3.3, 2.6, "Chi phí thực đơn\nlàm tròn giá", "thuong"),
+        "CP":  (7.6, 4.3, "Chi phí đầu vào", "an"),
+        "DD":  (9.6, 4.3, "Thay đổi\nđịa điểm 06/2025", "thuong"),
+        "Y":   (5.0, 1.5, "Y\ngiá gồm thuế", "thuong"),
+        "S":   (5.0, 0.2, "S\nquan sát ở cả hai kỳ", "nguy"),
+    }
+    # Cạnh của biến gây nhiễu vẽ riêng để không lẫn vào trục chính
+    canh_chinh = [("NQ", "Z"), ("Z", "CN"), ("CN", "D"), ("D", "G"), ("D", "MC"),
+                  ("MC", "Y"), ("CP", "Y"), ("DD", "Y"), ("Y", "S"), ("DT", "PRE")]
+    # Độ cong riêng cho từng cạnh nhiễu. Dùng chung một `rad` thì DT→Y và DT→S
+    # chạy sát khít nhau, hai mũi tên đổ về cùng một chỗ và không đọc được cạnh
+    # nào đi đâu.
+    canh_nhieu = [("DT", "Z", 0.24), ("DT", "CN", 0.40),
+                  ("DT", "Y", 0.30), ("DT", "S", -0.34)]
+
+    mau = {"luat":   ("#e8f0fb", "#1f4e79"),
+           "an":     ("#fbeaea", "#a33333"),
+           "nguy":   ("#fdf3e0", "#b5651d"),
+           "thuong": ("#f2f2f2", "#555555")}
+
+    fig, ax = plt.subplots(figsize=(12.5, 8.2))
+    ax.set_xlim(-0.6, 11.6)
+    ax.set_ylim(-0.7, 10.4)
+    ax.axis("off")
+
+    def ve_canh(a, b, rad=0.0, nhieu=False):
+        x1, y1 = nut[a][0], nut[a][1]
+        x2, y2 = nut[b][0], nut[b][1]
+        ax.annotate(
+            "", xy=(x2, y2), xytext=(x1, y1),
+            arrowprops=dict(
+                arrowstyle="-|>", mutation_scale=15,
+                color="#a33333" if nhieu else "#444444",
+                linestyle=(0, (5, 3)) if nhieu else "solid",
+                linewidth=1.1 if nhieu else 1.4,
+                connectionstyle=f"arc3,rad={rad}",
+                shrinkA=26, shrinkB=26,
+            ),
+        )
+
+    for a, b in canh_chinh:
+        ve_canh(a, b)
+    for a, b, rad in canh_nhieu:
+        ve_canh(a, b, rad=rad, nhieu=True)
+
+    for x, y, nhan, loai in nut.values():
+        nen, vien = mau[loai]
+        ax.text(x, y, nhan, ha="center", va="center", fontsize=8.5,
+                linespacing=1.35, color="#111111", zorder=3,
+                bbox=dict(boxstyle="round,pad=0.42", facecolor=nen,
+                          edgecolor=vien, linewidth=1.3,
+                          linestyle="--" if loai == "an" else "-"))
+
+    from matplotlib.lines import Line2D
+    from matplotlib.patches import Patch
+    ax.legend(
+        handles=[
+            Patch(facecolor=mau["luat"][0], edgecolor=mau["luat"][1], label="Do luật định — ngoại sinh"),
+            Patch(facecolor=mau["an"][0], edgecolor=mau["an"][1], linestyle="--",
+                  label="KHÔNG quan sát được"),
+            Patch(facecolor=mau["nguy"][0], edgecolor=mau["nguy"][1],
+                  label="Biến hậu can thiệp / quyết định vận hành"),
+            Line2D([0], [0], color="#a33333", linestyle=(0, (5, 3)),
+                   label="Cạnh từ biến gây nhiễu không quan sát được"),
+        ],
+        loc="lower left", bbox_to_anchor=(0.0, 0.0), fontsize=8, frameon=False,
+    )
+    ax.set_title("Đồ thị nhân quả của đồ án — mũi tên đỏ là các đường cần chặn",
+                 fontsize=11, pad=14)
+    _luu(fig, "do-thi-nhan-qua.png")
+
+
 def _ghi(df, ten, mo_ta):
     df.to_csv(cf.THU_MUC_KET_QUA / ten, index=False, encoding="utf-8")
     print(f"     → {ten:<34} {mo_ta}")
@@ -288,6 +386,7 @@ def chay():
     dong["post"] = dong["dg"] >= pd.Timestamp(cf.NGAY_CHINH_SACH)
     mau = pd.read_csv(cf.CSV_MAU_PHAN_TICH, dtype={"sku": str})
 
+    do_thi_nhan_qua()          # sơ đồ thiết kế, không phụ thuộc dữ liệu
     do_phu_du_lieu(goc, chitiet)
     doanh_thu_theo_lich(goc)
     ma_tran_chuyen_thue(dong)

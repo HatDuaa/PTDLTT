@@ -291,9 +291,14 @@ export default function TrangThietKe() {
       </KhoiKetQua>
 
       <KhoiKetQua
-        tieuDe="Hai phương pháp — cùng một chiến lược nhận dạng (cách tách ảnh hưởng của thuế)"
+        tieuDe="Hai mô hình phân tích nhân quả"
         vaiTro="chinh"
       >
+        <p className="mb-3 text-sm">
+          Đồ án dùng <strong>hai mô hình phân tích nhân quả khác nhau</strong>: hồi quy có
+          điều chỉnh (PP1) và phân tầng theo mức giá (PP2). Nhóm chạy thêm PP1-A thô và
+          PP1-B g-computation để có hai biến thể so sánh.
+        </p>
         <div className="grid gap-3 text-sm sm:grid-cols-2">
           <div className="rounded-lg border p-3">
             <p className="font-medium">Phương pháp 1 — Hồi quy ước lượng ATT</p>
@@ -310,11 +315,11 @@ export default function TrangThietKe() {
           </div>
         </div>
         <p className="mt-3 text-sm">
-          <strong>Cả hai dùng chung MỘT chiến lược nhận dạng: xu hướng song song.</strong> Hai
-          phương pháp cho kết quả tương tự KHÔNG xác nhận quan hệ nhân quả — nếu giả định xu hướng
-          song song sai, cả hai cùng sai theo cùng một hướng. Phép Wald dùng nhóm do luật xác định
-          (Z) để suy ra tác động của việc cửa hàng thực sự cập nhật thuế, nhưng vẫn cần xu hướng
-          song song theo Z. Vì vậy nó không phải một cách kiểm tra độc lập.
+          <strong>Cả hai dùng chung một giả định nhận dạng: xu hướng song song.</strong> Vì vậy,
+          chúng không kiểm chứng lẫn nhau; nếu giả định sai, cả hai có thể cùng sai theo một
+          hướng. Phép Wald dùng nhóm do luật xác định (Z) để suy ra tác động của việc cửa hàng
+          thực sự cập nhật thuế, nhưng vẫn cần xu hướng song song theo Z nên không phải một cách
+          kiểm tra độc lập.
         </p>
       </KhoiKetQua>
     </div>
