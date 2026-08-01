@@ -10,7 +10,7 @@ Dữ liệu: hóa đơn điện tử của **một cửa hàng tiện lợi tạ
 
 | | |
 |---|---|
-| 👥 **Nhóm** | Nguyễn Đình Lộc 25C11050 · Dương Tiến Vinh 24C11034 · Phạm Thị Chiều 24C12003 · Lê Hoàng Nhân 24C11044 |
+| 👥 **Nhóm 5** | Nguyễn Đình Lộc 25C11050 · Dương Tiến Vinh 24C11034 · Phạm Thị Chiều 24C12003 · Lê Hoàng Nhân 24C11044 |
 | 📊 **Báo cáo** | [0 · Trang bìa và mục lục](bao-cao/00-trang-bia.md) · [1 · Bối cảnh](bao-cao/chuong-01-boi-canh.md) · [2 · Cơ sở pháp lý](bao-cao/chuong-02-co-so-phap-ly.md) · [3 · Dữ liệu](bao-cao/chuong-03-du-lieu.md) · [4 · Thiết kế](bao-cao/chuong-04-thiet-ke-nhan-qua.md) · [5 · Kết quả](bao-cao/chuong-05-ket-qua.md) · [6 · Độ chắc chắn](bao-cao/chuong-06-suc-manh-va-co-che.md) |
 | 📎 **Phụ lục kỹ thuật** | [`phu-luc-ky-thuat.md`](bao-cao/phu-luc-ky-thuat.md) — công thức, chẩn đoán, độ nhạy, kết quả phụ |
 | 🔒 **Đặc tả khóa** | [`dac-ta-khoa.md`](plans/2026-07-23-thue-gtgt-passthrough/dac-ta-khoa.md) — đọc trước khi sửa bất kỳ tham số nào |

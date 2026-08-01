@@ -241,7 +241,7 @@ export default function TrangTrinhBay() {
                 ))}
               </dl>
               <div className="grid gap-1">
-                <p>Nhóm thực hiện</p>
+                <p className="font-medium text-foreground">Nhóm 5</p>
                 <ul className="grid gap-0.5">
                   {THANH_VIEN.map(({ ten, mssv }) => (
                     <li key={mssv} className="flex gap-2">

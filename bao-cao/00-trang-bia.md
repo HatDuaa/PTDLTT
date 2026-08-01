@@ -10,7 +10,7 @@ Nghị quyết 204/2025/QH15, có làm giảm giá bán lẻ mà người tiêu 
 | **Môn học** | Phân tích dữ liệu thông minh |
 | **Giảng viên** | TS. Bùi Tiến Lên |
 
-### Nhóm thực hiện
+### Nhóm 5
 
 | Họ và tên | MSSV |
 |---|---|
