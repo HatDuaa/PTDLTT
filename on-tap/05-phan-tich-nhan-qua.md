@@ -11,7 +11,7 @@ book, để dành cho vấn đáp đồ án.
 
 | Cấp | Tên | Câu hỏi | Ví dụ |
 |---|---|---|---|
-| 1 | **Liên hệ** (association) | Thấy gì? | $P(\text{chỉ nha khoa} \mid \text{kem đánh răng})$ |
+| 1 | **Liên hệ** (association) | Thấy gì? | $P(A \mid B)$ — mua chỉ nha khoa, biết đã mua kem đánh răng |
 | 2 | **Can thiệp** (intervention) | Nếu ta làm thì sao? | Tăng giá thì doanh số ra sao? |
 | 3 | **Phản thực** (counterfactual) | Giá như đã không làm thì sao? | Nếu hồi đó không uống thuốc, bệnh nhân này có sống không? |
 
@@ -59,9 +59,15 @@ $$\mathbb{E}[Y(1)] - \mathbb{E}[Y(0)] \;\;\neq\;\; \mathbb{E}[Y \mid T=1] - \mat
 
 **Chệch chọn lọc** — chênh lệch giữa hai vế:
 
-$$\underbrace{\mathbb{E}[Y \mid T{=}1] - \mathbb{E}[Y \mid T{=}0]}_{\text{đo được}}
-= \underbrace{ATT}_{\text{cái cần}}
-+ \underbrace{\bigl(\mathbb{E}[Y(0) \mid T{=}1] - \mathbb{E}[Y(0) \mid T{=}0]\bigr)}_{\text{chệch chọn lọc}}$$
+$$\underbrace{\mathbb{E}[Y \mid T{=}1] - \mathbb{E}[Y \mid T{=}0]}_{(1)}
+\;=\; \underbrace{ATT}_{(2)}
+\;+\; \underbrace{\bigl(\mathbb{E}[Y(0) \mid T{=}1] - \mathbb{E}[Y(0) \mid T{=}0]\bigr)}_{(3)}$$
+
+| | Là gì |
+|---|---|
+| **(1)** | chênh lệch **đo được** thẳng từ dữ liệu |
+| **(2)** | tác động nhân quả — **cái ta cần** |
+| **(3)** | **chệch chọn lọc** — phần bị tính nhầm thành tác động |
 
 Số hạng chệch hỏi: *hai nhóm có khác nhau ngay cả khi không ai được can thiệp
 không?* Nếu có, phần chênh lệch đó bị tính nhầm thành tác động.
@@ -142,9 +148,9 @@ Ví dụ của book: trong giới nổi tiếng, tài năng và ngoại hình c�
 giả tạo — vì muốn nổi tiếng thì cần **hoặc** tài **hoặc** đẹp. Ai vừa kém tài vừa
 kém sắc thì không lọt vào mẫu.
 
-Đây chính là **điều kiện hoá theo collider**: $\text{tài} \to \text{nổi tiếng}
-\leftarrow \text{ngoại hình}$. Chọn mẫu chỉ gồm người nổi tiếng = điều kiện hoá
-$Z$ = mở đường = tạo tương quan từ hư không.
+Đây chính là **điều kiện hoá theo collider**: tài năng → nổi tiếng ← ngoại hình.
+Chọn mẫu chỉ gồm người nổi tiếng = điều kiện hoá đúng nút hội tụ = mở đường = tạo
+tương quan từ hư không.
 
 > **Simpson là bẫy confounder, Berkson là bẫy collider.** Nhớ cặp này là trả lời
 > được mọi câu hỏi lý thuyết của 8.4.

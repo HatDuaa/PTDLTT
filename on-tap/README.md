@@ -8,6 +8,18 @@ gói nộp cũng được, không có gì trong `code/`, `web/`, `bao-cao/` ph�
 Công thức viết bằng `$...$` nên xem đẹp nhất trên GitHub hoặc VS Code preview
 (`Ctrl+Shift+V`).
 
+> **Quy tắc khi sửa: không đặt chữ Việt vào trong công thức.**
+>
+> KaTeX chỉ nhận ký tự thuộc bảng mã Latin-1, nên `\text{trên}` thì render được
+> (ê là Latin-1) nhưng `\text{dưới}`, `\text{nghèo}`, `\text{thể tích}` thì hỏng —
+> ư, ơ, đ, ă và mọi chữ có dấu thanh đều nằm ngoài Latin-1. Gặp phải, KaTeX trả về
+> `undefined`, và vì việc ghép cặp hai dấu đô-la bị lệch nên **công thức ngay sau
+> đó cũng hỏng theo** dù bản thân nó không có lỗi gì.
+>
+> Cách viết đúng: để ký hiệu trong công thức, để chữ Việt ở câu văn quanh nó.
+> Ví dụ dùng $\hat y = 64{,}68 - 0{,}62\,x$ rồi chú thích $y$, $x$ là gì bên ngoài,
+> thay vì nhét tên biến tiếng Việt vào `\text{}`.
+
 ## Đối chiếu danh sách ôn với book
 
 | Chủ đề cần ôn | Chương | File |

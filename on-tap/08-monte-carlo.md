@@ -165,7 +165,9 @@ $$SE = \frac{\sigma_f}{\sqrt{n}}$$
 
 Sinh ngẫu nhiên các điểm trong hình vuông, đếm điểm rơi vào đường tròn nội tiếp:
 
-$$\pi \approx 4 \times \frac{\text{số điểm trong tròn}}{\text{số điểm trong vuông}}$$
+$$\pi \approx 4 \times \frac{k}{n}$$
+
+với $n$ là tổng số điểm sinh ra trong hình vuông và $k$ là số điểm rơi vào đường tròn.
 
 Vì sao có số 4: hình vuông cạnh 2 có diện tích 4, tròn bán kính 1 có diện tích $\pi$,
 nên tỉ lệ điểm rơi vào tròn là $\pi/4$.
@@ -204,8 +206,8 @@ Sinh phân phối tam giác bằng biến đổi nghịch đảo. Với $a \le m
 $u \sim \mathcal{U}(0,1)$, đặt $F_m = \dfrac{m-a}{b-a}$:
 
 $$x = \begin{cases}
-a + \sqrt{u(b-a)(m-a)} & \text{nếu } u < F_m \\[4pt]
-b - \sqrt{(1-u)(b-a)(b-m)} & \text{nếu } u \ge F_m
+a + \sqrt{u(b-a)(m-a)} & u < F_m \\[4pt]
+b - \sqrt{(1-u)(b-a)(b-m)} & u \ge F_m
 \end{cases}$$
 
 **Kiểm tra bằng giải tích** — nên làm để biết mô phỏng có chạy đúng không.

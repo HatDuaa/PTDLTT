@@ -10,7 +10,9 @@ $\bar x, \bar y, s_x, s_y, R$ → tìm đường thẳng → dự đoán → ki�
 
 $$\hat{y} = \beta_0 + \beta_1 x$$
 
-$$e_i = y_i - \hat{y}_i \qquad \text{(phần dư)}$$
+**Phần dư** của quan sát $i$:
+
+$$e_i = y_i - \hat{y}_i$$
 
 Bình phương tối thiểu chọn $\beta_0, \beta_1$ sao cho $\sum e_i^2$ **nhỏ nhất** —
 không phải $\sum |e_i|$, không phải $\sum e_i$ (tổng này luôn bằng 0 với mọi đường
@@ -25,8 +27,10 @@ b_0 = \bar{y} - b_1\bar{x}$$
 Dạng tính từ dữ liệu thô (khi đề không cho sẵn $R$):
 
 $$b_1 = \frac{S_{xy}}{S_{xx}}
-\quad\text{với}\quad
-S_{xy} = \sum(x_i-\bar x)(y_i-\bar y),\;\; S_{xx} = \sum(x_i-\bar x)^2$$
+\qquad
+S_{xy} = \sum(x_i-\bar x)(y_i-\bar y)
+\qquad
+S_{xx} = \sum(x_i-\bar x)^2$$
 
 Ba điều rút ra ngay từ hai công thức trên:
 
@@ -37,7 +41,9 @@ Ba điều rút ra ngay từ hai công thức trên:
 
 ## 3. Hệ số xác định
 
-$$R^2 = (\text{hệ số tương quan})^2 = \frac{SS_{\text{Model}}}{SS_{\text{Total}}} = 1 - \frac{SS_{\text{Error}}}{SS_{\text{Total}}}$$
+Hệ số xác định $R^2$ đúng bằng **bình phương hệ số tương quan**, và cũng bằng:
+
+$$R^2 = \frac{SS_{\text{Model}}}{SS_{\text{Total}}} = 1 - \frac{SS_{\text{Error}}}{SS_{\text{Total}}}$$
 
 với $SS_{\text{Total}} = \sum(y_i - \bar y)^2$ và $SS_{\text{Error}} = \sum e_i^2$.
 
@@ -45,12 +51,13 @@ với $SS_{\text{Total}} = \sum(y_i - \bar y)^2$ và $SS_{\text{Error}} = \sum e
 
 ## 4. Suy diễn cho hệ số góc (9.4)
 
-$$T = \frac{b_1 - \text{giá trị null}}{SE_{b_1}} \qquad df = n - 2$$
+$$T = \frac{b_1 - \beta_1^{0}}{SE_{b_1}} \qquad df = n - 2$$
+
+với $\beta_1^{0}$ là **giá trị null** — con số mà $H_0$ khẳng định, gần như luôn là 0.
 
 $$CI: \quad b_1 \pm t^{*}_{n-2}\, SE_{b_1}$$
 
-Giá trị null thường là **0** — $H_0: \beta_1 = 0$ nghĩa là "$x$ không có quan hệ
-tuyến tính với $y$".
+$H_0: \beta_1 = 0$ nghĩa là "$x$ không có quan hệ tuyến tính với $y$".
 
 $df = n-2$ vì đã ước lượng **hai** tham số ($b_0$ và $b_1$) từ chính mẫu đó. So
 với $n-1$ ở chương 3 nơi chỉ ước lượng một tham số ($\bar x$).
@@ -100,9 +107,9 @@ $$b_0 = 11{,}35 - (-0{,}62)(86{,}01) = 11{,}35 + 53{,}33 = 64{,}68$$
 > Nguyên tắc: **giữ đủ chữ số cho tới bước cuối**, chỉ làm tròn khi ghi đáp án. Nếu
 > đáp án của mình lệch nhẹ với đáp án mẫu ở hệ số chặn, đây thường là lý do.
 
-**Mô hình:**
+**Mô hình** — đặt $y$ = % dân số nghèo, $x$ = % tốt nghiệp phổ thông:
 
-$$\widehat{\text{nghèo}} = 64{,}68 - 0{,}62 \times \text{TN\_phổ\_thông}$$
+$$\hat{y} = 64{,}68 - 0{,}62\,x$$
 
 **Diễn giải $b_1$:** mỗi 1 điểm phần trăm tăng thêm của tỉ lệ tốt nghiệp **đi kèm**
 mức nghèo thấp hơn 0,62 điểm phần trăm.

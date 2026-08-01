@@ -53,7 +53,9 @@ số chặn đại diện cho nó.
 
 ### Bài mẫu 2 — vùng miền
 
-$$\widehat{\text{nghèo}} = 9{,}50 + 0{,}03\,\text{midwest} + 1{,}79\,\text{west} + 4{,}16\,\text{south}$$
+Đặt $y$ = % dân số nghèo:
+
+$$\hat{y} = 9{,}50 + 0{,}03\,\text{midwest} + 1{,}79\,\text{west} + 4{,}16\,\text{south}$$
 
 | | Ước lượng | $p$ |
 |---|---|---|
@@ -73,17 +75,19 @@ nghĩa thống kê ($p = 0{,}00$). Midwest chênh 0,03 — về cơ bản là nh
 
 ### Bài mẫu 3 — dummy + biến liên tục
 
-$$\widehat{\text{cân nặng}} = 197{,}96 + 0{,}72\,\text{thể tích} - 184{,}05\,\text{bìa\_mềm}$$
+Đặt $y$ = cân nặng (gam), $V$ = thể tích (cm³), $B = 1$ nếu bìa mềm và $0$ nếu bìa
+cứng:
+
+$$\hat{y} = 197{,}96 + 0{,}72\,V - 184{,}05\,B$$
 
 Tách thành hai đường **song song**:
 
-- Bìa cứng (tham chiếu, dummy = 0): $\hat y = 197{,}96 + 0{,}72\,\text{thể tích}$
-- Bìa mềm (dummy = 1): $\hat y = 13{,}91 + 0{,}72\,\text{thể tích}$
+- Bìa cứng (tham chiếu, $B = 0$): $\hat y = 197{,}96 + 0{,}72\,V$
+- Bìa mềm ($B = 1$): $\hat y = 13{,}91 + 0{,}72\,V$
 
 Cùng hệ số góc 0,72 (mỗi cm³ thêm 0,72 gam), khác hệ số chặn 184,05 gam.
 
-Muốn hai đường **khác hệ số góc** thì phải thêm số hạng tương tác
-$\text{thể tích} \times \text{bìa\_mềm}$.
+Muốn hai đường **khác hệ số góc** thì phải thêm số hạng tương tác $V \times B$.
 
 ### Bài mẫu 4 — nhiều biến hỗn hợp
 
@@ -156,7 +160,9 @@ $$\text{odds}(E) = \frac{P(E)}{1 - P(E)}$$
 
 $$\text{logit}(p) = \log\!\left(\frac{p}{1-p}\right), \qquad 0 \le p \le 1$$
 
-$$g^{-1}(x) = \frac{1}{1 + \exp(-x)} \qquad \text{(hàm logistic, nghịch đảo của logit)}$$
+**Hàm logistic** — nghịch đảo của logit:
+
+$$g^{-1}(x) = \frac{1}{1 + \exp(-x)}$$
 
 Logit kéo $p \in [0,1]$ ra thành $(-\infty, +\infty)$ — nhờ vậy mới đặt được mô
 hình tuyến tính lên.
@@ -269,11 +275,13 @@ Trọng số 50 và 5 nói rằng một lần chặn nhầm tệ gấp 10 lần 
 *Lupus: tỉ lệ mắc 2%, độ nhạy 0,98, độ đặc hiệu 0,74. Xét nghiệm dương tính thì
 xác suất thật sự mắc là bao nhiêu?*
 
-$$P(\text{dương} \cap \text{có bệnh}) = 0{,}02 \times 0{,}98 = 0{,}0196$$
+Ký hiệu: $B$ = có bệnh, $\bar{B}$ = không bệnh, $+$ = xét nghiệm dương tính.
 
-$$P(\text{dương} \cap \text{không bệnh}) = 0{,}98 \times (1 - 0{,}74) = 0{,}98 \times 0{,}26 = 0{,}2548$$
+$$P(B \cap +) = 0{,}02 \times 0{,}98 = 0{,}0196$$
 
-$$P(\text{có bệnh} \mid \text{dương}) = \frac{0{,}0196}{0{,}0196 + 0{,}2548} = \frac{0{,}0196}{0{,}2744} = \mathbf{0{,}0714}$$
+$$P(\bar{B} \cap +) = 0{,}98 \times (1 - 0{,}74) = 0{,}98 \times 0{,}26 = 0{,}2548$$
+
+$$P(B \mid +) = \frac{0{,}0196}{0{,}0196 + 0{,}2548} = \frac{0{,}0196}{0{,}2744} = \mathbf{0{,}0714}$$
 
 Xét nghiệm rất nhạy (98%) nhưng dương tính chỉ cho **7%** khả năng mắc bệnh thật.
 Nguyên nhân: bệnh hiếm nên nhóm không bệnh đông tới mức 26% dương tính giả của họ

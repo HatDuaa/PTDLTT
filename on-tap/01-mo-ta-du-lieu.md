@@ -14,9 +14,8 @@ giữa, $n$ chẵn thì lấy trung bình hai phần tử giữa.
 
 $$IQR = Q_3 - Q_1$$
 
-**Ngưỡng ngoại lệ** (râu của boxplot):
-
-$$\text{trên} = Q_3 + 1{,}5 \times IQR \qquad \text{dưới} = Q_1 - 1{,}5 \times IQR$$
+**Ngưỡng ngoại lệ** (râu của boxplot) — râu trên $= Q_3 + 1{,}5 \times IQR$, râu dưới
+$= Q_1 - 1{,}5 \times IQR$.
 
 > Trung bình bị giá trị ngoại lệ kéo, trung vị thì không. Dữ liệu lệch (thu nhập,
 > giá nhà) thì báo cáo trung vị. Đây là câu hỏi lý thuyết hay ra.
@@ -65,9 +64,13 @@ nhập trung bình luôn cao hơn trung vị.
 **Biến đổi log** — cách xử lý dữ liệu lệch phải mạnh. Lấy $\log x$ kéo đuôi phải
 lại gần, làm phân phối đối xứng hơn, và biến quan hệ nhân thành quan hệ cộng.
 
-Đây chính là lý do đồ án nhóm dùng $Y = 100 \times \log(P_{\text{sau}}/P_{\text{trước}})$
-thay vì hiệu giá thô: giá bán lẻ lệch phải mạnh (vài mặt hàng rất đắt), và ta
-quan tâm **thay đổi bao nhiêu phần trăm** chứ không phải bao nhiêu đồng.
+Đây chính là lý do đồ án nhóm đo bằng
+
+$$Y = 100 \times \log\!\left(\frac{P_1}{P_0}\right)$$
+
+với $P_0$ là giá trước chính sách và $P_1$ là giá sau, thay vì lấy hiệu giá thô
+$P_1 - P_0$: giá bán lẻ lệch phải mạnh (vài mặt hàng rất đắt), và ta quan tâm
+**thay đổi bao nhiêu phần trăm** chứ không phải bao nhiêu đồng.
 
 ## 2. Phương sai và độ lệch chuẩn
 
@@ -115,10 +118,10 @@ $$r = \frac{\sum_{i=1}^{n} (x_i - \bar{x})(y_i - \bar{y})}{(n-1)\, s_x s_y}$$
 
 Dạng tính tay gọn hơn, không cần tính $s_x, s_y$ trước:
 
-$$r = \frac{S_{xy}}{\sqrt{S_{xx} \cdot S_{yy}}}
-\quad\text{với}\quad
-S_{xy} = \sum (x_i-\bar{x})(y_i-\bar{y}),\;
-S_{xx} = \sum (x_i-\bar{x})^2,\;
+$$r = \frac{S_{xy}}{\sqrt{S_{xx} \cdot S_{yy}}}$$
+
+$$S_{xy} = \sum (x_i-\bar{x})(y_i-\bar{y}) \qquad
+S_{xx} = \sum (x_i-\bar{x})^2 \qquad
 S_{yy} = \sum (y_i-\bar{y})^2$$
 
 Hai dạng bằng nhau vì $(n-1)s_x s_y = (n-1)\sqrt{\tfrac{S_{xx}}{n-1}}\sqrt{\tfrac{S_{yy}}{n-1}} = \sqrt{S_{xx}S_{yy}}$.
@@ -137,7 +140,9 @@ nghĩa gốc: tính Pearson trên hai cột hạng.
 
 ### Kendall τ
 
-$$\tau = \frac{\text{số cặp đồng hạng} - \text{số cặp nghịch hạng}}{n(n-1)/2}$$
+$$\tau = \frac{C - D}{n(n-1)/2}$$
+
+với $C$ là số cặp **đồng hạng** và $D$ là số cặp **nghịch hạng**.
 
 Duyệt tất cả $\binom{n}{2}$ cặp; cặp $(i,j)$ là *đồng hạng* nếu $x$ và $y$ cùng
 tăng hoặc cùng giảm, *nghịch hạng* nếu ngược chiều.

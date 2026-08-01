@@ -18,12 +18,12 @@ $\chi^2_{0{,}05}$ theo $df$: 1 → 3,841 · 2 → 5,991 · 3 → 7,815 · 4 → 
 
 $$s^2 = \frac{\sum(x_i-\bar x)^2}{n-1} \qquad s = \sqrt{s^2} \qquad IQR = Q_3 - Q_1$$
 
-$$\text{ngoại lệ: } Q_3 + 1{,}5\,IQR \;\text{ hoặc }\; Q_1 - 1{,}5\,IQR$$
+Ngưỡng ngoại lệ: $Q_3 + 1{,}5\,IQR$ hoặc $Q_1 - 1{,}5\,IQR$
 
 $$r = \frac{S_{xy}}{\sqrt{S_{xx}S_{yy}}} \qquad
 \rho_{\text{Spearman}} = 1 - \frac{6\sum d_i^2}{n(n^2-1)}$$
 
-$$\sum(x_i-\bar x)^2 = \sum x_i^2 - \frac{(\sum x_i)^2}{n} \quad \text{(tính nhanh)}$$
+Tính nhanh: $\displaystyle\sum(x_i-\bar x)^2 = \sum x_i^2 - \frac{(\sum x_i)^2}{n}$
 
 Lệch phải → $\bar x >$ trung vị · lệch trái → $\bar x <$ trung vị (**trung bình bị
 đuôi kéo**)
@@ -36,7 +36,7 @@ trên cột hạng
 
 ## [Khoảng tin cậy](02-khoang-tin-cay.md)
 
-$$\text{ước lượng điểm} \pm z^{*} \times SE$$
+Dạng chung: **ước lượng điểm** $\pm\; z^{*} \times SE$
 
 | Tham số | Khoảng tin cậy |
 |---|---|
@@ -45,7 +45,9 @@ $$\text{ước lượng điểm} \pm z^{*} \times SE$$
 | Trung bình, không biết $\sigma$ | $\bar x \pm t^{*}_{n-1}\dfrac{s}{\sqrt n}$ |
 | Hệ số góc | $b_1 \pm t^{*}_{n-2}\,SE_{b_1}$ |
 
-$$n \ge \frac{(z^{*})^2 p(1-p)}{ME^2} \quad (\text{chưa biết } p \to \text{lấy } 0{,}5)$$
+$$n \ge \frac{(z^{*})^2\, p(1-p)}{ME^2}$$
+
+Chưa biết $p$ thì lấy $p = 0{,}5$, và luôn làm tròn lên.
 
 Điều kiện CLT cho tỉ lệ: $np \ge 10$ **và** $n(1-p) \ge 10$
 
@@ -69,7 +71,9 @@ $$s_p^2 = \frac{(n_1-1)s_1^2+(n_2-1)s_2^2}{n_1+n_2-2}
 \qquad
 \bar p = \frac{n_1\hat p_1+n_2\hat p_2}{n_1+n_2}
 \qquad
-E_{ij} = \frac{\text{hàng}_i \times \text{cột}_j}{n}$$
+E_{ij} = \frac{R_i \times C_j}{n}$$
+
+($R_i$ tổng hàng $i$, $C_j$ tổng cột $j$)
 
 Bác bỏ khi **p-value $< \alpha$**, hoặc thống kê rơi vào miền bác bỏ.
 Hai phía dùng $\alpha/2$.
@@ -90,8 +94,10 @@ Kiểm soát **gây nhiễu**. Không kiểm soát **trung gian**, **hội tụ*
 
 $$ATE = \mathbb{E}[Y(1)] - \mathbb{E}[Y(0)]$$
 
-$$\underbrace{\mathbb{E}[Y|T{=}1] - \mathbb{E}[Y|T{=}0]}_{\text{đo được}}
-= ATT + \underbrace{\mathbb{E}[Y(0)|T{=}1] - \mathbb{E}[Y(0)|T{=}0]}_{\text{chệch chọn lọc}}$$
+$$\underbrace{\mathbb{E}[Y|T{=}1] - \mathbb{E}[Y|T{=}0]}_{(1)}
+= ATT + \underbrace{\mathbb{E}[Y(0)|T{=}1] - \mathbb{E}[Y(0)|T{=}0]}_{(2)}$$
+
+(1) chênh lệch đo được · (2) chệch chọn lọc
 
 RCT → chệch $= 0$ → liên hệ = nhân quả.
 
@@ -101,8 +107,10 @@ Simpson = bẫy **gây nhiễu**. Berkson = bẫy **hội tụ**.
 
 $$b_1 = \frac{s_y}{s_x}R = \frac{S_{xy}}{S_{xx}} \qquad b_0 = \bar y - b_1\bar x$$
 
-$$R^2 = (\text{hệ số tương quan})^2 = 1 - \frac{SS_{\text{Error}}}{SS_{\text{Total}}}
+$$R^2 = 1 - \frac{SS_{\text{Error}}}{SS_{\text{Total}}}
 \qquad e_i = y_i - \hat y_i$$
+
+Hồi quy đơn: $R^2$ = bình phương hệ số tương quan
 
 $$s_e = \sqrt{\frac{SS_{\text{Error}}}{n-2}} \qquad
 SE_{b_1} = \frac{s_e}{\sqrt{S_{xx}}} \qquad

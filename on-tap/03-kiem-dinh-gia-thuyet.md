@@ -145,7 +145,10 @@ Dạng dùng được khi làm bài:
 
 $$q = \sum_{i}\sum_{j} \frac{(O_{ij} - E_{ij})^2}{E_{ij}}
 \qquad
-E_{ij} = \frac{(\text{tổng hàng } i)(\text{tổng cột } j)}{n}$$
+E_{ij} = \frac{R_i \times C_j}{n}$$
+
+với $O_{ij}$ là tần suất **quan sát** ở ô $(i,j)$, $E_{ij}$ là tần suất **kỳ vọng**,
+$R_i$ là tổng hàng $i$ và $C_j$ là tổng cột $j$.
 
 Bác bỏ: $q > \chi^2_{\alpha;\,(h-1)(k-1)}$ với $h$ hàng, $k$ cột.
 
@@ -282,7 +285,7 @@ nghĩa; nhóm dùng DDT nhiễm ít hơn.
 | Không hút | 20 | 130 | 150 |
 | **Tổng cột** | **50** | **200** | **250** |
 
-**Kỳ vọng** $E_{ij} = \dfrac{\text{tổng hàng} \times \text{tổng cột}}{250}$:
+**Kỳ vọng** $E_{ij} = \dfrac{R_i \times C_j}{250}$ (tổng hàng nhân tổng cột, chia $n$):
 
 | $E$ | Bệnh | Không bệnh |
 |---|---|---|

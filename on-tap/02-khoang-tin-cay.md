@@ -26,7 +26,10 @@ toàn bộ suy diễn dựa lên.
 
 ## 2. Định lý giới hạn trung tâm cho tỉ lệ
 
-$$\hat{p} \;\sim\; \mathcal{N}\!\left(\text{trung bình} = p,\;\; SE = \sqrt{\frac{p(1-p)}{n}}\right)$$
+$$\hat{p} \;\sim\; \mathcal{N}\!\left(\mu = p,\;\; SE = \sqrt{\frac{p(1-p)}{n}}\right)$$
+
+Đọc: $\hat p$ phân phối xấp xỉ chuẩn, **trung bình** đúng bằng $p$ (nên $\hat p$ là
+ước lượng không chệch) và **sai số chuẩn** bằng $\sqrt{p(1-p)/n}$.
 
 **Hai điều kiện phải kiểm trước khi dùng:**
 
@@ -39,7 +42,7 @@ $p = 0{,}02$ → $np = 2 < 10$) thì **không được dùng xấp xỉ chuẩn*
 
 ## 3. Khoảng tin cậy cho tỉ lệ
 
-$$\text{ước lượng điểm} \;\pm\; z^{*} \times SE$$
+Dạng chung: **ước lượng điểm** $\pm\; z^{*} \times SE$. Áp cho tỉ lệ:
 
 $$\hat{p} \;\pm\; z^{*}\sqrt{\frac{\hat{p}(1-\hat{p})}{n}}$$
 
