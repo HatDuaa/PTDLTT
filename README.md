@@ -10,10 +10,11 @@ Dữ liệu: hóa đơn điện tử của **một cửa hàng tiện lợi tạ
 
 | | |
 |---|---|
-| 📊 **Báo cáo** | [1 · Bối cảnh](bao-cao/chuong-01-boi-canh.md) · [2 · Cơ sở pháp lý](bao-cao/chuong-02-co-so-phap-ly.md) · [3 · Dữ liệu](bao-cao/chuong-03-du-lieu.md) · [4 · Thiết kế](bao-cao/chuong-04-thiet-ke-nhan-qua.md) · [5 · Kết quả](bao-cao/chuong-05-ket-qua.md) · [6 · Độ chắc chắn](bao-cao/chuong-06-suc-manh-va-co-che.md) |
+| 👥 **Nhóm** | Nguyễn Đình Lộc 25C11050 · Dương Tiến Vinh 24C11034 · Phạm Thị Chiều 24C12003 · Lê Hoàng Nhân 24C11044 |
+| 📊 **Báo cáo** | [0 · Trang bìa và mục lục](bao-cao/00-trang-bia.md) · [1 · Bối cảnh](bao-cao/chuong-01-boi-canh.md) · [2 · Cơ sở pháp lý](bao-cao/chuong-02-co-so-phap-ly.md) · [3 · Dữ liệu](bao-cao/chuong-03-du-lieu.md) · [4 · Thiết kế](bao-cao/chuong-04-thiet-ke-nhan-qua.md) · [5 · Kết quả](bao-cao/chuong-05-ket-qua.md) · [6 · Độ chắc chắn](bao-cao/chuong-06-suc-manh-va-co-che.md) |
 | 📎 **Phụ lục kỹ thuật** | [`phu-luc-ky-thuat.md`](bao-cao/phu-luc-ky-thuat.md) — công thức, chẩn đoán, độ nhạy, kết quả phụ |
 | 🔒 **Đặc tả khóa** | [`dac-ta-khoa.md`](plans/2026-07-23-thue-gtgt-passthrough/dac-ta-khoa.md) — đọc trước khi sửa bất kỳ tham số nào |
-| 🌐 **Web + slide** | `web/` — 7 trang phân tích và bộ trình chiếu 19 slide, xem [hướng dẫn](#web-và-slide) |
+| 🌐 **Web + slide** | `web/` — 7 trang phân tích và bộ trình chiếu 25 slide, xem [hướng dẫn](#web-và-slide) |
 | 📄 **Bản tin nhóm** | [`ban-tin-nhom.html`](bao-cao/ban-tin-nhom.html) — trang tóm tắt tự chứa, mở bằng trình duyệt là xong |
 
 ---
@@ -170,7 +171,7 @@ cd web/frontend && npm install && npm run dev                            # cổn
 | `/ket-qua` | Bốn ước lượng, bám chuẩn cơ học, ba cổng, lưới độ nhạy |
 | `/suc-manh` | MDE, sức mạnh kiểm định tương đương, mô phỏng làm tròn, sản lượng |
 | `/han-che` | Tổng hợp hạn chế + danh sách câu cấm viết |
-| `/trinh-bay` | **Bộ trình chiếu 19 slide** |
+| `/trinh-bay` | **Bộ trình chiếu 25 slide** |
 
 Mỗi khối số liệu trên web đều kèm một khối **diễn giải bằng lời thường** trả lời câu "vậy
 nghĩa là sao" — vì người đọc là giảng viên và các bạn cùng nhóm, không phải người đọc tạp chí.
@@ -184,11 +185,13 @@ Trang `/trinh-bay` là bản trình chiếu thật, không phải trang cuộn: 
 nhìn, chuyển bằng phím **← →**, nút **Trình chiếu** phóng toàn màn hình, và **Ctrl+P** xuất
 PDF mỗi slide một trang.
 
-Mạch 19 slide: đặt vấn đề → dữ liệu → quan sát sơ bộ → cơ sở pháp lý → khung phương pháp →
-gắn biến → ba phương pháp ước lượng → kiểm tra thiết kế → kết quả → kiểm chứng bổ sung →
-hạn chế → kết luận.
+Mạch 25 slide: đặt vấn đề → dữ liệu → đánh giá sơ bộ → cơ sở pháp lý → **đại lượng cần đo →
+kết quả đo được → vì sao chưa so thẳng được** → khung phương pháp → đồ thị nhân quả → gắn
+biến → bốn cách ước lượng, mỗi cách một slide → kiểm tra thiết kế → kết quả → tỉ lệ chuyển
+thuế → hai cách đọc → kiểm chứng bổ sung → hạn chế → kết luận.
 
-Thông tin môn học và nhóm điền ở hằng số `THONG_TIN_NHOM` đầu file `app/trinh-bay/page.tsx`.
+Môn học, giảng viên và lớp điền ở hằng số `THONG_TIN_NHOM` đầu file
+`app/trinh-bay/page.tsx`; danh sách thành viên ở hằng số `THANH_VIEN` ngay dưới.
 
 > **Nguyên tắc xuyên suốt: không con số kết quả nào được gõ tay.**
 > Web đọc thẳng từ kết quả pipeline sinh ra, nên nó **không thể lệch** khỏi phân tích.
@@ -201,10 +204,10 @@ Thông tin môn học và nhóm điền ở hằng số `THONG_TIN_NHOM` đầu 
 | Thư mục | Nội dung |
 |---|---|
 | `code/` | Pipeline phân tích — 6 bước, một lệnh |
-| `bao-cao/` | Báo cáo — 6 chương và phụ lục kỹ thuật |
+| `bao-cao/` | Báo cáo — trang bìa, 6 chương và phụ lục kỹ thuật |
 | `ket-qua/` | 19 bảng kết quả + 2 hình, sinh từ pipeline |
 | `web/backend/` | FastAPI phục vụ kết quả dưới dạng JSON |
-| `web/frontend/` | Next.js — 7 trang, 5 biểu đồ, 19 slide |
+| `web/frontend/` | Next.js — 7 trang, 5 biểu đồ, 25 slide |
 | `plans/` | Kế hoạch, nhật ký phản biện, và **đặc tả khóa** |
 | `du-lieu-tam/` | *(không đẩy lên — sinh lại bằng một lệnh)* |
 

@@ -76,17 +76,23 @@ import type {
 const TONG = 25;
 
 /**
- * Thông tin môn học và nhóm — hiện trên slide bìa.
+ * Thông tin hành chính trên slide bìa — KHÔNG phải kết quả phân tích, nên gõ
+ * tay ở đây là đúng chỗ. Điền vào rồi lưu là slide tự cập nhật.
  *
- * Đây là thông tin hành chính, KHÔNG phải kết quả phân tích, nên gõ tay ở đây
- * là đúng chỗ. Điền vào rồi lưu là slide tự cập nhật.
+ * Danh sách thành viên tách riêng khỏi bảng chung: bốn cặp tên–mã số nhồi vào
+ * một ô sẽ tràn ngang bìa. Xếp thành cột riêng thì đọc được cả trên máy chiếu.
  */
 const THONG_TIN_NHOM: { nhan: string; gt: string }[] = [
   { nhan: "Môn học", gt: "" },
   { nhan: "Giảng viên", gt: "" },
   { nhan: "Lớp", gt: "" },
-  { nhan: "Nhóm", gt: "" },
-  { nhan: "Thành viên", gt: "" },
+];
+
+const THANH_VIEN: { ten: string; mssv: string }[] = [
+  { ten: "Nguyễn Đình Lộc", mssv: "25C11050" },
+  { ten: "Dương Tiến Vinh", mssv: "24C11034" },
+  { ten: "Phạm Thị Chiều", mssv: "24C12003" },
+  { ten: "Lê Hoàng Nhân", mssv: "24C11044" },
 ];
 
 function Y({ children }: { children: React.ReactNode }) {
@@ -224,14 +230,27 @@ export default function TrangTrinhBay() {
                 Dữ liệu hóa đơn điện tử của một cửa hàng tiện lợi tại TP.HCM.
               </p>
             </div>
-            <dl className="grid gap-1 text-sm text-muted-foreground">
-              {THONG_TIN_NHOM.map(({ nhan, gt }) => (
-                <div key={nhan} className="flex gap-2">
-                  <dt className="min-w-24 shrink-0">{nhan}</dt>
-                  <dd className={gt ? "text-foreground" : "italic"}>{gt || "(chưa điền)"}</dd>
-                </div>
-              ))}
-            </dl>
+            <div className="grid gap-[2vh] text-sm text-muted-foreground sm:grid-cols-2">
+              <dl className="grid gap-1 self-end">
+                {THONG_TIN_NHOM.map(({ nhan, gt }) => (
+                  <div key={nhan} className="flex gap-2">
+                    <dt className="min-w-24 shrink-0">{nhan}</dt>
+                    <dd className={gt ? "text-foreground" : "italic"}>{gt || "(chưa điền)"}</dd>
+                  </div>
+                ))}
+              </dl>
+              <div className="grid gap-1">
+                <p>Nhóm thực hiện</p>
+                <ul className="grid gap-0.5">
+                  {THANH_VIEN.map(({ ten, mssv }) => (
+                    <li key={mssv} className="flex gap-2">
+                      <span className="text-foreground">{ten}</span>
+                      <span className="tabular-nums">{mssv}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
           </div>
         </Slide>
 
