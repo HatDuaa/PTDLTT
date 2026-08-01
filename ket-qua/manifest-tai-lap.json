@@ -68,6 +68,10 @@
       "sha256_16": "d344e0385775d9c1",
       "so_dong": 4
     },
+    "eda-mo-ta-nen-theo-nhom.csv": {
+      "sha256_16": "dd4b50cda342f535",
+      "so_dong": 2
+    },
     "kq-bam-chuan-co-hoc-chi-tiet.csv": {
       "sha256_16": "15f16ef8cf9556ca",
       "so_dong": 287
@@ -75,6 +79,10 @@
     "kq-bam-chuan-co-hoc.csv": {
       "sha256_16": "4aecc1c427eb2eba",
       "so_dong": 2
+    },
+    "kq-chan-doan-hiep-bien.csv": {
+      "sha256_16": "bfb496e7b30a8eab",
+      "so_dong": 8
     },
     "kq-cong-chan-doan.csv": {
       "sha256_16": "dd89ce2675a49104",
@@ -84,6 +92,10 @@
       "sha256_16": "a6cc545d2b95df1c",
       "so_dong": 30
     },
+    "kq-he-so-mo-hinh.csv": {
+      "sha256_16": "c62148383d7a9094",
+      "so_dong": 11
+    },
     "kq-mde-va-suc-manh.csv": {
       "sha256_16": "c819a54bf9468610",
       "so_dong": 10
@@ -91,6 +103,10 @@
     "kq-mo-phong-lam-tron.csv": {
       "sha256_16": "1699677164757342",
       "so_dong": 3
+    },
+    "kq-mo-ta-y-theo-nhom.csv": {
+      "sha256_16": "8b0ea53eac924e3f",
+      "so_dong": 2
     },
     "kq-san-luong.csv": {
       "sha256_16": "4c0bb7b648073e5b",

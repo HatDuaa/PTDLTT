@@ -148,6 +148,33 @@ def smd_sau_phan_tang():
     return _lay("kq-smd-sau-phan-tang.csv")
 
 
+@app.get("/api/mo-ta-y-theo-nhom")
+def mo_ta_y_theo_nhom():
+    """Mô tả biến kết quả theo nhóm Z — kq-mo-ta-y-theo-nhom.csv.
+
+    Con số thô trước mọi phép điều chỉnh. Điểm đáng chú ý: `y_tb` DƯƠNG ở cả hai
+    nhóm, tức giá cả hai nhóm đều tăng — chênh lệch âm ở các bảng ước lượng là
+    chênh lệch giữa hai mức tăng, không phải mức giảm.
+    """
+    return _lay("kq-mo-ta-y-theo-nhom.csv")
+
+
+@app.get("/api/he-so-mo-hinh")
+def he_so_mo_hinh():
+    """Hệ số của ba mô hình — kq-he-so-mo-hinh.csv.
+
+    `tho` và `hiep_bien` khớp trên cả hai nhóm; `g_comp_z0` khớp CHỈ trên nhóm
+    đối chứng. Cột `chenh_lech_x` cho phép tái dựng phép phân rã phản thực.
+    """
+    return _lay("kq-he-so-mo-hinh.csv")
+
+
+@app.get("/api/chan-doan-hiep-bien")
+def chan_doan_hiep_bien():
+    """Vì sao thêm hiệp biến lại làm sai số TĂNG — kq-chan-doan-hiep-bien.csv."""
+    return _lay("kq-chan-doan-hiep-bien.csv")
+
+
 @app.get("/api/chan-doan-type")
 def chan_doan_type():
     """Bằng chứng loại biến `type` khỏi phân tầng — chan-doan-bien-type.csv.
@@ -200,6 +227,9 @@ def tat_ca():
         "luong_mau": _lay("bang-luong-mau.csv"),
         "chan_doan_type": _lay("chan-doan-bien-type.csv"),
         "smd_sau_phan_tang": _lay("kq-smd-sau-phan-tang.csv"),
+        "mo_ta_y_theo_nhom": _lay("kq-mo-ta-y-theo-nhom.csv"),
+        "he_so_mo_hinh": _lay("kq-he-so-mo-hinh.csv"),
+        "chan_doan_hiep_bien": _lay("kq-chan-doan-hiep-bien.csv"),
         "eda": {ten: _lay(ten_file) for ten, ten_file in BAN_DO_EDA.items()},
         "manifest": _lay(KHOA_MANIFEST),
     }

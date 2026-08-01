@@ -23,6 +23,9 @@ CSV_TANG = cf.THU_MUC_KET_QUA / "kq-theo-tang.csv"
 CSV_NHAY = cf.THU_MUC_KET_QUA / "kq-do-nhay.csv"
 CSV_CONG = cf.THU_MUC_KET_QUA / "kq-cong-chan-doan.csv"
 CSV_SMD_TANG = cf.THU_MUC_KET_QUA / "kq-smd-sau-phan-tang.csv"
+CSV_MO_TA_Y = cf.THU_MUC_KET_QUA / "kq-mo-ta-y-theo-nhom.csv"
+CSV_HE_SO = cf.THU_MUC_KET_QUA / "kq-he-so-mo-hinh.csv"
+CSV_CHAN_DOAN_HB = cf.THU_MUC_KET_QUA / "kq-chan-doan-hiep-bien.csv"
 
 
 def them_hiep_bien(d):
@@ -86,6 +89,118 @@ def pp1_cach_b(d, can_thiep, bien_kq="y", so_lan=None):
         b0 = d0.iloc[rng.integers(0, len(d0), len(d0))]
         boot[b] = _att_g_comp(b1, b0, bien_kq)
     return _tom_tat_boot(est, boot)
+
+
+def mo_ta_y_theo_nhom(d):
+    """Mô tả biến kết quả theo nhóm Z — con số THÔ trước mọi phép điều chỉnh.
+
+    Vì sao cần thành đầu ra chuẩn thay vì để người viết slide tự tính: hai con số
+    `+0,624` và `+1,022` là chỗ chống hiểu nhầm quan trọng nhất của cả đồ án —
+    chúng cho thấy giá CẢ HAI nhóm đều TĂNG, nên `−0,398` là chênh lệch giữa hai
+    mức tăng chứ không phải mức giảm. Gõ tay hai số đó vào slide là để chúng trôi
+    tự do khỏi pipeline.
+
+    Độ lệch chuẩn đi kèm cũng không thừa: nó giải thích vì sao mọi khoảng tin cậy
+    về sau đều rộng — nhiễu gấp khoảng 15 lần thứ cần đo.
+
+    Đặt ở b4 chứ không b3: `y` nằm trong danh sách cột CẤM của chương mô tả.
+    """
+    hang = []
+    for z, s in d[d["Z"].isin([0, 1])].groupby("Z"):
+        giu_nguyen = int(((s["pg_hau"] - s["pg_tien"]).abs() < 1).sum())
+        hang.append({"Z": int(z), "n": len(s),
+                     "y_tb": round(s.y.mean(), 4),
+                     "y_trung_vi": round(s.y.median(), 4),
+                     "y_do_lech_chuan": round(s.y.std(), 3),
+                     "n_giu_nguyen_gia": giu_nguyen})
+    bang = pd.DataFrame(hang).sort_values("Z", ascending=False)
+    bang.to_csv(CSV_MO_TA_Y, index=False, encoding="utf-8")
+    z1, z0 = bang[bang.Z == 1].iloc[0], bang[bang.Z == 0].iloc[0]
+    print(f"\n  Mô tả thô: y trung bình Z=1 {z1.y_tb:+.4f} | Z=0 {z0.y_tb:+.4f}"
+          f"  → cả hai nhóm đều {'TĂNG' if min(z1.y_tb, z0.y_tb) > 0 else 'lẫn hướng'}")
+    print(f"    độ lệch chuẩn {z1.y_do_lech_chuan:.2f} và {z0.y_do_lech_chuan:.2f}"
+          f" — nhiễu lớn hơn nhiều so với chênh lệch cần đo")
+    return bang
+
+
+def he_so_mo_hinh(d, can_thiep="Z", bien_kq="y"):
+    """Toàn bộ hệ số của ba mô hình, kèm chênh lệch hiệp biến giữa hai nhóm.
+
+    Vì sao phải ghi ra file thay vì chỉ in: slide và báo cáo cần cả bảng hệ số
+    chứ không riêng `β₁`. Chính ba hệ số hiệp biến mới cho thấy mô hình đang trừ
+    cái gì — và chính chênh lệch giữa hệ số của hai mô hình mới giải thích được
+    vì sao PP1-A và PP1-B ra hai con số khác nhau.
+
+    Cột `chenh_lech_x` cho phép tái dựng phép phân rã mà không cần đọc lại mẫu:
+
+        dự báo phản thực = trung bình y(Z=0) + Σ hệ_số × chênh_lệch_x
+
+    Ba mô hình:
+      tho        — y ~ Z, khớp trên cả hai nhóm
+      hiep_bien  — y ~ Z + X, khớp trên cả hai nhóm (dùng CHUNG một dốc)
+      g_comp_z0  — y ~ X, khớp CHỈ trên nhóm đối chứng
+    """
+    d1, d0 = d[d[can_thiep] == 1], d[d[can_thiep] == 0]
+    lech = {b: d1[b].mean() - d0[b].mean() for b in HIEP_BIEN}
+    hang = []
+
+    def them(mo_hinh, ten_bien, gia_tri):
+        hang.append({"mo_hinh": mo_hinh, "bien": ten_bien,
+                     "he_so": round(float(gia_tri), 4),
+                     "chenh_lech_x": (round(lech[ten_bien], 4)
+                                      if ten_bien in lech else None)})
+
+    for nhan, ct in [("tho", f"{bien_kq} ~ {can_thiep}"),
+                     ("hiep_bien", f"{bien_kq} ~ {can_thiep} + " + " + ".join(HIEP_BIEN))]:
+        r = smf.ols(ct, d).fit(cov_type="HC3")
+        for ten_bien, gt in r.params.items():
+            them(nhan, "chan" if ten_bien == "Intercept" else ten_bien, gt)
+
+    beta, *_ = np.linalg.lstsq(_thiet_ke(d0), d0[bien_kq].to_numpy(), rcond=None)
+    for ten_bien, gt in zip(["chan"] + HIEP_BIEN, beta):
+        them("g_comp_z0", ten_bien, gt)
+
+    bang = pd.DataFrame(hang)
+    bang.to_csv(CSV_HE_SO, index=False, encoding="utf-8")
+    print(f"\n  Hệ số ba mô hình → {CSV_HE_SO.name}")
+    return bang
+
+
+def chan_doan_hiep_bien(d, can_thiep="Z", bien_kq="y"):
+    """Vì sao thêm hiệp biến lại làm sai số của `Z` TĂNG chứ không giảm.
+
+    Nghịch lý này có thật và đo được, nên phải thành đầu ra chứ không phải một
+    câu giải thích gõ tay trên slide. Hai nguyên nhân tách bạch:
+
+      · hiệp biến hầu như KHÔNG giải thích được `y` (phần dư gần như không đổi)
+        → không có phần lợi nào để bù
+      · nhưng `Z` lại đoán được khá tốt từ `X` (hai nhóm hàng vốn khác nhau ở
+        đúng ba biến đó) → phương sai của `β₁` bị phóng đại theo hệ số VIF
+
+    Kiểm nhanh: se_tho × √VIF ≈ se_hiep_bien.
+    """
+    r_tho = smf.ols(f"{bien_kq} ~ {can_thiep}", d).fit(cov_type="HC3")
+    r_hb = smf.ols(f"{bien_kq} ~ {can_thiep} + " + " + ".join(HIEP_BIEN),
+                   d).fit(cov_type="HC3")
+    r_z = smf.ols(f"{can_thiep} ~ " + " + ".join(HIEP_BIEN), d).fit()
+    vif = 1 / (1 - r_z.rsquared)
+    muc = [
+        ("se_z_tho", r_tho.bse[can_thiep]),
+        ("se_z_hiep_bien", r_hb.bse[can_thiep]),
+        ("sd_phan_du_tho", r_tho.resid.std(ddof=2)),
+        ("sd_phan_du_hiep_bien", r_hb.resid.std(ddof=1 + len(HIEP_BIEN) + 1)),
+        ("r2_tho", r_tho.rsquared),
+        ("r2_hiep_bien", r_hb.rsquared),
+        ("r2_can_thiep_theo_x", r_z.rsquared),
+        ("vif_can_thiep", vif),
+    ]
+    bang = pd.DataFrame([{"chi_so": k, "gia_tri": round(float(v), 4)} for k, v in muc])
+    bang.to_csv(CSV_CHAN_DOAN_HB, index=False, encoding="utf-8")
+    print(f"  Chẩn đoán hiệp biến: SE {r_tho.bse[can_thiep]:.3f} → "
+          f"{r_hb.bse[can_thiep]:.3f} dù phần dư gần như không đổi "
+          f"({r_tho.resid.std(ddof=2):.3f} → {r_hb.resid.std(ddof=5):.3f}); "
+          f"VIF={vif:.3f}")
+    return bang
 
 
 def chong_lan_hiep_bien(d, can_thiep):
@@ -275,6 +390,10 @@ def chay():
     print("=" * 78)
     itt = m[m["Z"] >= 0].copy()
     print(f"  Mẫu: Z=1 → {int((itt.Z==1).sum())} SKU  |  Z=0 → {int((itt.Z==0).sum())} SKU")
+
+    mo_ta_y_theo_nhom(itt)
+    he_so_mo_hinh(itt)
+    chan_doan_hiep_bien(itt)
 
     ngoai, chi_tiet = chong_lan_hiep_bien(itt, "Z")
     print(f"\n  Chồng lấn hiệp biến: {ngoai*100:.1f}% SKU Z=1 nằm NGOÀI khoảng của Z=0")

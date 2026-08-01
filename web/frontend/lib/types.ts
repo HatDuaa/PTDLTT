@@ -173,6 +173,49 @@ export interface SmdSauPhanTangRow {
 }
 
 // ---------------------------------------------------------------------------
+// /api/mo-ta-y-theo-nhom — kq-mo-ta-y-theo-nhom.csv
+// Mô tả biến kết quả theo nhóm Z, THÔ, trước mọi phép điều chỉnh. Hai dòng.
+//
+// `y_tb` DƯƠNG ở cả hai nhóm: giá cả hai đều tăng. Vì vậy chênh lệch âm trong
+// mọi bảng ước lượng là chênh lệch giữa hai mức TĂNG, không phải mức giảm — đây
+// là chỗ chống hiểu nhầm quan trọng nhất khi đọc kết quả.
+// ---------------------------------------------------------------------------
+export interface MoTaYTheoNhomRow {
+  Z: number;
+  n: number;
+  y_tb: number;
+  y_trung_vi: number;
+  y_do_lech_chuan: number;
+  n_giu_nguyen_gia: number;
+}
+
+// ---------------------------------------------------------------------------
+// /api/he-so-mo-hinh — kq-he-so-mo-hinh.csv
+// Hệ số đầy đủ của ba mô hình. `chenh_lech_x` là trung bình X nhóm Z=1 trừ nhóm
+// Z=0, chỉ có ở các dòng hiệp biến — nhân với `he_so` là ra phần đóng góp của
+// từng biến vào dự báo phản thực.
+// ---------------------------------------------------------------------------
+export type TenMoHinh = "tho" | "hiep_bien" | "g_comp_z0";
+
+export interface HeSoMoHinhRow {
+  mo_hinh: TenMoHinh;
+  bien: string;
+  he_so: number;
+  chenh_lech_x: number | null;
+}
+
+// ---------------------------------------------------------------------------
+// /api/chan-doan-hiep-bien — kq-chan-doan-hiep-bien.csv
+// Dạng dài `chi_so` → `gia_tri`. Giải thích vì sao thêm hiệp biến làm sai số của
+// Z tăng: phần dư gần như không đổi (không có lợi) trong khi Z đoán được từ X
+// (chịu phí cộng tuyến).
+// ---------------------------------------------------------------------------
+export interface ChanDoanHiepBienRow {
+  chi_so: string;
+  gia_tri: number;
+}
+
+// ---------------------------------------------------------------------------
 // /api/manifest — manifest-tai-lap.json
 // ---------------------------------------------------------------------------
 export interface ManifestData {
@@ -204,6 +247,22 @@ export interface EdaMaTranChuyenTheRow {
   tien: string;
   hau: string;
   so_sku: number;
+}
+
+/**
+ * Ba biến nền theo nhóm Z, ở THANG GỐC (đồng, số lượng, số tuần).
+ *
+ * Khác `EdaCanBangTienKyRow` ở chỗ đó: bảng cân bằng báo trung vị/IQR ở thang
+ * log vì nó phục vụ SMD và biểu đồ chồng lấn. Bảng này để nói thành lời — "72
+ * nghìn so với 109 nghìn", "6,2 so với 33,3".
+ */
+export interface EdaMoTaNenTheoNhomRow {
+  Z: number;
+  n: number;
+  pre_p_tb: number;
+  pre_p_trung_vi: number;
+  pre_q_tb: number;
+  pre_w_tb: number;
 }
 
 export interface EdaCanBangTienKyRow {
@@ -264,4 +323,5 @@ export interface EdaTenRowMap {
   "co-cau-loai-san-pham": EdaCoCauLoaiRow;
   "ho-tro-phan-tang": EdaHoTroPhanTangRow;
   "luoi-survivorship": EdaLuoiSurvivorshipRow;
+  "mo-ta-nen-theo-nhom": EdaMoTaNenTheoNhomRow;
 }

@@ -1,0 +1,12 @@
+mo_hinh,bien,he_so,chenh_lech_x
+tho,chan,1.0222,
+tho,Z,-0.3978,
+hiep_bien,chan,0.0267,
+hiep_bien,Z,-0.2698,
+hiep_bien,log_pre_p,0.0967,0.0086
+hiep_bien,log1p_pre_q,0.9925,-0.9297
+hiep_bien,pre_w,-0.557,-1.4252
+g_comp_z0,chan,7.4308,
+g_comp_z0,log_pre_p,-0.4792,0.0086
+g_comp_z0,log1p_pre_q,0.5469,-0.9297
+g_comp_z0,pre_w,-0.5463,-1.4252

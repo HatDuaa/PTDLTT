@@ -334,6 +334,37 @@ def can_bang_tien_ky(mau):
     return cb
 
 
+def mo_ta_nen_theo_nhom(mau):
+    """Ba biến nền theo nhóm Z, ở THANG GỐC — cho slide "vì sao chưa so thẳng được".
+
+    Vì sao không dùng lại `eda-can-bang-tien-ky.csv`: bảng đó báo trung vị và IQR
+    ở thang log vì nó phục vụ SMD và biểu đồ chồng lấn. Người nghe thuyết trình
+    cần "72.319đ so với 108.913đ" và "6,2 so với 33,3" — con số đọc lên hiểu ngay,
+    không phải 10,985 so với 10,82.
+
+    Nhóm theo `Z` (đủ điều kiện theo LUẬT) chứ không theo `grp` (nhóm quan sát
+    được từ thuế suất cửa hàng thực áp). Hai cái KHÔNG trùng nhau: 20 SKU luật
+    cho giảm nhưng cửa hàng vẫn xuất 10% nên rơi vào C10 — chúng vẫn là Z=1.
+    Dùng nhầm `grp` thì bảng này lệch với mọi bảng ước lượng phía sau.
+
+    Chỉ đụng cột tiền can thiệp, đúng quy tắc chống rò rỉ ở đầu file.
+    """
+    print("  [4] Mô tả biến nền theo nhóm Z (thang gốc)")
+    d = mau[mau["Z"].isin([0, 1])]
+    hang = [{"Z": int(z), "n": len(s),
+             "pre_p_tb": round(s.pre_p.mean(), 0),
+             "pre_p_trung_vi": round(s.pre_p.median(), 0),
+             "pre_q_tb": round(s.pre_q.mean(), 2),
+             "pre_w_tb": round(s.pre_w.mean(), 2)}
+            for z, s in d.groupby("Z")]
+    bang = pd.DataFrame(hang).sort_values("Z", ascending=False)
+    _ghi(bang, "eda-mo-ta-nen-theo-nhom.csv", "giá/sức bán/tần suất nền theo Z")
+    z1, z0 = bang[bang.Z == 1].iloc[0], bang[bang.Z == 0].iloc[0]
+    print(f"      sức bán nền: Z=1 {z1.pre_q_tb:.1f} vs Z=0 {z0.pre_q_tb:.1f} "
+          f"→ gấp {z0.pre_q_tb / z1.pre_q_tb:.1f} lần")
+    return bang
+
+
 def ho_tro_phan_tang(mau):
     """Bảng hỗ trợ 5 tầng cho từng định nghĩa đối chứng — §9."""
     print("  [5] Hỗ trợ phân tầng PP2 (5 phân vị giá nền)")
@@ -398,6 +429,7 @@ def chay():
     doanh_thu_theo_lich(goc)
     ma_tran_chuyen_thue(dong)
     can_bang_tien_ky(mau)
+    mo_ta_nen_theo_nhom(mau)
     ho_tro_phan_tang(mau)
     luoi_survivorship(mau)
     print("  Chương 3 xong. Không bảng/hình nào dùng biến kết quả.")

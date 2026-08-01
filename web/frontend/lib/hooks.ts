@@ -83,6 +83,18 @@ export function useSmdSauPhanTang() {
   return useApi("smd-sau-phan-tang", apiClient.laySmdSauPhanTang);
 }
 
+export function useMoTaYTheoNhom() {
+  return useApi("mo-ta-y-theo-nhom", apiClient.layMoTaYTheoNhom);
+}
+
+export function useHeSoMoHinh() {
+  return useApi("he-so-mo-hinh", apiClient.layHeSoMoHinh);
+}
+
+export function useChanDoanHiepBien() {
+  return useApi("chan-doan-hiep-bien", apiClient.layChanDoanHiepBien);
+}
+
 export function useManifest() {
   return useApi("manifest", apiClient.layManifest);
 }

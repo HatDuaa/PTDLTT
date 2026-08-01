@@ -26,6 +26,9 @@ export const API_ROUTES = {
   luongMau: "/api/luong-mau",
   eda: (ten: EdaTen) => `/api/eda/${ten}`,
   smdSauPhanTang: "/api/smd-sau-phan-tang",
+  moTaYTheoNhom: "/api/mo-ta-y-theo-nhom",
+  heSoMoHinh: "/api/he-so-mo-hinh",
+  chanDoanHiepBien: "/api/chan-doan-hiep-bien",
   manifest: "/api/manifest",
 } as const;
 
@@ -37,4 +40,5 @@ export type EdaTen =
   | "can-bang-tien-ky"
   | "co-cau-loai-san-pham"
   | "ho-tro-phan-tang"
-  | "luoi-survivorship";
+  | "luoi-survivorship"
+  | "mo-ta-nen-theo-nhom";

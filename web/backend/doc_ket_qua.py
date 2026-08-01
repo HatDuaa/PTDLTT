@@ -63,6 +63,15 @@ SCHEMA_CSV: dict[str, list[str]] = {
     "kq-smd-sau-phan-tang.csv": [
         "tang", "bien", "n1", "n0", "smd", "vuot_nguong",
     ],
+    "kq-mo-ta-y-theo-nhom.csv": [
+        "Z", "n", "y_tb", "y_trung_vi", "y_do_lech_chuan", "n_giu_nguyen_gia",
+    ],
+    "kq-he-so-mo-hinh.csv": [
+        "mo_hinh", "bien", "he_so", "chenh_lech_x",
+    ],
+    "kq-chan-doan-hiep-bien.csv": [
+        "chi_so", "gia_tri",
+    ],
     "eda-can-bang-tien-ky.csv": [
         "doi_chung", "n_C", "bien", "T_trung_vi", "C_trung_vi", "T_IQR",
         "C_IQR", "SMD",
@@ -88,6 +97,9 @@ SCHEMA_CSV: dict[str, list[str]] = {
     "eda-ma-tran-chuyen-thue.csv": [
         "tien", "hau", "so_sku",
     ],
+    "eda-mo-ta-nen-theo-nhom.csv": [
+        "Z", "n", "pre_p_tb", "pre_p_trung_vi", "pre_q_tb", "pre_w_tb",
+    ],
 }
 
 # Ánh xạ tên ngắn dùng trong URL GET /api/eda/{ten} -> tên file CSV thật.
@@ -99,6 +111,7 @@ BAN_DO_EDA: dict[str, str] = {
     "ho-tro-phan-tang": "eda-ho-tro-phan-tang.csv",
     "luoi-survivorship": "eda-luoi-survivorship.csv",
     "ma-tran-chuyen-thue": "eda-ma-tran-chuyen-thue.csv",
+    "mo-ta-nen-theo-nhom": "eda-mo-ta-nen-theo-nhom.csv",
 }
 
 TEN_FILE_MANIFEST = "manifest-tai-lap.json"
