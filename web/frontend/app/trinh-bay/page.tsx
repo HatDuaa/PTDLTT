@@ -83,8 +83,10 @@ const TONG = 25;
  * một ô sẽ tràn ngang bìa. Xếp thành cột riêng thì đọc được cả trên máy chiếu.
  */
 const THONG_TIN_NHOM: { nhan: string; gt: string }[] = [
-  { nhan: "Môn học", gt: "" },
-  { nhan: "Giảng viên", gt: "" },
+  { nhan: "Môn học", gt: "Phân tích dữ liệu thông minh" },
+  // Trang cá nhân fit.hcmus.edu.vn/~btlen ghi "Dr. BUI TIEN LEN", chức danh
+  // Senior Lecturer — không có dấu hiệu phó giáo sư, nên ghi TS. chứ không PGS.TS.
+  { nhan: "Giảng viên", gt: "TS. Bùi Tiến Lên" },
   { nhan: "Lớp", gt: "" },
 ];
 

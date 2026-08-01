@@ -7,8 +7,8 @@ Nghị quyết 204/2025/QH15, có làm giảm giá bán lẻ mà người tiêu 
 
 | | |
 |---|---|
-| **Môn học** | *(chưa điền)* |
-| **Giảng viên** | *(chưa điền)* |
+| **Môn học** | Phân tích dữ liệu thông minh |
+| **Giảng viên** | TS. Bùi Tiến Lên |
 | **Lớp** | *(chưa điền)* |
 
 ### Nhóm thực hiện
