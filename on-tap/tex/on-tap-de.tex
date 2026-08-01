@@ -1,0 +1,443 @@
+% =====================================================================
+%  ÔN TẬP — BẢN DỄ
+%
+%  Khác bản đầy đủ (on-tap.tex) ở chỗ: mỗi chương chỉ giữ thứ tối thiểu
+%  để làm được bài — nó là gì, công thức nào, một ví dụ số nhỏ. Bỏ hết
+%  phần bẫy, phần ngoài giáo trình, và các bài dài.
+%
+%  Biên dịch: pdflatex -interaction=nonstopmode on-tap-de.tex   (HAI LẦN)
+% =====================================================================
+\documentclass[12pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T5]{fontenc}
+\usepackage[vietnamese]{babel}
+\usepackage[a4paper,margin=2.4cm]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{hyperref}
+
+\hypersetup{unicode=true, hidelinks, pdftitle={On tap ban de}}
+\setlist{leftmargin=*, topsep=3pt, itemsep=2pt}
+\emergencystretch=3em
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+
+\newcommand{\nho}{\textbf{Nhớ:}\ }
+
+\title{\vspace{-1.5cm}\bfseries Ôn tập — bản dễ}
+\author{Phân tích dữ liệu thông minh}
+\date{}
+
+\begin{document}
+\maketitle
+\vspace{-0.8cm}
+
+\begin{center}
+\fbox{\parbox{0.92\linewidth}{\centering
+Mỗi phần chỉ có ba thứ: \textbf{nó là gì}, \textbf{công thức}, \textbf{một ví dụ}.\\
+Cần chi tiết hơn thì xem bản đầy đủ \texttt{on-tap.tex}.
+}}
+\end{center}
+
+\tableofcontents
+\newpage
+
+% =====================================================================
+\section{Mô tả dữ liệu}
+
+\subsection*{Nó là gì}
+
+Tóm tắt một đống số thành vài con số dễ nói.
+
+\begin{itemize}
+\item \textbf{Trung bình} --- điểm cân bằng.
+\item \textbf{Trung vị} --- số đứng giữa khi sắp thứ tự.
+\item \textbf{Độ lệch chuẩn} --- dữ liệu tản ra bao xa quanh trung bình.
+\end{itemize}
+
+\subsection*{Công thức}
+
+\[
+\bar{x} = \frac{\text{tổng}}{n}
+\qquad
+s^2 = \frac{\sum (x_i-\bar{x})^2}{n-1}
+\qquad
+s = \sqrt{s^2}
+\]
+
+\nho mẫu số là $n-1$, không phải $n$.
+
+\subsection*{Ví dụ}
+
+Dữ liệu: $2,\ 4,\ 4,\ 5,\ 7,\ 8$. Trung bình $= 30/6 = 5$.
+
+Lấy từng số trừ 5 rồi bình phương:
+$9 + 1 + 1 + 0 + 4 + 9 = 24$.
+
+\[
+s^2 = \frac{24}{6-1} = 4{,}8
+\qquad
+s = \sqrt{4{,}8} = 2{,}19
+\]
+
+\subsection*{Hai hệ số tương quan}
+
+Đo hai biến có đi cùng nhau không. Cả hai đều nằm trong khoảng từ $-1$ đến $1$.
+
+\begin{center}
+\begin{tabular}{@{}lll@{}}
+\toprule
+ & \textbf{Pearson} & \textbf{Spearman} \\
+\midrule
+Hỏi gì & hai biến có nằm trên một đường thẳng không & có cùng tăng cùng giảm không \\
+Dùng khi & dữ liệu là số & dữ liệu là số hoặc là thứ hạng \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Gần $+1$ là cùng chiều mạnh, gần $-1$ là ngược chiều mạnh, gần $0$ là không liên quan.
+
+\nho trung bình bị số quá lớn hoặc quá nhỏ kéo đi, trung vị thì không. Dữ liệu có
+số bất thường (thu nhập, giá nhà) thì báo cáo trung vị.
+
+% =====================================================================
+\section{Khoảng tin cậy}
+
+\subsection*{Nó là gì}
+
+Ta chỉ đo được một mẫu, không đo được cả nước. Khoảng tin cậy là câu trả lời kèm
+biên độ sai: \emph{``khoảng chừng từ đây tới đây''}.
+
+\subsection*{Công thức}
+
+\[
+\text{con số đo được} \ \pm\ z^{*} \times SE
+\]
+
+Với tỉ lệ phần trăm:
+
+\[
+SE = \sqrt{\frac{\hat p\,(1-\hat p)}{n}}
+\qquad\qquad
+z^{*} = 1{,}96 \ \text{ cho độ tin cậy } 95\%
+\]
+
+\subsection*{Ví dụ}
+
+Hỏi 850 người, có $67\%$ đồng ý. Vậy $\hat p = 0{,}67$ và $n = 850$.
+
+\[
+SE = \sqrt{\frac{0{,}67 \times 0{,}33}{850}} = 0{,}0161
+\]
+\[
+0{,}67 \ \pm\ 1{,}96 \times 0{,}0161
+\;=\; 0{,}67 \pm 0{,}032
+\;=\; (0{,}64;\ 0{,}70)
+\]
+
+Đọc: \emph{``tin cậy 95\% rằng tỉ lệ thật nằm trong khoảng 64\% đến 70\%''}.
+
+\nho mẫu càng lớn thì khoảng càng hẹp. Muốn khoảng hẹp đi một nửa thì phải lấy mẫu
+lớn gấp bốn.
+
+% =====================================================================
+\section{Kiểm định giả thuyết}
+
+\subsection*{Nó là gì}
+
+Có một tuyên bố. Ta có dữ liệu. Hỏi: dữ liệu có đủ mạnh để bác bỏ tuyên bố đó không,
+hay chênh lệch chỉ là may rủi.
+
+\subsection*{Bốn bước}
+
+\begin{enumerate}
+\item Viết $H_0$ (tuyên bố cần thử) và $H_a$ (điều ta nghi ngờ).
+\item Tính thống kê kiểm định ($z$ hoặc $t$).
+\item So với ngưỡng, hoặc tính p-value.
+\item \textbf{p-value nhỏ hơn $\alpha$ thì bác bỏ $H_0$.}
+\end{enumerate}
+
+\subsection*{Ba công thức đủ dùng cho phần lớn bài}
+
+\begin{center}
+\begin{tabular}{@{}ll@{}}
+\toprule
+\textbf{Đề cho gì} & \textbf{Dùng công thức} \\
+\midrule
+Một trung bình, có $s$ &
+  $t = \dfrac{\bar x - \mu_0}{s/\sqrt n}$ \quad với $df = n-1$ \\[10pt]
+Một tỉ lệ &
+  $z = \dfrac{\hat p - p_0}{\sqrt{p_0(1-p_0)/n}}$ \\[10pt]
+Hai trung bình, mẫu lớn &
+  $z = \dfrac{\bar x_1 - \bar x_2}{\sqrt{s_1^2/n_1 + s_2^2/n_2}}$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection*{Ngưỡng nào}
+
+\begin{center}
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Đề hỏi} & \textbf{Kiểu} & \textbf{Ngưỡng khi } $\alpha = 0{,}05$ \\
+\midrule
+``có khác không'' & hai phía & $|z| > 1{,}96$ \\
+``có tăng không'' & một phía & $z > 1{,}645$ \\
+``có giảm không'' & một phía & $z < -1{,}645$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection*{Ví dụ}
+
+Giám đốc nói lương trung bình là 380. Lấy mẫu $n = 36$ người thấy $\bar x = 350$ và
+$s = 40$. Kiểm ở $\alpha = 0{,}05$.
+
+$H_0$: lương $= 380$. \quad $H_a$: lương $\neq 380$ (hai phía).
+
+\[
+t = \frac{350 - 380}{40/\sqrt{36}} = \frac{-30}{6{,}667} = -4{,}50
+\]
+
+Ngưỡng là $2{,}030$. Vì $4{,}50 > 2{,}030$ nên \textbf{bác bỏ $H_0$} --- lương thật
+sự thấp hơn 380.
+
+\nho không bác bỏ được thì viết \emph{``chưa đủ bằng chứng''}, đừng viết
+\emph{``chấp nhận $H_0$''}.
+
+% =====================================================================
+\section{Mô hình đồ thị}
+
+\subsection*{Nó là gì}
+
+Vẽ mũi tên giữa các biến để biết cái nào ảnh hưởng cái nào, rồi từ đó biết khi
+phân tích thì \emph{phải giữ cố định biến nào}.
+
+\subsection*{Ba hình cần thuộc}
+
+\begin{center}
+\begin{tabular}{@{}llp{5.6cm}@{}}
+\toprule
+\textbf{Hình} & \textbf{Tên} & \textbf{Có kiểm soát không} \\
+\midrule
+$X \leftarrow Z \to Y$ & gây nhiễu & \textbf{CÓ}. Không kiểm soát thì kết quả sai. \\
+$X \to Z \to Y$ & trung gian & \textbf{KHÔNG}. Kiểm soát là xoá mất cái cần đo. \\
+$X \to Z \leftarrow Y$ & hội tụ & \textbf{KHÔNG}. Kiểm soát là tự tạo ra liên hệ giả. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Cách nhận ra: nhìn chiều mũi tên ở biến giữa. Hai mũi tên \emph{đâm vào} nó thì đó
+là hội tụ.
+
+\subsection*{Ví dụ}
+
+Muốn biết \emph{học thêm} có làm \emph{điểm} cao lên không. Nhưng \emph{gia đình
+khá giả} vừa làm trẻ dễ đi học thêm hơn, vừa làm điểm cao hơn.
+
+\[
+\text{học thêm} \ \leftarrow\ \text{gia đình khá giả} \ \to\ \text{điểm}
+\]
+
+Đây là \textbf{gây nhiễu}. Không giữ cố định mức khá giả thì ta sẽ tưởng học thêm
+hiệu quả hơn thực tế.
+
+\nho chỉ kiểm soát biến \emph{gây nhiễu}. Nhét hết mọi biến vào mô hình cho chắc là
+sai.
+
+% =====================================================================
+\section{Phân tích nhân quả}
+
+\subsection*{Nó là gì}
+
+Phân biệt \emph{đi cùng nhau} với \emph{gây ra}.
+
+\subsection*{Ý chính}
+
+Với mỗi người ta chỉ thấy được \emph{một} kết cục: hoặc là có uống thuốc, hoặc là
+không. Cái còn lại vĩnh viễn không quan sát được. Nên không đo được tác động lên
+từng cá nhân, chỉ đo được \textbf{trung bình cả nhóm}:
+
+\[
+ATE = \text{trung bình nhóm có} \;-\; \text{trung bình nhóm không}
+\]
+
+Nhưng phép trừ này \textbf{chỉ đúng khi hai nhóm được chia ngẫu nhiên}. Chia ngẫu
+nhiên thì hai nhóm giống nhau ở mọi mặt khác, nên chênh lệch còn lại đúng là do
+can thiệp.
+
+\subsection*{Ví dụ ngược đời}
+
+Người tập gym khoẻ hơn người không tập. Có phải gym làm khoẻ không?
+
+Chưa chắc --- \emph{người vốn đã khoẻ mới hay đi gym}. Hai nhóm khác nhau ngay từ
+đầu, nên phần chênh lệch không hoàn toàn là công của gym.
+
+\subsection*{Nghịch lý Simpson}
+
+Cách chữa A tốt hơn B ở \emph{cả} nhóm sỏi nhỏ ($93\%$ so với $87\%$) lẫn nhóm sỏi
+lớn ($73\%$ so với $69\%$). Nhưng gộp chung lại thì A chỉ được $78\%$ còn B được
+$83\%$ --- B thắng.
+
+Lý do: bác sĩ dành cách A cho ca nặng. Kích thước sỏi là \textbf{biến gây nhiễu}.
+
+\nho gặp trường hợp này thì tin con số \emph{theo từng nhóm}, đừng tin con số gộp.
+
+% =====================================================================
+\section{Hồi quy tuyến tính}
+
+\subsection*{Nó là gì}
+
+Vẽ một đường thẳng đi xuyên qua đám điểm, để từ $x$ đoán ra $y$.
+
+\subsection*{Công thức}
+
+\[
+\hat y = b_0 + b_1 x
+\qquad
+b_1 = \frac{S_{xy}}{S_{xx}}
+\qquad
+b_0 = \bar y - b_1 \bar x
+\]
+
+$b_1$ là \textbf{độ dốc}: $x$ tăng 1 thì $y$ đổi bấy nhiêu.
+
+$R^2$ cho biết đường thẳng giải thích được bao nhiêu phần trăm biến động của $y$.
+$R^2 = 0{,}73$ nghĩa là $73\%$.
+
+\subsection*{Ví dụ}
+
+\begin{center}
+\begin{tabular}{@{}lccccc@{}}
+\toprule
+$x$ & 1 & 2 & 3 & 4 & 5 \\
+$y$ & 2 & 4 & 5 & 4 & 9 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Tính được $\bar x = 3$, $\bar y = 4{,}8$, $S_{xy} = 14$, $S_{xx} = 10$.
+
+\[
+b_1 = \frac{14}{10} = 1{,}4
+\qquad
+b_0 = 4{,}8 - 1{,}4 \times 3 = 0{,}6
+\]
+
+Vậy $\hat y = 0{,}6 + 1{,}4x$. Đọc: $x$ tăng 1 thì $y$ tăng khoảng $1{,}4$.
+
+\textbf{Cách tự kiểm tra:} thay $x = \bar x = 3$ vào phải ra đúng $\bar y = 4{,}8$.
+Thử: $0{,}6 + 1{,}4 \times 3 = 4{,}8$. Đúng.
+
+\nho dữ liệu quan sát thì viết \emph{``đi kèm''}, đừng viết \emph{``làm cho''}.
+
+% =====================================================================
+\section{Hồi quy đa biến và logistic}
+
+\subsection*{Đa biến --- nhiều $x$ cùng lúc}
+
+\[
+\hat y = b_0 + b_1 x_1 + b_2 x_2 + \dots
+\]
+
+Đọc $b_1$: $x_1$ tăng 1 đơn vị thì $y$ đổi bấy nhiêu, \textbf{khi các biến còn lại
+giữ nguyên}. Cụm in đậm bắt buộc phải viết.
+
+\subsection*{Logistic --- khi $y$ chỉ có hai giá trị}
+
+Dùng khi $y$ là có/không, đậu/rớt, sống/chết. Không dùng đường thẳng được vì đường
+thẳng có thể cho ra xác suất âm hoặc lớn hơn 1.
+
+Ba bước, làm đúng thứ tự:
+
+\begin{enumerate}
+\item Thay số vào để được \textbf{logit}.
+\item $\text{odds} = e^{\text{logit}}$.
+\item $\text{xác suất} = \dfrac{\text{odds}}{1+\text{odds}}$.
+\end{enumerate}
+
+\subsection*{Ví dụ}
+
+Cho $\text{logit} = 1{,}8185 - 0{,}0665 \times \text{tuổi}$. Tính xác suất sống sót
+của người 25 tuổi.
+
+\begin{enumerate}
+\item $\text{logit} = 1{,}8185 - 0{,}0665 \times 25 = 0{,}156$
+\item $\text{odds} = e^{0{,}156} = 1{,}169$
+\item $\text{xác suất} = \dfrac{1{,}169}{1 + 1{,}169} = 0{,}539$
+\end{enumerate}
+
+Vậy khoảng $54\%$.
+
+\nho $e^{\beta}$ là \emph{tỉ số odds}, không phải tỉ số xác suất. Hệ số $\beta = 0$
+nghĩa là không ảnh hưởng, vì $e^0 = 1$.
+
+% =====================================================================
+\section{Monte Carlo}
+
+\subsection*{Nó là gì}
+
+Bài toán khó tính bằng công thức thì \emph{bốc số ngẫu nhiên rất nhiều lần rồi đếm}.
+
+\subsection*{Ví dụ kinh điển --- tính số $\pi$}
+
+Vẽ một hình vuông và đường tròn nội tiếp. Ném ngẫu nhiên $n$ điểm vào hình vuông,
+đếm được $k$ điểm rơi vào trong tròn. Khi đó:
+
+\[
+\pi \approx 4 \times \frac{k}{n}
+\]
+
+Càng ném nhiều càng chính xác.
+
+\subsection*{Sai số}
+
+\[
+SE = \frac{\sigma}{\sqrt{n}}
+\]
+
+\nho muốn sai số giảm một nửa thì phải chạy \textbf{gấp bốn lần} số vòng.
+
+\subsection*{Bootstrap}
+
+Có đúng một mẫu gồm $n$ món, muốn biết kết quả của mình chắc chắn tới đâu:
+
+\begin{enumerate}
+\item Bốc \textbf{có hoàn lại} đúng $n$ món (bốc xong bỏ lại vào, nên có món trúng
+      hai lần, có món không trúng lần nào).
+\item Tính lại con số cần tính.
+\item Lặp vài nghìn lần.
+\item Độ tản của mấy nghìn kết quả đó chính là sai số.
+\end{enumerate}
+
+% =====================================================================
+\section{Bảng tra}
+
+\begin{center}
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+\textbf{Độ tin cậy} & 90\% & 95\% & 98\% & 99\% \\
+\midrule
+$z^{*}$ hai phía & 1,645 & \textbf{1,96} & 2,33 & 2,576 \\
+$z$ một phía & 1,282 & \textbf{1,645} & 2,054 & 2,326 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Thuộc ba số \textbf{1,96} --- \textbf{1,645} --- \textbf{2,576} là gỡ được phần lớn bài.
+
+\subsection*{Năm câu đừng viết sai}
+
+\begin{enumerate}
+\item p-value \emph{không} phải xác suất $H_0$ đúng.
+\item Viết \emph{``chưa đủ bằng chứng để bác bỏ''}, đừng viết \emph{``chấp nhận $H_0$''}.
+\item Phương sai chia $n-1$; hồi quy dùng $df = n-2$.
+\item Dữ liệu quan sát thì viết \emph{``đi kèm''}, đừng viết \emph{``làm cho''}.
+\item Chỉ kiểm soát biến \emph{gây nhiễu}, không kiểm soát biến trung gian và hội tụ.
+\end{enumerate}
+
+\end{document}

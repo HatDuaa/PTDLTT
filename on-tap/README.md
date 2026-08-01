@@ -34,20 +34,31 @@ Công thức viết bằng `$...$` nên xem đẹp nhất trên GitHub hoặc VS
 | Monte Carlo | 11 | [08](08-monte-carlo.md) |
 | — | — | [Bảng tra công thức 1 trang](09-bang-tra.md) |
 
-## Bản LaTeX gọn — in ra PDF
+## Bản PDF — đọc cái này trước
 
-[`tex/on-tap.tex`](tex/on-tap.tex) là bản **rút gọn của cả 9 file trên**, gộp vào
-một tài liệu duy nhất: công thức, bẫy, và bài giải mẫu, bỏ phần tự kiểm tra và
-các đoạn dẫn dài.
+| File | Trang | Nội dung |
+|---|---|---|
+| [`tex/on-tap-de.pdf`](tex/on-tap-de.pdf) | 8 | **Bản dễ.** Mỗi phần chỉ có: nó là gì → công thức → một ví dụ số nhỏ. Câu ngắn, từ đời thường. **Bắt đầu từ đây.** |
+| [`tex/on-tap.pdf`](tex/on-tap.pdf) | 14 | Bản đầy đủ: thêm bẫy, bài giải nhiều bước, phần ngoài giáo trình |
 
-Máy chưa cài LaTeX nên phải compile trên Overleaf, giống lúc làm báo cáo:
+Chín file Markdown ở trên là bản chi tiết nhất, có thêm câu tự kiểm tra.
 
-1. Vào Overleaf, tạo project trống.
-2. Upload **mỗi một file** `tex/on-tap.tex` — không cần hình, không cần file phụ.
-3. Compile hai lần cho mục lục hiện đúng.
+## Compile lại
+
+Máy **đã cài MiKTeX** (02/08/2026) nên compile ngay tại chỗ, không cần Overleaf:
+
+```bash
+pdflatex -interaction=nonstopmode tex/on-tap-de.tex
+```
+
+Chạy **hai lần** cho mục lục hiện đúng. Cả hai file `.tex` đều tự chứa — không cần
+hình, không cần file phụ.
 
 Preamble lấy nguyên từ `bao-cao/tex/main.tex` (bộ `T5` + `vietnamese` đã compile
 thành công), nên không phải dò lại lỗi font tiếng Việt.
+
+Muốn soi lỗi trước khi compile thì có skill global:
+`~/.claude/skills/latex-vn/scripts/kiem_cu_phap_latex.py`
 
 Khác biệt đáng nói giữa hai bản: trong LaTeX thì chữ Việt đặt trong `\text{}`
 **chạy được** — báo cáo đang dùng như vậy ở 29 chỗ. Hạn chế nêu ở khung trên chỉ
