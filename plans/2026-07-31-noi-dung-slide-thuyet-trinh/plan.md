@@ -41,8 +41,8 @@ Ba chỗ này không phải chi tiết kỹ thuật cần giấu — chúng **l�
 | 12 | Đồ thị nhân quả | giữ nguyên | — |
 | 13 | Gắn biến vào dữ liệu | giữ nguyên | — |
 | 14 | Bốn cách ước lượng — tổng quan | giữ nguyên | — |
-| 15 | Cách 1 và 2 — hồi quy | ✏️ sửa | [phase 02](phase-02-bon-cach-uoc-luong.md#cach-1-va-2) |
-| **16** | **Sai số chuẩn đến từ đâu** | 🆕 thêm | [phase 02](phase-02-bon-cach-uoc-luong.md#slide-sai-so) |
+| **15** | **Cách 1 — hồi quy thô** | ✏️ tách | [phase 02](phase-02-bon-cach-uoc-luong.md#cach-1) |
+| **16** | **Cách 2 — hồi quy có hiệp biến** | ✏️ tách | [phase 02](phase-02-bon-cach-uoc-luong.md#cach-2) |
 | 17 | Cách 3 — g-computation | ✏️ sửa | [phase 02](phase-02-bon-cach-uoc-luong.md#cach-3) |
 | 18 | Cách 4 — phân tầng | ✏️ sửa | [phase 02](phase-02-bon-cach-uoc-luong.md#cach-4) |
 | 19 | Kiểm tra thiết kế — ba cổng | giữ nguyên | — |
@@ -53,7 +53,43 @@ Ba chỗ này không phải chi tiết kỹ thuật cần giấu — chúng **l�
 | 24 | Hạn chế | giữ nguyên | — |
 | 25 | Kết luận | giữ nguyên | — |
 
-**20 → 25 slide.** Thêm 5, sửa 4.
+**20 → 25 slide.** Thêm 4, tách 1 thành 2, sửa 3.
+
+### Ba quyết định về bố cục, và lý do
+
+**Tách cách 1 và cách 2 thành hai slide.** Slide gộp hiện tại là slide nặng nhất bộ: hai công
+thức, hai con số lớn, ba gạch đầu dòng, một đoạn kết. Tách ra thì mỗi slide có chỗ cho phần
+đang thiếu — cách 1 nhận công thức sai số, cách 2 nhận bảng hệ số đầy đủ.
+
+**Bỏ slide "sai số chuẩn đến từ đâu" riêng.** Bản kế hoạch đầu tiên tách nó ra một slide.
+Nhưng sai số chuẩn không phải một chủ đề độc lập — nó là thuộc tính của từng ước lượng. Tách
+ra thì người nghe phải nhớ ngược lại hai slide trước. Nên gộp vào đúng chỗ nó thuộc về:
+
+| Nội dung sai số | Về slide nào |
+|---|---|
+| Công thức `√(s₁²/n₁ + s₀²/n₀) = 0,598`, ý nghĩa "±0,6 là gì" | 15 — cách 1 |
+| Vì sao thêm biến kiểm soát làm sai số TĂNG lên 0,733 | 16 — cách 2 |
+| Bootstrap là gì, "bốc 155 lần ≠ bốc hết 155 món" | 18 — cách 4 |
+
+**Giữ slide 10 (ba biến nền) dù đề xuất ban đầu bỏ nó.** Đây là slide trả lời câu *"vì sao
+phải có tới bốn cách tính"*. Không có nó thì bốn phương pháp phía sau chỉ còn là bốn công thức
+xuất hiện không lý do. Đây là slide đắt nhất phần phương pháp.
+
+### Nguồn nội dung
+
+Nội dung ba file phase chép từ phần giải thích ngày 31/07, nhưng **không chép nguyên**. Văn
+bản đó viết để đọc dọc trong khung chat; slide thì chiếu lên tường và người nghe chỉ có vài
+chục giây mỗi trang. Hai khác biệt bắt buộc:
+
+| Trong tin nhắn | Trên slide |
+|---|---|
+| Một mục dài gồm nhiều ý | mỗi ý một slide, cắt ở chỗ đổi loại việc |
+| Câu văn đầy đủ, có mệnh đề phụ | bảng, gạch đầu dòng, câu ngắn |
+| Giải thích rồi mới ra số | số trước, giải thích sau |
+
+Ví dụ rõ nhất: mục 0 của tin nhắn gồm sáu ý — công thức Y, ví dụ, vì sao dùng log, cỡ mẫu,
+bảng hai nhóm, hai nhận xét. Sáu ý đó thành **hai** slide (8 và 9), cắt giữa ý 4 và ý 5 vì đó
+là chỗ chuyển từ *định nghĩa* sang *báo cáo kết quả*.
 
 ## Nguyên tắc viết
 

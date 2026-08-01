@@ -1,30 +1,83 @@
 # Phase 02 — Bốn cách ước lượng (slide 15, 16, 17, 18)
 
+> **Mỗi cách một slide.** Slide hiện tại gộp cách 1 và cách 2, nên nó là slide nặng nhất bộ
+> trong khi phần đáng nói nhất lại bị cắt.
+>
 > Slide hiện tại đã nói **cách làm** của từng phương pháp. Phần thiếu là **con số ra như thế
-> nào** và **vì sao bốn con số khác nhau**. Phần thiếu đó mới là chỗ cho thấy nhóm hiểu việc
-> mình làm.
+> nào** và **vì sao bốn con số khác nhau** — đó mới là chỗ cho thấy nhóm hiểu việc mình làm.
+>
+> Sai số chuẩn **không tách slide riêng**: nó không phải một chủ đề độc lập mà là thuộc tính
+> của từng ước lượng. Gắn vào đúng chỗ nó thuộc về — công thức ở cách 1, nghịch lý "thêm biến
+> mà sai số tăng" ở cách 2, bootstrap ở cách 4.
 
 ---
 
-<a id="cach-1-va-2"></a>
-## Slide 15 — Cách 1 và 2: hồi quy chênh lệch
+<a id="cach-1"></a>
+## Slide 15 — Cách 1: hồi quy thô
 
-**Giữ nguyên** phần "Ý tưởng / Cách làm / Vì sao chạy hai lần" và hai công thức. **Bổ sung**
-bảng hệ số dưới đây, vì hiện slide chỉ hiện `β₁` mà giấu ba hệ số còn lại — trong khi chính
-ba hệ số đó giải thích mô hình đang trừ cái gì.
+**Tiêu đề:** Cách 1 — Hồi quy thô
 
-### Cách 1 — thô
+**Câu chốt:** Không trừ gì cả. Đây là mốc so sánh để biết ba cách sau thay đổi được bao nhiêu.
 
-Với biến `Z` chỉ nhận 0 hoặc 1, hồi quy `Y = β₀ + β₁·Z + ε` **đúng bằng hiệu hai trung bình**:
+### Ý tưởng
+
+Không điều chỉnh cho khác biệt sẵn có nào. Chỉ đặt câu hỏi: hai nhóm chênh nhau bao nhiêu?
+
+```
+Y = β₀ + β₁·Z + ε
+```
+
+Với biến `Z` chỉ nhận 0 hoặc 1, hồi quy này **đúng bằng hiệu hai trung bình**:
 
 ```
 β₁ = 0,6244 − 1,0222 = −0,3978
 ```
 
 Không có gì bí ẩn. Đây chính là con số ở slide 9, viết lại dưới dạng hồi quy để so sánh được
-với cách 2.
+với ba cách sau.
 
-### Cách 2 — hiệp biến
+| | |
+|---|---|
+| Ước lượng | **−0,398** |
+| Sai số chuẩn | 0,600 |
+| KTC 95% | [−1,573 · +0,778] |
+| p | 0,507 |
+
+### Sai số chuẩn — ±0,6 nghĩa là gì
+
+Đặt ở đây vì cách 1 là chỗ duy nhất công thức đủ đơn giản để tính tay trước mặt người nghe.
+
+Sai số chuẩn trả lời:
+
+> Nếu cửa hàng này tình cờ có tập mặt hàng khác đi một chút, con số của mình nhảy cỡ nào?
+
+```
+SE = √( 6,070²/155  +  3,972²/132 )  =  0,598
+                                          (statsmodels HC3: 0,600)
+```
+
+Tử số là **độ dao động của Y**, mẫu số là **cỡ mẫu**. Y dao động 6 điểm mà chỉ có 287 mặt
+hàng, nên sai số ra 0,6. Muốn sai số nhỏ đi một nửa thì cần mẫu gấp bốn.
+
+**HC3** là biến thể không đòi hỏi mọi mặt hàng có cùng độ dao động — cần thiết vì hai nhóm
+lệch nhau rõ (`6,07` và `3,97`). Dùng công thức thường sẽ cho sai số nhỏ giả tạo.
+
+### Vì sao vẫn báo cáo cách này dù biết nó lẫn nhiễu
+
+Nếu nó và cách có kiểm soát lệch nhau nhiều thì đó là bằng chứng các biến nền đang chi phối.
+Nó là **phép đo chẩn đoán**, không phải câu trả lời.
+
+---
+
+<a id="cach-2"></a>
+## Slide 16 — Cách 2: hồi quy có hiệp biến
+
+**Tiêu đề:** Cách 2 — Hồi quy có hiệp biến
+
+**Câu chốt:** Giả định một công thức nối đặc điểm nền với mức đổi giá, cho nó hút phần khác
+biệt sẵn có; cái còn lại gán cho Z.
+
+### Mô hình
 
 ```
 Y = β₀ + β₁·Z + γ₁·log(giá nền) + γ₂·log(1+sức bán) + γ₃·số tuần bán + ε
@@ -38,8 +91,6 @@ Y = β₀ + β₁·Z + γ₁·log(giá nền) + γ₂·log(1+sức bán) + γ₃
 | **log sức bán** | **+0,993** | **bán càng chạy càng tăng giá mạnh** |
 | số tuần bán | −0,557 | bán càng đều thì giá càng ít nhảy |
 
-### Chốt slide
-
 Hệ số `+0,993` là chỗ đáng chỉ tay vào: nó nói **hàng bán chạy tăng giá mạnh hơn hẳn**. Mà
 nhóm đối chứng bán chạy gấp năm lần (slide 10). Mô hình dùng đúng thông tin này để trừ bớt
 phần "bia rượu tăng giá vì bia rượu bán chạy" ra khỏi chênh lệch hai nhóm.
@@ -47,30 +98,14 @@ phần "bia rượu tăng giá vì bia rượu bán chạy" ra khỏi chênh l�
 Kết quả: từ **−0,398** thành **−0,270**. Tức khoảng **một phần ba** chênh lệch thô đến từ đặc
 điểm hàng hóa chứ không từ chính sách.
 
----
+| | |
+|---|---|
+| Ước lượng | **−0,270** |
+| Sai số chuẩn | 0,733 |
+| KTC 95% | [−1,707 · +1,168] |
+| p | 0,713 |
 
-<a id="slide-sai-so"></a>
-## Slide 16 — Sai số chuẩn đến từ đâu 🆕
-
-**Tiêu đề:** Sai số chuẩn — con số ±0,6 nghĩa là gì
-
-**Câu chốt:** Thêm biến kiểm soát lại làm sai số to lên, và có lý do rõ ràng cho việc đó.
-
-### Sai số chuẩn trả lời câu gì
-
-> Nếu cửa hàng này tình cờ có tập mặt hàng khác đi một chút, con số của mình sẽ nhảy cỡ nào?
-
-Với cách 1 có công thức đóng, tính tay ra khớp với máy:
-
-```
-SE = √( 6,070²/155  +  3,972²/132 )  =  0,598
-                                          (statsmodels HC3: 0,600)
-```
-
-Tử số là **độ dao động của Y**, mẫu số là **cỡ mẫu**. Y dao động 6 điểm mà chỉ có 287 mặt
-hàng, nên sai số ra 0,6. Muốn sai số nhỏ đi một nửa thì cần mẫu gấp bốn.
-
-### Nghịch lý: thêm biến kiểm soát mà sai số TĂNG
+### 🔴 Nghịch lý: thêm biến kiểm soát mà sai số TĂNG
 
 Từ **0,600** lên **0,733**. Nghe ngược đời. Đo ra thì rõ:
 
@@ -104,11 +139,13 @@ gần đúng `0,733` — phần lệch còn lại do HC3 và mẫu hữu hạn.
 Đây là một phát hiện thật của đồ án, không phải chi tiết cần giấu. Nó cũng giải thích luôn vì
 sao đồ án báo cáo cả hai con số thay vì chỉ giữ cái "đã điều chỉnh".
 
-### Ghi chú — HC3 là gì
+### Điểm yếu — dẫn sang cách 3
 
-Nếu bị hỏi: **HC3** là công thức sai số không đòi hỏi mọi mặt hàng phải có cùng độ dao động.
-Ở đây cần thiết vì hai nhóm lệch nhau rõ (`6,07` và `3,97`). Dùng công thức thường sẽ cho sai
-số nhỏ giả tạo.
+Cả công thức này là một **giả định**. Nó ép quan hệ giữa X và Y phải là đường thẳng, và ép
+**cả hai nhóm dùng chung một đường thẳng**. Nếu hóa chất và bia rượu phản ứng với sức bán theo
+hai kiểu khác nhau, mô hình này không diễn tả được.
+
+Chính chỗ đó dẫn tới cách 3.
 
 ---
 
@@ -302,7 +339,9 @@ giới tầng cũng ước lượng từ dữ liệu nên cũng phải chịu b�
 
 ---
 
-## Slide 16 phụ — nếu còn chỗ: bốn sai số đến từ hai nguồn khác nhau
+## Phụ lục — dành cho phần hỏi đáp, không lên slide
+
+### Bốn sai số đến từ hai nguồn khác nhau
 
 | Cách | Sai số tính bằng | Vì sao |
 |---|---|---|
