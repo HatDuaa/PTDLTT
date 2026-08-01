@@ -1,0 +1,975 @@
+% =====================================================================
+%  ÔN TẬP — Phân tích dữ liệu thông minh
+%  Bản rút gọn của toàn bộ thư mục on-tap/, soạn từ book của thầy:
+%  https://lenbui.github.io/bookda/
+%
+%  Biên dịch: pdflatex on-tap.tex   (chạy 2 lần cho mục lục đúng)
+%  Không cần hình, không cần file phụ. Upload mỗi file này lên Overleaf
+%  là compile được.
+%
+%  Preamble lấy nguyên từ bao-cao/tex/main.tex vì bộ T5 + vietnamese đó
+%  đã compile thành công rồi — không đổi để khỏi dò lại lỗi font.
+% =====================================================================
+\documentclass[11pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T5]{fontenc}
+\usepackage[vietnamese]{babel}
+\usepackage[a4paper,margin=2.2cm]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{hyperref}
+
+\hypersetup{unicode=true, hidelinks,
+  pdftitle={On tap - Phan tich du lieu thong minh}}
+\setlist{leftmargin=*, topsep=2pt, itemsep=1pt}
+\emergencystretch=3em
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+
+% Nhãn "bẫy" dùng lại nhiều lần.
+\newcommand{\bay}{\textbf{Bẫy.}\ }
+\newcommand{\vd}{\textbf{Ví dụ.}\ }
+
+\title{\vspace{-1.5cm}\bfseries Ôn tập — Phân tích dữ liệu thông minh}
+\author{Bản rút gọn của \texttt{on-tap/}, soạn từ \url{https://lenbui.github.io/bookda/}}
+\date{}
+
+\begin{document}
+\maketitle
+\vspace{-1cm}
+
+\begin{center}
+\begin{tabular}{@{}ll@{}}
+\toprule
+\textbf{Chủ đề} & \textbf{Chương trong book} \\
+\midrule
+Mô tả dữ liệu, phương sai, Pearson vs Spearman & 3 \\
+Khoảng tin cậy & 5 \\
+Kiểm định giả thuyết, miền bác bỏ & 6 \\
+Mô hình đồ thị, confounder / mediator & 7 \\
+Phân tích nhân quả & 8 \\
+Hồi quy tuyến tính & 9 \\
+Hồi quy đa biến và logistic & 10 \\
+Monte Carlo & 11 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Ba chỗ book không phủ mà vẫn nên biết.}
+(1)~Chương 5 chỉ dựng khoảng tin cậy cho \emph{tỉ lệ}, không nhắc phân phối $t$,
+không có khoảng tin cậy cho trung bình --- nhưng chương 6 lại dùng $t$ cho trung
+bình, nên phần đó được bổ sung ở mục~\ref{sec:ktc}.
+(2)~Chương 8 dừng ở ATE và RCT, không có backdoor, không có \texttt{do(\ )}, không
+có điểm xu hướng; ba thứ đó chỉ cần cho vấn đáp đồ án.
+(3)~Chương 7 dạy ba cấu trúc chuỗi / rẽ nhánh / hội tụ rồi để người đọc tự suy ra
+tên gọi confounder và mediator, trong khi đề thi hỏi thẳng tên --- mục~\ref{sec:dothi}
+gắn tên vào từng cấu trúc.
+
+\textbf{Thứ tự ôn theo tỉ lệ điểm trên thời gian:}
+kiểm định (nặng nhất, đề gần như chắc chắn rút từ bảng ở mục~\ref{sec:kiemdinh})
+$\to$ hồi quy tuyến tính (bài rất mẫu mực, được điểm nhanh)
+$\to$ khoảng tin cậy (dùng lại đúng bộ $z^{*}$, ôn chung cho tiết kiệm)
+$\to$ mô hình đồ thị (rẻ điểm nhất, không phải tính toán)
+$\to$ phần còn lại.
+
+\tableofcontents
+
+\newpage
+
+%=====================================================================
+\section{Mô tả dữ liệu (chương 3)}
+
+\subsection*{Công thức}
+
+\[
+\bar{x} = \frac{1}{n}\sum_{i=1}^{n} x_i
+\qquad
+s^2 = \frac{\sum_{i=1}^{n}(x_i-\bar{x})^2}{n-1}
+\qquad
+s = \sqrt{s^2}
+\]
+
+\[
+IQR = Q_3 - Q_1
+\qquad
+\text{râu trên} = Q_3 + 1{,}5\,IQR
+\qquad
+\text{râu dưới} = Q_1 - 1{,}5\,IQR
+\]
+
+Tính nhanh khi số xấu:
+$\displaystyle\sum (x_i-\bar{x})^2 = \sum x_i^2 - \frac{\left(\sum x_i\right)^2}{n}$
+
+\textbf{Ba hệ số tương quan.}
+
+\[
+r_{\text{Pearson}} = \frac{S_{xy}}{\sqrt{S_{xx}S_{yy}}}
+\qquad
+\rho_{\text{Spearman}} = 1 - \frac{6\sum d_i^2}{n(n^2-1)}
+\qquad
+\tau_{\text{Kendall}} = \frac{C-D}{n(n-1)/2}
+\]
+
+với $S_{xy}=\sum(x_i-\bar x)(y_i-\bar y)$, $S_{xx}=\sum(x_i-\bar x)^2$,
+$S_{yy}=\sum(y_i-\bar y)^2$; $d_i$ là hiệu \emph{hạng}; $C$ và $D$ là số cặp đồng
+hạng và nghịch hạng.
+
+\subsection*{Chọn hệ số nào}
+
+\begin{center}
+\begin{tabular}{@{}lll@{}}
+\toprule
+ & \textbf{Pearson} $r$ & \textbf{Spearman} $\rho$ \\
+\midrule
+Đo & tuyến tính & đơn điệu (không cần thẳng) \\
+Dữ liệu & định lượng & định lượng \emph{hoặc thứ bậc} \\
+Ngoại lệ & rất nhạy & bền \\
+$y=x^3$ & $r<1$ & $\rho=1$ chính xác \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Nhớ một câu: Pearson hỏi \emph{có thẳng không}, Spearman hỏi \emph{có cùng chiều không}.
+
+\subsection*{Hình dạng phân phối}
+
+\textbf{Tính yếu vị:} một đỉnh / hai đỉnh / nhiều đỉnh / đều. Hai đỉnh thường là
+dấu hiệu dữ liệu trộn hai nhóm --- nên tách ra thay vì báo cáo một trung bình vô
+nghĩa nằm giữa.
+
+\textbf{Độ lệch} nhìn theo \emph{đuôi dài}, không nhìn chỗ dồn cục. Lệch phải thì
+$\bar x >$ trung vị; lệch trái thì $\bar x <$ trung vị. Nhớ bằng: \emph{trung bình
+bị đuôi kéo}. Độ lệch quay lại ở kiểm định Jarque--Bera, mục~\ref{sec:kiemdinh}.
+
+\textbf{Thống kê bền:} phân phối đối xứng thì báo cáo $\bar x$ và $s$; phân phối
+lệch hoặc có ngoại lệ thì báo cáo \emph{trung vị và IQR}.
+
+\textbf{Biến đổi log} xử lý dữ liệu lệch phải mạnh: kéo đuôi phải lại gần, biến
+quan hệ nhân thành quan hệ cộng. Đây là lý do đồ án đo bằng
+$Y = 100\log(P_1/P_0)$ chứ không lấy hiệu giá thô.
+
+\subsection*{Bẫy}
+
+\begin{itemize}
+\item Mẫu số phương sai là $n-1$, không phải $n$. Chia $n$ (và dùng trung bình
+      quần thể $\mu$) mới là $\sigma^2$.
+\item $s^2$ mang đơn vị bình phương nên vô nghĩa khi diễn giải; $s$ mới cùng đơn
+      vị với dữ liệu.
+\item $r=0$ \emph{không} suy ra độc lập. $y=x^2$ với $x$ đối xứng quanh 0 cho
+      $r=0$ nhưng $y$ hoàn toàn xác định bởi $x$.
+\item Công thức rút gọn của Spearman \emph{chỉ đúng khi không trùng hạng}. Có
+      trùng hạng thì phải tính Pearson trên hai cột hạng.
+\item Phân biệt hai từ gần giống: \emph{đồng hạng} là cùng chiều (concordant),
+      \emph{trùng hạng} là hai giá trị bằng nhau nên chia nhau một hạng (ties).
+\end{itemize}
+
+\subsection*{Ví dụ tính tay}
+
+Dữ liệu $x = 1,2,3,4,5$ và $y = 2,4,5,4,9$. Ta có $\bar x = 3$, $\bar y = 4{,}8$,
+$S_{xx}=10$, $S_{xy}=14$, $S_{yy}=26{,}8$.
+
+\[
+r = \frac{14}{\sqrt{10 \times 26{,}8}} = \frac{14}{16{,}37} = 0{,}855
+\]
+
+Hạng của $y$: hai giá trị $y=4$ chia nhau hạng 2 và 3 nên cùng nhận $2{,}5$, cho
+hạng $(1;\,2{,}5;\,4;\,2{,}5;\,5)$. Khi đó $\sum d_i^2 = 3{,}5$ và
+
+\[
+\rho = 1 - \frac{6 \times 3{,}5}{5(25-1)} = 0{,}825
+\]
+
+Vì có trùng hạng nên đây là xấp xỉ. Giá trị chính xác (Pearson trên hai cột hạng)
+là $8/\sqrt{95} = 0{,}8208$. Dấu hiệu nhận biết: tổng bình phương hai cột hạng
+lệch nhau ($10$ so với $9{,}5$); không trùng hạng thì chúng luôn bằng nhau.
+
+Kendall trên cùng dữ liệu: $C=8$, $D=1$, nên $\tau = 7/10 = 0{,}70$.
+
+Ba hệ số cho ba con số khác nhau trên cùng một dữ liệu ($0{,}855$; $0{,}821$;
+$0{,}70$) --- chúng đo ba thứ khác nhau nên không việc gì phải bằng nhau.
+
+\subsection*{Dữ liệu định danh}
+
+\textbf{Bảng ngẫu nhiên} tóm tắt hai biến định tính bằng tần suất. Tỷ lệ hàng và
+tỷ lệ cột trả lời \emph{hai câu hỏi khác nhau}: hàng hỏi ``trong số người hút, bao
+nhiêu phần trăm mắc bệnh'', cột hỏi ``trong số người mắc bệnh, bao nhiêu phần trăm
+có hút''. Chọn sai chiều là diễn giải sai hoàn toàn --- cùng một bẫy đảo ngược xác
+suất có điều kiện gặp lại ở p-value và ở độ nhạy/độ đặc hiệu.
+
+Cột chồng chuẩn hoá là lựa chọn đúng khi hai nhóm chênh lệch cỡ; cột chồng thường
+làm nhóm nhỏ trông như không có gì.
+
+%=====================================================================
+\section{Khoảng tin cậy (chương 5)}\label{sec:ktc}
+
+\subsection*{Công thức}
+
+Dạng chung: \textbf{ước lượng điểm} $\pm\ z^{*} \times SE$.
+
+\begin{center}
+\begin{tabular}{@{}ll@{}}
+\toprule
+\textbf{Tham số} & \textbf{Khoảng tin cậy} \\
+\midrule
+Tỉ lệ $p$ & $\hat p \pm z^{*}\sqrt{\hat p(1-\hat p)/n}$ \\[2pt]
+Trung bình, biết $\sigma$ & $\bar x \pm z^{*}\,\sigma/\sqrt{n}$ \\[2pt]
+Trung bình, không biết $\sigma$ \; (ngoài book) & $\bar x \pm t^{*}_{n-1}\,s/\sqrt{n}$ \\[2pt]
+Hệ số góc & $b_1 \pm t^{*}_{n-2}\,SE_{b_1}$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\[
+\hat{p} \sim \mathcal{N}\!\left(\mu = p,\ \ SE=\sqrt{\frac{p(1-p)}{n}}\right)
+\qquad
+n \ge \frac{(z^{*})^2\,p(1-p)}{ME^2}
+\]
+
+Chưa biết $p$ thì lấy $p=0{,}5$ (làm $p(1-p)$ lớn nhất, an toàn nhất) và luôn làm
+tròn lên.
+
+\textbf{Điều kiện dùng xấp xỉ chuẩn:} độc lập, và ít nhất 10 thành công \emph{và}
+10 thất bại kỳ vọng ($np \ge 10$, $n(1-p) \ge 10$).
+
+\subsection*{Bẫy}
+
+\begin{itemize}
+\item Dựng khoảng tin cậy thì $SE$ dùng $\hat p$; kiểm định thì $SE$ dùng $p_0$.
+      Đây là khác biệt giữa mục 5.2 và 5.3 của book.
+\item \emph{Sai số mẫu} giảm khi tăng $n$; \emph{độ chệch} thì không. Mẫu bị chệch
+      mà tăng $n$ lên 100.000 chỉ cho một khoảng rất hẹp bao quanh con số sai.
+\item $ME \propto 1/\sqrt{n}$: muốn giảm sai số một nửa phải tăng mẫu \emph{gấp bốn}.
+\item Đề cho $s$ thì dùng $t$ với $df=n-1$; cho $\sigma$ thì dùng $z$.
+\end{itemize}
+
+\subsection*{Đọc kết quả cho đúng}
+
+Với khoảng tin cậy 95\% bằng $(0{,}64;\ 0{,}70)$:
+
+\begin{itemize}
+\item \textbf{Sai:} ``95\% người dùng nằm trong khoảng 64--70\%'' --- khoảng tin
+      cậy nói về \emph{tham số}, không nói về cá thể.
+\item \textbf{Sai:} ``xác suất $p$ nằm trong khoảng là 95\%'' --- $p$ là hằng số,
+      cái ngẫu nhiên là \emph{khoảng}.
+\item \textbf{Đúng:} ``nếu lặp lại việc lấy mẫu và dựng khoảng, khoảng 95\% số
+      khoảng sẽ chứa $p$''. Viết ngắn được chấp nhận: ``ta tin cậy 95\% rằng $p$
+      nằm trong $(0{,}64;\ 0{,}70)$''.
+\end{itemize}
+
+\subsection*{Ví dụ}
+
+\textbf{(a) Tỉ lệ.} $n=850$, $\hat p = 0{,}67$, độ tin cậy 95\%.
+$SE = \sqrt{0{,}67 \times 0{,}33/850} = 0{,}0161$, biên sai số
+$1{,}96 \times 0{,}0161 = 0{,}032$, khoảng $(0{,}64;\ 0{,}70)$.
+
+\textbf{(b) Trung bình, chưa biết $\sigma$.} $n=25$, $\bar x = 52$, $s=8$.
+$df=24$, $t^{*}=2{,}064$, $SE = 8/5 = 1{,}6$, biên sai số $3{,}30$, khoảng
+$(48{,}70;\ 55{,}30)$. Lỡ dùng $z^{*}=1{,}96$ sẽ ra $(48{,}86;\ 55{,}14)$ ---
+hẹp hơn, tức tự tin quá mức, đúng cái lỗi mà phân phối $t$ sinh ra để sửa.
+
+\textbf{(c) Cỡ mẫu.} Muốn $ME \le 3\%$ ở 95\%, chưa biết $p$:
+$n \ge 1{,}96^2 \times 0{,}25/0{,}03^2 = 1067{,}1$, lấy $n=1068$. Đây là lý do các
+cuộc thăm dò dư luận toàn thấy $n \approx 1000$, sai số $\pm 3\%$.
+
+\subsection*{Cầu nối sang kiểm định}
+
+$p_0$ \emph{nằm ngoài} khoảng tin cậy $(1-\alpha)$ khi và chỉ khi bác bỏ
+$H_0: p=p_0$ ở mức $\alpha$ (hai phía). Hai thứ là một phép tính nhìn từ hai phía.
+
+%=====================================================================
+\section{Kiểm định giả thuyết (chương 6)}\label{sec:kiemdinh}
+
+Chương nặng nhất. Mục 6.2 của book là một bảng khoảng tám loại kiểm định; đề gần
+như chắc chắn rút từ đó. Thuộc bảng chọn công thức trước, hiểu sau.
+
+\subsection*{Bốn bước}
+
+Phát biểu $H_0$ và $H_a$ $\to$ chọn thống kê kiểm định và phân phối của nó
+\emph{khi $H_0$ đúng} $\to$ xác định miền bác bỏ theo $\alpha$ $\to$ bác bỏ nếu
+giá trị tính được rơi vào miền đó. Lối hiện đại tương đương: tính thống kê, tính
+p-value, bác bỏ nếu \textbf{p-value $< \alpha$}.
+
+\subsection*{Đặt giả thuyết cho đúng chiều}
+
+\begin{center}
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Đề nói} & \textbf{$H_a$} & \textbf{Miền bác bỏ} \\
+\midrule
+có khác không, có thay đổi không & $\mu \ne \mu_0$ & hai đuôi, $|z| > z_{\alpha/2}$ \\
+có lớn hơn không, có tăng không & $\mu > \mu_0$ & đuôi phải, $z > z_\alpha$ \\
+có nhỏ hơn không, có giảm không & $\mu < \mu_0$ & đuôi trái, $z < -z_\alpha$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+$H_0$ luôn mang dấu bằng; điều muốn chứng minh nằm ở $H_a$. Chọn chiều
+\emph{trước khi nhìn dữ liệu}. Với $\alpha = 0{,}05$: một phía dùng $1{,}645$, hai
+phía dùng $1{,}96$.
+
+\subsection*{Hai loại sai lầm}
+
+\begin{center}
+\begin{tabular}{@{}lll@{}}
+\toprule
+ & \textbf{Không bác bỏ $H_0$} & \textbf{Bác bỏ $H_0$} \\
+\midrule
+$H_0$ đúng & đúng & \textbf{sai lầm loại I} ($\alpha$), dương tính giả \\
+$H_0$ sai & \textbf{sai lầm loại II} ($\beta$), âm tính giả & đúng \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Lực kiểm định $= 1-\beta$. Giữ nguyên $n$ mà giảm $\alpha$ thì $\beta$ tăng; muốn
+giảm cả hai chỉ còn cách tăng $n$.
+
+\subsection*{Bảng chọn công thức}
+
+\begin{center}
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Bài toán} & \textbf{Thống kê} & \textbf{$df$} \\
+\midrule
+1 trung bình, biết $\sigma$ &
+  $z = \dfrac{\bar x - \mu_0}{\sigma/\sqrt n}$ & --- \\[10pt]
+1 trung bình, không biết $\sigma$ &
+  $t = \dfrac{\bar x - \mu_0}{s/\sqrt n}$ & $n-1$ \\[10pt]
+1 phương sai &
+  $q = \dfrac{(n-1)s^2}{\sigma_0^2}$ & $n-1$ \\[10pt]
+1 tỉ lệ &
+  $z = \dfrac{\hat p - p_0}{\sqrt{p_0(1-p_0)/n}}$ & --- \\[10pt]
+2 trung bình, phương sai bằng nhau &
+  $t = \dfrac{\bar x_1 - \bar x_2}{\sqrt{s_p^2(1/n_1+1/n_2)}}$ & $n_1+n_2-2$ \\[10pt]
+2 trung bình, $n_1,n_2 > 30$ &
+  $z = \dfrac{\bar x_1 - \bar x_2}{\sqrt{s_1^2/n_1+s_2^2/n_2}}$ & --- \\[10pt]
+2 phương sai &
+  $f = \dfrac{s_1^2}{s_2^2}$ & $n_1-1,\ n_2-1$ \\[10pt]
+2 tỉ lệ &
+  $z = \dfrac{\hat p_1-\hat p_2}{\sqrt{\bar p(1-\bar p)(1/n_1+1/n_2)}}$ & --- \\[10pt]
+Độc lập của hai biến định tính &
+  $q = \sum\dfrac{(O-E)^2}{E}$ & $(h-1)(k-1)$ \\[10pt]
+Tính chuẩn (Jarque--Bera) &
+  $q = n\!\left(\dfrac{\text{skew}^2}{6}+\dfrac{\text{kurt}^2}{24}\right)$ & 2 \\[10pt]
+Phù hợp phân phối (Kolmogorov--Smirnov) &
+  $d = \max|F_o - F_m|$ & --- \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\[
+s_p^2 = \frac{(n_1-1)s_1^2+(n_2-1)s_2^2}{n_1+n_2-2}
+\qquad
+\bar p = \frac{n_1\hat p_1+n_2\hat p_2}{n_1+n_2}
+\qquad
+E_{ij} = \frac{R_i \times C_j}{n}
+\]
+
+với $R_i$ là tổng hàng $i$ và $C_j$ là tổng cột $j$.
+
+Phân phối $\chi^2$ không đối xứng nên hai đuôi phải tra hai giá trị khác nhau,
+không lấy trị tuyệt đối được. Kiểm định hai phương sai thường chạy \emph{trước}
+kiểm định hai trung bình, để quyết định có được gộp phương sai không.
+
+\subsection*{Bài giải mẫu}
+
+\textbf{Bài 1 --- một trung bình.} Giám đốc nói lương trung bình là 380; mẫu
+$n=36$ cho $\bar x = 350$, $s=40$; $\alpha = 0{,}05$.
+Có $s$ nên dùng $t$ với $df=35$. $SE = 40/6 = 6{,}667$ và
+$t = (350-380)/6{,}667 = -4{,}50$. Miền bác bỏ $|t| > t_{0{,}025;\,35} = 2{,}030$.
+Vì $4{,}50 > 2{,}030$ nên \textbf{bác bỏ} $H_0$ (p-value $\approx 0{,}00007$).
+
+\textbf{Bài 2 --- hai trung bình, mẫu lớn.} Đường huyết trước:
+$n_1=50$, $\bar x = 60$, $s_1=7$. Sau: $n_2=40$, $\bar y = 52$, $s_2=9{,}2$. Hỏi
+có giảm không, tức một phía.
+$SE = \sqrt{49/50 + 84{,}64/40} = \sqrt{3{,}096} = 1{,}760$ và
+$z = 8/1{,}760 = 4{,}55 > 1{,}645$ nên \textbf{bác bỏ}. Chú ý: hai nhóm cỡ khác
+nhau (50 và 40) nên đây \emph{không} phải dữ liệu ghép cặp dù đề nói ``trước và sau''.
+
+\textbf{Bài 3 --- một tỉ lệ.} Phế phẩm trước đây 5\%; kiểm 800 sản phẩm thấy 24
+phế phẩm; $\alpha=0{,}01$; đuôi trái.
+$\hat p = 0{,}03$, $SE = \sqrt{0{,}05 \times 0{,}95/800} = 0{,}007706$,
+$z = -0{,}02/0{,}007706 = -2{,}60 < -2{,}326$ nên \textbf{bác bỏ}
+(p-value $=0{,}0047$). Nếu đề để $\alpha = 0{,}001$ thì ngưỡng là $-3{,}09$ và
+\emph{không} bác bỏ được --- cùng dữ liệu, kết luận đổi theo $\alpha$.
+
+\textbf{Bài 4 --- hai tỉ lệ.} Dùng DDT: 90 người, 10 nhiễm. Không dùng: 100 người,
+26 nhiễm.
+$\hat p_1 = 0{,}1111$, $\hat p_2 = 0{,}26$, $\bar p = 36/190 = 0{,}1895$,
+$SE = \sqrt{0{,}1895 \times 0{,}8105 \times (1/90+1/100)} = 0{,}05694$,
+$z = -0{,}14889/0{,}05694 = -2{,}615$. Vì $2{,}615 > 1{,}96$ nên \textbf{bác bỏ}.
+Tử số dùng $\hat p_1, \hat p_2$ riêng, mẫu số dùng $\bar p$ gộp --- vì mẫu số
+được tính \emph{dưới giả định $H_0$ đúng}, mà $H_0$ nói hai tỉ lệ bằng nhau.
+
+\bay Giữ tử số ở 5 chữ số là có chủ ý. Lấy tử số làm tròn thành $-0{,}1489$ rồi
+chia sẽ ra $2{,}61503$, tức $2{,}62$; tính đủ chữ số mới ra $2{,}61487$, tức
+$2{,}615$. Cùng cái bẫy làm tròn ở mục hồi quy, chỉ khác là ở đây nó đủ sức đổi
+chữ số cuối của đáp án.
+
+\textbf{Bài 5 --- chi bình phương độc lập.} Bảng quan sát: hút thuốc có 30 mắc
+bệnh và 70 không (tổng 100); không hút có 20 mắc và 130 không (tổng 150). Tổng
+cột là 50 và 200, tổng cộng $n=250$.
+Kỳ vọng lần lượt là $20$; $80$; $30$; $120$ (đều $\ge 5$ nên dùng được).
+\[
+q = \frac{10^2}{20}+\frac{10^2}{80}+\frac{10^2}{30}+\frac{10^2}{120}
+  = 5 + 1{,}25 + 3{,}333 + 0{,}833 = 10{,}42
+\]
+$df = 1$, ngưỡng $\chi^2_{0{,}05;1} = 3{,}841$, nên \textbf{bác bỏ}: hai biến
+\emph{không độc lập}. Viết kết luận là ``không độc lập'', \emph{đừng} viết ``hút
+thuốc gây bệnh phổi'' --- chi bình phương chỉ phát hiện liên hệ.
+
+\subsection*{Bẫy}
+
+\begin{itemize}
+\item p-value là $P(\mathcal{D} \mid H_0)$, \emph{không} phải xác suất $H_0$ đúng.
+      Đảo ngược hai vế của xác suất có điều kiện là lỗi bị trừ điểm nặng nhất.
+\item Quên chia đôi $\alpha$ ở kiểm định hai phía.
+\item Dùng $\hat p$ ở mẫu số khi kiểm định một tỉ lệ; phải là $p_0$.
+\item Quên kiểm điều kiện ($np \ge 10$, mọi $E_{ij} \ge 5$) --- nhiều đề cho điểm
+      riêng cho bước này.
+\item Viết ``chấp nhận $H_0$''. Phải viết \emph{chưa đủ bằng chứng để bác bỏ $H_0$}.
+\item Nhầm ý nghĩa thống kê với ý nghĩa thực tiễn: $n$ đủ lớn thì chênh lệch bé
+      xíu cũng có $p<0{,}05$.
+\item Đa kiểm định: chạy 20 kiểm định độc lập ở $\alpha = 0{,}05$ với mọi $H_0$
+      đều đúng thì kỳ vọng vẫn có $20 \times 0{,}05 = 1$ cái ``có ý nghĩa''.
+\end{itemize}
+
+%=====================================================================
+\section{Mô hình đồ thị (chương 7)}\label{sec:dothi}
+
+Chương rẻ điểm nhất --- không phải tính toán, chỉ cần đọc đúng đồ thị.
+
+\subsection*{Mạng Bayes}
+
+\[
+p(x_1,\dots,x_n) = \prod_{i=1}^{n} p\bigl(x_i \mid pa(x_i)\bigr)
+\]
+
+Đọc ngược một phân rã ra đồ thị: vế điều kiện chính là danh sách nút cha.
+\emph{Giả định cạnh nhân quả:} mọi nút cha là nguyên nhân trực tiếp của tất cả nút
+con của nó. Đây là cái biến một mạng Bayes thuần xác suất thành đồ thị nhân quả,
+và nó đến từ \emph{kiến thức lĩnh vực} chứ không từ dữ liệu.
+
+\subsection*{Ba cấu trúc ba nút --- trái tim của chương}
+
+\begin{center}
+\begin{tabular}{@{}llll@{}}
+\toprule
+\textbf{Cấu trúc} & \textbf{Vai trò của $Z$} & \textbf{Chưa điều kiện $Z$} & \textbf{Điều kiện $Z$} \\
+\midrule
+$X \to Z \to Y$ (chuỗi) & trung gian & mở & \textbf{chặn} \\
+$X \leftarrow Z \to Y$ (rẽ nhánh) & gây nhiễu & mở & \textbf{chặn} \\
+$X \to Z \leftarrow Y$ (hội tụ) & hội tụ & \textbf{chặn} & \textbf{mở} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Collider đi \emph{ngược} lại với hai cái kia --- đó là toàn bộ độ khó của chương.
+
+\textbf{Quy tắc chặn đường.} Một đường bị chặn nếu chứa một biến \emph{không hội
+tụ được} điều kiện hoá, hoặc một biến \emph{hội tụ không được} điều kiện hoá (và
+không hậu duệ nào của nó được điều kiện hoá). Hai biến độc lập có điều kiện khi
+\emph{mọi} đường giữa chúng đều bị chặn --- chỉ cần một đường mở là còn liên hệ.
+
+\subsection*{Sáu vai trò của biến}
+
+Với $T$ là tác nhân và $Y$ là kết quả:
+
+\begin{center}
+\begin{tabular}{@{}llp{7.2cm}@{}}
+\toprule
+\textbf{Vai trò} & \textbf{Kiểm soát?} & \textbf{Vì sao} \\
+\midrule
+Gây nhiễu $T \leftarrow C \to Y$ & \textbf{phải} & không kiểm soát thì liên hệ bị pha tạp \\
+Trung gian $T \to M \to Y$ & không & kiểm soát là chặn mất một phần tác động cần đo \\
+Hội tụ $T \to K \leftarrow Y$ & tuyệt đối không & kiểm soát nó \emph{tạo ra} liên hệ giả \\
+Hậu duệ của hội tụ & không & mở đường hội tụ một phần \\
+Tiền định $P \to Y$ & nên & không bắt buộc, nhưng giảm phương sai \\
+Công cụ $I \to T$ & không & làm \emph{tăng} phương sai \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Một câu nhớ cả bảng: \textbf{chặn cửa sau, đừng chạm cửa trước, đừng bao giờ mở
+cửa hội tụ.}
+
+\subsection*{Ví dụ 1 --- đọc phân rã ra đồ thị}
+
+Cho $p(l,g,i,d,s) = p(l\mid g)\,p(g\mid i,d)\,p(i)\,p(d)\,p(s\mid i)$, tức các
+cạnh $i \to g$, $d \to g$, $i \to s$, $g \to l$.
+
+\begin{itemize}
+\item $s$ và $l$ \emph{không} độc lập: đường $s \leftarrow i \to g \to l$ có $i$ là
+      nút rẽ nhánh và $g$ là nút chuỗi, cả hai chưa điều kiện nên đường mở.
+\item $s \perp l \mid g$: điều kiện hoá $g$ (nút chuỗi) làm chặn đường duy nhất đó.
+\item $s$ và $d$ \emph{độc lập}: đường $s \leftarrow i \to g \leftarrow d$ có $g$
+      là collider chưa điều kiện nên chặn sẵn.
+\item $s$ và $d$ \emph{không còn} độc lập khi biết $g$: điều kiện hoá đúng collider
+      thì mở đường. Có lý giải rõ --- biết một sinh viên điểm thấp, lại biết môn
+      đó dễ, ta suy ra bạn ấy có lẽ không thông minh, mà thế thì điểm SAT cũng
+      thấp. Điều kiện hoá $g$ đã bơm thông tin chảy giữa hai thứ vốn không liên quan.
+\end{itemize}
+
+\subsection*{Ví dụ 2 --- chọn tập kiểm soát}
+
+Cạnh: $C \to T$, $C \to Y$, $T \to M$, $M \to Y$, $T \to K$, $Y \to K$.
+Liệt kê mọi đường từ $T$ tới $Y$:
+
+\begin{center}
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Đường} & \textbf{Nút giữa} & \textbf{Trạng thái} \\
+\midrule
+$T \to M \to Y$ & $M$ chuỗi & mở --- \emph{đây là tác động thật} \\
+$T \leftarrow C \to Y$ & $C$ rẽ nhánh & mở --- cửa sau, \emph{phải chặn} \\
+$T \to K \leftarrow Y$ & $K$ hội tụ & chặn sẵn --- \emph{đừng đụng vào} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Tập kiểm soát đúng là $\{C\}$. Ba lựa chọn sai: để trống thì còn nhiễu bởi $C$;
+lấy $\{C,M\}$ thì chặn luôn tác động cần đo, chỉ còn tác động trực tiếp; lấy
+$\{C,K\}$ thì tự tạo ra liên hệ giả.
+
+\textbf{Bài học:} thêm biến kiểm soát không phải lúc nào cũng tốt hơn. ``Cho hết
+vào mô hình cho chắc'' là sai lầm nghiêm trọng, và đây chính là điều chương 7 dạy.
+
+\subsection*{Liên hệ đồ án}
+
+Trong đồ án thuế GTGT, $D$ (thuế suất cửa hàng thực áp) nằm \emph{giữa} $Z$ (đủ
+điều kiện giảm thuế) và $Y$, tức là \emph{biến trung gian}. Đó là lý do đồ án ước
+lượng theo $Z$ chứ không hồi quy theo $D$ --- điều kiện hoá theo $D$ sẽ chặn mất
+chính con đường cần đo. Câu này rất dễ bị hỏi khi vấn đáp.
+
+%=====================================================================
+\section{Phân tích nhân quả (chương 8)}
+
+\subsection*{Ba cấp độ}
+
+Liên hệ (thấy gì, học được từ dữ liệu quan sát thụ động) $\to$ can thiệp (nếu ta
+làm thì sao, cần mô hình nhân quả hoặc thí nghiệm) $\to$ phản thực (giá như đã
+không làm thì sao, cần thêm giả định về từng cá thể). Học máy thông thường nằm ở
+\emph{cấp một} --- dự đoán giỏi không đồng nghĩa với hiểu nhân quả.
+
+\subsection*{Kết quả tiềm năng}
+
+Với cá thể $i$: $Y_i(1)$ là kết quả giá như được can thiệp, $Y_i(0)$ là giá như
+không. Tác động nhân quả cá thể là $Y_i(1)-Y_i(0)$.
+
+\textbf{Bài toán nền tảng:} ta chỉ quan sát được \emph{một} trong hai. Tác động
+nhân quả cá thể là không quan sát được --- không phải vì thiếu dữ liệu mà vì
+logic. Nên chuyển sang đại lượng trung bình:
+
+\[
+ATE = \mathbb{E}\bigl[Y_i(1)-Y_i(0)\bigr] = \mathbb{E}[Y(1)] - \mathbb{E}[Y(0)]
+\]
+
+\subsection*{Bất đẳng thức trung tâm}
+
+\[
+\underbrace{\mathbb{E}[Y(1)] - \mathbb{E}[Y(0)]}_{\text{nhân quả}}
+\ \neq\
+\underbrace{\mathbb{E}[Y\mid T{=}1] - \mathbb{E}[Y\mid T{=}0]}_{\text{liên hệ}}
+\]
+
+Vế trái so cùng một nhóm người ở hai kịch bản, không quan sát trực tiếp được. Vế
+phải so hai nhóm người khác nhau, tính thẳng từ dữ liệu. Chênh lệch giữa chúng:
+
+\[
+\underbrace{\mathbb{E}[Y\mid T{=}1] - \mathbb{E}[Y\mid T{=}0]}_{\text{(1) đo được}}
+= \underbrace{ATT}_{\text{(2) cái cần}}
++ \underbrace{\bigl(\mathbb{E}[Y(0)\mid T{=}1] - \mathbb{E}[Y(0)\mid T{=}0]\bigr)}_{\text{(3) chệch chọn lọc}}
+\]
+
+Số hạng (3) hỏi: \emph{hai nhóm có khác nhau ngay cả khi không ai được can thiệp
+không?} Ví dụ người đi gym khoẻ hơn người không đi, nhưng người vốn khoẻ mới hay
+đi gym, nên hiệu quả gym bị thổi phồng.
+
+\textbf{RCT giải quyết bằng cách nào.} Phân bổ ngẫu nhiên làm $T$ độc lập với mọi
+kết quả tiềm năng, nên (3) bằng 0 và liên hệ \emph{trở thành} nhân quả. Điểm mấu
+chốt: ngẫu nhiên hoá cân bằng cả những biến gây nhiễu \emph{ta không biết và không
+đo được}. Không phương pháp thống kê nào trên dữ liệu quan sát làm được điều đó.
+
+\subsection*{Hai nghịch lý}
+
+\textbf{Simpson --- bẫy gây nhiễu.} Xu hướng trong từng nhóm con đảo ngược khi gộp.
+Ví dụ sỏi thận: cách A khỏi $81/87 = 93\%$ với sỏi nhỏ và $192/263 = 73\%$ với sỏi
+lớn; cách B khỏi $234/270 = 87\%$ và $55/80 = 69\%$. A thắng trong \emph{cả hai}
+nhóm, nhưng gộp lại thì A được $273/350 = 78\%$ còn B được $289/350 = 83\%$ --- B
+thắng. Nguyên nhân: kích thước sỏi vừa ảnh hưởng việc chọn cách chữa vừa ảnh hưởng
+khả năng khỏi, tức là \emph{biến gây nhiễu}, nên phải đọc con số \emph{theo nhóm con}.
+
+\textbf{Berkson --- bẫy hội tụ.} Một nhóm con thể hiện liên hệ mà quần thể rộng
+không có. Trong giới nổi tiếng, tài năng và ngoại hình tương quan âm giả tạo, vì
+muốn nổi tiếng thì cần \emph{hoặc} tài \emph{hoặc} đẹp. Chọn mẫu chỉ gồm người nổi
+tiếng chính là điều kiện hoá đúng nút hội tụ.
+
+\subsection*{Tương quan không phải nhân quả}
+
+Thấy $X$ và $Y$ tương quan thì có bốn khả năng: $X \to Y$; $Y \to X$; có biến gây
+nhiễu chung $X \leftarrow C \to Y$; hoặc ngẫu nhiên / chệch chọn mẫu. Dữ liệu quan
+sát không tự phân biệt được --- cần thêm chiều thời gian, kiến thức lĩnh vực, hoặc
+can thiệp.
+
+\subsection*{Ngoài book --- cho vấn đáp đồ án}
+
+\textbf{Tiêu chuẩn cửa sau:} tập $C$ chặn mọi đường cửa sau từ $T$ tới $Y$ và không
+chứa hậu duệ của $T$; khi đó
+$P\bigl(Y \mid do(T{=}t)\bigr) = \sum_c P(Y \mid T{=}t, C{=}c)\,P(C{=}c)$.
+
+\textbf{g-computation:} khớp $\hat m_0(X)$ \emph{chỉ trên nhóm chứng}, rồi dùng
+chính mô hình đó dự đoán kết quả phản thực cho nhóm can thiệp:
+$\widehat{ATT} = \frac{1}{n_1}\sum_{i:T_i=1}\bigl(Y_i - \hat m_0(X_i)\bigr)$.
+
+%=====================================================================
+\section{Hồi quy tuyến tính (chương 9)}
+
+Chương được điểm nhanh nhất --- bài tập gần như chỉ có một dạng.
+
+\subsection*{Công thức}
+
+\[
+\hat y = \beta_0 + \beta_1 x
+\qquad
+e_i = y_i - \hat y_i
+\qquad
+b_1 = \frac{s_y}{s_x}R = \frac{S_{xy}}{S_{xx}}
+\qquad
+b_0 = \bar y - b_1 \bar x
+\]
+
+\[
+R^2 = \frac{SS_{\text{Model}}}{SS_{\text{Total}}} = 1 - \frac{SS_{\text{Error}}}{SS_{\text{Total}}}
+\qquad
+s_e = \sqrt{\frac{SS_{\text{Error}}}{n-2}}
+\qquad
+SE_{b_1} = \frac{s_e}{\sqrt{S_{xx}}}
+\]
+
+\[
+T = \frac{b_1 - \beta_1^{0}}{SE_{b_1}}
+\qquad
+df = n-2
+\qquad
+CI:\ b_1 \pm t^{*}_{n-2}\,SE_{b_1}
+\]
+
+Bình phương tối thiểu chọn hệ số để $\sum e_i^2$ nhỏ nhất --- không phải
+$\sum|e_i|$, cũng không phải $\sum e_i$ (tổng này luôn bằng 0). Trong hồi quy đơn,
+$R^2$ đúng bằng bình phương hệ số tương quan.
+
+\textbf{Ba tính chất dùng để tự kiểm tra:} $b_1$ luôn cùng dấu với $R$; đường hồi
+quy luôn đi qua $(\bar x, \bar y)$; tổng phần dư luôn bằng 0.
+
+\subsection*{Điều kiện và ngoại lệ}
+
+Ba điều kiện: quan hệ tuyến tính, phần dư gần chuẩn, phương sai không đổi (cộng
+thêm điều kiện ngầm là quan sát độc lập). Ba loại ngoại lệ: xa theo chiều dọc
+(ngoại lệ phần dư), xa theo chiều ngang (đòn bẩy cao), và \emph{có ảnh hưởng}
+(bỏ ra thì hệ số góc đổi đáng kể) --- loại thứ ba nguy hiểm nhất.
+
+\subsection*{Ví dụ 1 --- từ tóm tắt thống kê}
+
+$\bar x = 86{,}01$ (\% tốt nghiệp), $\bar y = 11{,}35$ (\% nghèo), $s_x = 3{,}73$,
+$s_y = 3{,}1$, $R = -0{,}75$.
+
+$b_1 = (3{,}1/3{,}73)(-0{,}75) = -0{,}62$ và
+$b_0 = 11{,}35 + 0{,}62 \times 86{,}01 = 64{,}68$, cho $\hat y = 64{,}68 - 0{,}62x$.
+Dự đoán tại $x = 85{,}1$ được $11{,}92\%$. Hệ số xác định $R^2 = 0{,}5625$.
+
+Diễn giải: mỗi điểm phần trăm tốt nghiệp tăng thêm \emph{đi kèm} mức nghèo thấp
+hơn $0{,}62$ điểm phần trăm. Viết ``đi kèm'', đừng viết ``làm giảm'' --- đây là dữ
+liệu quan sát. Hệ số chặn $64{,}68$ ứng với $x=0$, nằm ngoài xa dải dữ liệu nên
+\emph{vô nghĩa}; luôn nhắc một câu về ngoại suy khi làm bài.
+
+\bay Giá trị chưa làm tròn là $b_1 = -0{,}62332$; giữ nguyên nó thì $b_0 = 64{,}96$
+chứ không phải $64{,}68$, lệch $0{,}28$. Vì $b_1$ bị nhân với $\bar x = 86$, sai số
+làm tròn ở chữ số thứ ba bị khuếch đại gần 90 lần. Giữ đủ chữ số cho tới bước cuối.
+
+\subsection*{Ví dụ 2 --- tính tay đầy đủ}
+
+Dùng lại $x = 1,\dots,5$ và $y = 2,4,5,4,9$ ở mục~1: $S_{xy}=14$, $S_{xx}=10$,
+$S_{yy}=26{,}8$.
+
+$b_1 = 14/10 = 1{,}4$ và $b_0 = 4{,}8 - 4{,}2 = 0{,}6$, cho $\hat y = 0{,}6+1{,}4x$.
+Giá trị khớp là $2{,}0$; $3{,}4$; $4{,}8$; $6{,}2$; $7{,}6$, nên phần dư là
+$0$; $0{,}6$; $0{,}2$; $-2{,}2$; $1{,}4$ --- cộng lại đúng bằng 0.
+
+$SS_{\text{Error}} = 7{,}20$ nên $R^2 = 1 - 7{,}20/26{,}80 = 0{,}731$
+(kiểm chéo: $0{,}855^2 = 0{,}731$).
+$s_e = \sqrt{7{,}20/3} = 1{,}549$ và $SE_{b_1} = 1{,}549/\sqrt{10} = 0{,}490$, cho
+$T = 1{,}4/0{,}490 = 2{,}86$ với $df=3$.
+
+Ngưỡng $t^{*}_{0{,}025;3} = 3{,}182 > 2{,}86$ nên \emph{không} bác bỏ
+$H_0: \beta_1 = 0$. Khoảng tin cậy
+$1{,}4 \pm 3{,}182 \times 0{,}490 = (-0{,}16;\ 2{,}96)$ chứa 0, nhất quán.
+
+\textbf{Bài học quan trọng nhất.} $R^2 = 73\%$ trông rất đẹp nhưng hệ số góc
+\emph{không có ý nghĩa thống kê}, vì $n=5$ quá nhỏ. $R^2$ đo \emph{khớp bao
+nhiêu}, còn $p$ đo \emph{có chắc không phải may rủi không} --- hai chuyện khác nhau.
+
+\subsection*{Ví dụ 3 --- đọc bảng output}
+
+Nghiên cứu IQ song sinh, $n=27$: hệ số góc $0{,}9014$ với sai số chuẩn $0{,}0963$.
+
+Kiểm chứng cột $t$: $0{,}9014/0{,}0963 = 9{,}36$ --- cột $t$ luôn là ước lượng chia
+sai số chuẩn, tự tính lại để chắc mình đọc đúng cột. Với $df = 25$ và
+$t^{*} = 2{,}06$, khoảng tin cậy là $(0{,}70;\ 1{,}10)$. Khoảng này \emph{chứa 1},
+nên không bác bỏ được giả thuyết $\beta_1 = 1$, tức quan hệ có thể là một đổi một.
+
+\bay Đề hỏi kiểm định $\beta_1 = 1$ thì tử số là $b_1 - 1$. Cột $t$ trong bảng
+output \emph{luôn} ứng với null bằng 0, phải tự tính lại.
+
+%=====================================================================
+\section{Hồi quy đa biến và logistic (chương 10)}
+
+\subsection*{Hồi quy đa biến}
+
+\[
+\hat y = \beta_0 + \beta_1 x_1 + \dots + \beta_p x_p
+\qquad
+R^2_{adj} = 1 - \left(\frac{SS_{\text{Error}}}{SS_{\text{Total}}} \times \frac{n-1}{n-p-1}\right)
+\]
+
+Diễn giải $\beta_j$: khi $x_j$ tăng 1 đơn vị \emph{và giữ nguyên mọi biến còn lại}.
+Bỏ cụm đó là mất điểm diễn giải. Cùng một biến, hệ số trong mô hình đơn và mô hình
+đa biến có thể khác nhau, thậm chí đổi dấu.
+
+$R^2$ \emph{không bao giờ giảm} khi thêm biến, kể cả biến rác, nên vô dụng để so
+mô hình khác số biến. $R^2_{adj}$ phạt theo $p$ nên \emph{có thể} giảm --- đó là
+tính năng. So mô hình khác số biến thì dùng $R^2_{adj}$; báo cáo mức khớp của một
+mô hình thì dùng $R^2$.
+
+\vd $SS_{\text{Total}} = 480{,}25$, $SS_{\text{Error}} = 347{,}68$, $n=51$, $p=1$.
+Khi đó $R^2 = 132{,}57/480{,}25 = 0{,}276$ và
+$R^2_{adj} = 1 - (347{,}68/480{,}25)(50/49) = 0{,}261$.
+
+\subsection*{Biến định tính}
+
+Biến $k$ mức cần $k-1$ dummy; mức bị bỏ ra là \emph{mức tham chiếu} và hệ số chặn
+đại diện cho nó. Cho cả $k$ dummy thì tổng của chúng luôn bằng 1, trùng với hệ số
+chặn, ma trận suy biến --- đây là \emph{bẫy biến giả}.
+
+\vd Với bốn vùng và northeast làm tham chiếu,
+$\hat y = 9{,}50 + 0{,}03\,\text{midwest} + 1{,}79\,\text{west} + 4{,}16\,\text{south}$.
+Miền Nam nghèo hơn Đông Bắc $4{,}16$ điểm phần trăm. \emph{Mọi hệ số dummy đều so
+với mức tham chiếu}, không so với trung bình chung; muốn so midwest với south thì
+lấy hiệu $4{,}16 - 0{,}03 = 4{,}13$.
+
+\vd Dummy cộng biến liên tục: với $V$ là thể tích và $B=1$ nếu bìa mềm,
+$\hat y = 197{,}96 + 0{,}72V - 184{,}05B$ tách thành hai đường \emph{song song} ---
+bìa cứng $\hat y = 197{,}96 + 0{,}72V$ và bìa mềm $\hat y = 13{,}91 + 0{,}72V$.
+Muốn hai đường khác hệ số góc thì phải thêm số hạng tương tác $V \times B$.
+
+\subsection*{Lựa chọn mô hình và đa cộng tuyến}
+
+\emph{Loại lùi:} bắt đầu từ mô hình đầy đủ, bỏ biến có p-value cao nhất, khớp lại,
+lặp. \emph{Chọn tiến:} khớp hồi quy đơn cho từng biến, thêm biến có p-value nhỏ
+nhất, lặp. Hai cách không nhất thiết cho cùng kết quả.
+
+Đa cộng tuyến: thêm biến làm $R^2$ nhích lên nhưng $R^2_{adj}$ đứng yên nghĩa là
+biến mới gần như không mang thông tin mới. Hậu quả là sai số chuẩn phình to và hệ
+số bất ổn định. Ưu tiên mô hình gọn.
+
+\subsection*{Hồi quy logistic}
+
+\[
+\text{odds} = \frac{p}{1-p}
+\qquad
+\text{logit}(p) = \log\frac{p}{1-p}
+\qquad
+p = \frac{e^{\eta}}{1+e^{\eta}},\ \ \eta = \beta_0 + \beta_1 x_1 + \dots
+\]
+
+Logit kéo $p \in [0,1]$ ra thành $(-\infty,+\infty)$ --- nhờ vậy mới đặt được mô
+hình tuyến tính lên. Hệ số $\beta_j$ là thay đổi \emph{log-odds}; $e^{\beta_j}$ là
+\emph{tỉ số odds}. Mốc ``không tác dụng'' là $e^{\beta}=1$, không phải 0.
+
+\textbf{Ba bước bắt buộc:} logit $\to$ odds ($e^{\text{logit}}$) $\to$ xác suất
+($\text{odds}/(1+\text{odds})$). Nhảy tắt là sai.
+
+\vd Đoàn Donner, $\text{logit} = 1{,}8185 - 0{,}0665 \times \text{tuổi}$.
+Người 25 tuổi: logit $= 0{,}1560$, odds $= e^{0{,}156} = 1{,}169$, xác suất
+$= 1{,}169/2{,}169 = 0{,}539$. Người 50 tuổi: logit $= -1{,}5065$, odds $=0{,}2217$,
+xác suất $= 0{,}181$. Tỉ số odds theo tuổi $e^{-0{,}0665} = 0{,}936$, tức mỗi năm
+tuổi odds sống sót giảm khoảng $6{,}4\%$.
+
+Với hệ số giới tính $1{,}5973$ thì $e^{1{,}5973} = 4{,}94$: giữ nguyên tuổi, odds
+sống sót của nữ cao gấp khoảng 4,9 lần nam. Đừng viết ``xác suất cao gấp 5 lần'' ---
+gấp 5 lần là \emph{odds}. Tỉ số odds cũng không phải tỉ số nguy cơ; chúng chỉ gần
+nhau khi biến cố hiếm.
+
+\subsection*{Độ nhạy, độ đặc hiệu, ngưỡng}
+
+\[
+\text{Sensitivity} = \frac{TP}{TP+FN}
+\qquad
+\text{Specificity} = \frac{TN}{FP+TN}
+\]
+
+Đổi ngưỡng thì hai chỉ số đi \emph{ngược chiều} nhau. Không có ngưỡng đúng về mặt
+toán học --- chọn ngưỡng là quyết định kinh doanh, tuỳ giá của mỗi loại sai.
+
+\vd Lọc thư rác ở ngưỡng $0{,}75$ với $TP=27$, $TN=3545$, $FP=9$, $FN=340$:
+sensitivity $= 0{,}073$ và specificity $= 0{,}997$. Bắt được có $7{,}3\%$ thư rác
+nhưng gần như không chặn nhầm thư thật --- với lọc thư rác đó là đánh đổi hợp lý.
+Hàm tiện ích $U = TP - 50\,FP - 5\,FN$ lượng hoá đúng cái đánh đổi đó, cho
+$U = 1422$.
+
+\vd Bayes với tỉ lệ nền. Bệnh lupus có tỉ lệ mắc $2\%$, xét nghiệm có độ nhạy
+$0{,}98$ và độ đặc hiệu $0{,}74$. Với $B$ là có bệnh và $+$ là dương tính:
+\[
+P(B \cap +) = 0{,}02 \times 0{,}98 = 0{,}0196
+\qquad
+P(\bar B \cap +) = 0{,}98 \times 0{,}26 = 0{,}2548
+\]
+\[
+P(B \mid +) = \frac{0{,}0196}{0{,}0196+0{,}2548} = 0{,}0714
+\]
+Xét nghiệm rất nhạy nhưng dương tính chỉ cho $7\%$ khả năng mắc bệnh thật, vì bệnh
+hiếm nên nhóm không bệnh đông tới mức $26\%$ dương tính giả của họ vẫn áp đảo.
+\emph{Tỉ lệ nền quyết định tất cả.}
+
+%=====================================================================
+\section{Monte Carlo (chương 11)}
+
+Thiên về mô tả thuật toán hơn là tính tay.
+
+\subsection*{Ba trụ cột}
+
+\textbf{Số ngẫu nhiên} --- ba loại: thực (hiện tượng vật lý), gần ngẫu nhiên (dãy
+tất định phủ đều), giả ngẫu nhiên (sinh bằng thuật toán, thứ máy tính thật sự
+dùng). Bốn tiêu chí của dãy tốt: chu kỳ dài, phân bố đều, độc lập thống kê, sinh
+nhanh. Số giả ngẫu nhiên \emph{hoàn toàn tất định} --- cùng hạt giống thì cùng dãy,
+và đó là \emph{ưu điểm} vì làm kết quả tái lập được.
+
+\textbf{Luật số lớn} nói mô phỏng \emph{sẽ đúng}. \textbf{Định lý giới hạn trung
+tâm} nói \emph{sai bao nhiêu}. Cần cả hai.
+
+\subsection*{Các thuật toán}
+
+\textbf{Bộ sinh đồng dư tuyến tính:} $x_i = (a\,x_{i-1}+c) \bmod m$, rồi chuẩn hoá
+$x_i/m$. Chu kỳ tối đa là $m$, nên $m$ thực tế lấy $2^{32}$ trở lên.
+
+\textbf{Box--Muller} sinh chuẩn: từ $u_1,u_2 \sim \mathcal{U}(0,1)$ đặt
+$\theta = 2\pi u_1$ và $r = \sqrt{-2\ln u_2}$, trả về $r\cos\theta$ và
+$r\sin\theta$ --- \emph{hai} biến $\mathcal{N}(0,1)$ độc lập.
+
+\textbf{Biến đổi nghịch đảo:} nếu $u \sim \mathcal{U}(0,1)$ thì $X = F^{-1}(u)$ có
+phân phối $F$. Rời rạc thì chọn $X = x_i$ khi $F(x_{i-1}) \le u < F(x_i)$; liên tục
+thì giải $F(x)=u$. Với phân phối mũ, $x = -\ln(1-u)/\lambda$.
+
+\textbf{Chấp nhận -- bác bỏ:} cần $q$ dễ lấy mẫu và hằng số $M$ sao cho
+$p(x) \le Mq(x)$ với mọi $x$. Sinh $x \sim q$, sinh $u \sim \mathcal{U}(0, Mq(x))$,
+chấp nhận nếu $u < p(x)$. Hiệu suất là $1/M$ --- chọn $q$ dở thì rất lãng phí.
+
+\textbf{Lấy mẫu quan trọng:}
+$\mathbb{E}_{p}[f] = \mathbb{E}_{q}\!\left[f\,\dfrac{p}{q}\right]$.
+Lấy mẫu từ $q$ nhưng vẫn tính đúng kỳ vọng dưới $p$ nhờ trọng số $p/q$. Dùng khi
+biến cố cần đo hiếm dưới $p$.
+
+\subsection*{Tích phân Monte Carlo}
+
+\[
+\int_a^b f(x)\,dx \approx (b-a)\cdot\frac{1}{n}\sum_{i=1}^{n} f(u_i)
+\qquad
+SE = \frac{\sigma_f}{\sqrt n}
+\]
+
+\textbf{Hệ quả quan trọng nhất của cả chương:} sai số giảm theo $1/\sqrt n$ và
+\emph{không phụ thuộc số chiều}. Cầu phương lưới cần $n^d$ điểm với $d$ chiều nên
+bùng nổ tổ hợp; Monte Carlo thì không. Ở một hai chiều thì Monte Carlo \emph{thua}
+hình thang, nhưng từ khoảng $d \ge 4$ thì thắng. Muốn giảm sai số một nửa phải
+tăng $n$ \emph{gấp bốn}.
+
+\vd Ước lượng $\pi$: sinh $n$ điểm ngẫu nhiên trong hình vuông, đếm $k$ điểm rơi
+vào đường tròn nội tiếp, khi đó $\pi \approx 4k/n$. Số 4 đến từ chỗ hình vuông cạnh
+2 có diện tích 4 còn tròn bán kính 1 có diện tích $\pi$.
+
+\subsection*{Bài tập chương}
+
+\textbf{Bài 1 --- thời gian dự án.} Ba công việc tuần tự với ước lượng tam giác
+$(4;6;8)$, $(5;7;9)$, $(2;4;6)$ tuần. Hỏi xác suất xong trong 17 tuần. Mô phỏng:
+lặp $N$ lần, mỗi lần sinh ba giá trị tam giác rồi đếm số lần tổng không quá 17.
+
+\emph{Kiểm chứng bằng giải tích trước khi tin mô phỏng.} Phân phối tam giác có
+trung bình $(a+m+b)/3$ và phương sai $(a^2+m^2+b^2-am-ab-mb)/18$. Ba công việc có
+trung bình $6$, $7$, $4$ nên tổng đúng bằng \textbf{17}; phương sai mỗi cái đều là
+$0{,}667$ nên tổng là $2{,}00$ với $\sigma = 1{,}41$. Cả ba đối xứng nên tổng cũng
+đối xứng quanh 17, cho $P(T \le 17) \approx \mathbf{0{,}50}$. Mô phỏng chạy đúng
+phải ra khoảng $0{,}50$; lệch xa là code sai.
+
+\textbf{Bài 2 --- doanh thu thuê bao.} Phí 10 USD mỗi thuê bao mỗi tháng, 10.000
+người dùng, chi phí duy trì 1.000.000 USD một năm. Giả định mỗi tháng trong 12
+tháng tới giống một tháng rút ngẫu nhiên từ 60 tháng lịch sử. Điểm cần nhận ra:
+bài này \emph{không giả định phân phối nào cả}, nó lấy mẫu có hoàn lại thẳng từ dữ
+liệu lịch sử --- đó chính là \emph{bootstrap}.
+
+\subsection*{Bootstrap}
+
+Từ mẫu $n$ quan sát, rút \emph{có hoàn lại} đúng $n$ quan sát, tính lại thống kê,
+lặp $B$ lần (2000--5000). Độ lệch chuẩn của $B$ giá trị đó chính là sai số chuẩn;
+phân vị $2{,}5\%$ và $97{,}5\%$ cho khoảng tin cậy 95\%.
+
+Ba câu hay bị hỏi lại: (1)~``rút hết rổ thì khác gì nhau'' --- vì rút \emph{có hoàn
+lại}, nên có món trúng hai ba lần, có món không trúng lần nào;
+(2)~xác suất một món không bao giờ được rút là $(1-1/n)^n \to e^{-1} \approx 0{,}368$,
+nên mỗi vòng chỉ chứa khoảng \textbf{63,2\%} số món riêng biệt;
+(3)~sai số chuẩn đến từ chính việc lặp lại ngẫu nhiên đó, không cần công thức giải
+tích nào.
+
+%=====================================================================
+\section{Bảng tra nhanh}
+
+\subsection*{Giá trị tới hạn}
+
+\begin{center}
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+\textbf{Độ tin cậy} / $\alpha$ & 90\% / 0,10 & 95\% / 0,05 & 98\% / 0,02 & 99\% / 0,01 \\
+\midrule
+$z^{*}$ (hai phía) & 1,645 & \textbf{1,96} & 2,33 & 2,576 \\
+$z_\alpha$ (một phía) & 1,282 & \textbf{1,645} & 2,054 & 2,326 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+$t^{*}_{0{,}025}$ theo $df$: $3 \to 3{,}182$; $5 \to 2{,}571$; $10 \to 2{,}228$;
+$20 \to 2{,}086$; $25 \to 2{,}060$; $30 \to 2{,}042$; $\infty \to 1{,}96$.
+
+$\chi^2_{0{,}05}$ theo $df$: $1 \to 3{,}841$; $2 \to 5{,}991$; $3 \to 7{,}815$;
+$4 \to 9{,}488$.
+
+Thiếu bảng tra thì ba số \textbf{1,96}, \textbf{1,645}, \textbf{2,576} gỡ được phần
+lớn bài.
+
+\subsection*{Bậc tự do dùng ở đâu}
+
+\begin{center}
+\begin{tabular}{@{}ll@{}}
+\toprule
+$n-1$ & phương sai mẫu; $t$ một trung bình; $\chi^2$ một phương sai \\
+$n-2$ & hồi quy đơn (đã ước lượng hai tham số $b_0$ và $b_1$) \\
+$n_1+n_2-2$ & $t$ hai trung bình phương sai bằng nhau \\
+$(h-1)(k-1)$ & chi bình phương độc lập \\
+$2$ & Jarque--Bera, luôn luôn \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection*{Sáu câu dễ mất điểm nhất}
+
+\begin{enumerate}
+\item p-value \emph{không phải} xác suất $H_0$ đúng.
+\item Không viết ``chấp nhận $H_0$'' --- viết \emph{chưa đủ bằng chứng để bác bỏ}.
+\item Phương sai mẫu chia $n-1$; hồi quy dùng $df = n-2$.
+\item Kiểm định một tỉ lệ dùng $p_0$ ở mẫu số; dựng khoảng tin cậy dùng $\hat p$.
+\item Hồi quy trên dữ liệu quan sát thì viết \emph{đi kèm}, không viết \emph{làm cho}.
+\item Điều kiện hoá collider tạo ra liên hệ giả --- thêm biến kiểm soát không phải
+      lúc nào cũng an toàn hơn.
+\end{enumerate}
+
+\end{document}

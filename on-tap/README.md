@@ -34,6 +34,25 @@ Công thức viết bằng `$...$` nên xem đẹp nhất trên GitHub hoặc VS
 | Monte Carlo | 11 | [08](08-monte-carlo.md) |
 | — | — | [Bảng tra công thức 1 trang](09-bang-tra.md) |
 
+## Bản LaTeX gọn — in ra PDF
+
+[`tex/on-tap.tex`](tex/on-tap.tex) là bản **rút gọn của cả 9 file trên**, gộp vào
+một tài liệu duy nhất: công thức, bẫy, và bài giải mẫu, bỏ phần tự kiểm tra và
+các đoạn dẫn dài.
+
+Máy chưa cài LaTeX nên phải compile trên Overleaf, giống lúc làm báo cáo:
+
+1. Vào Overleaf, tạo project trống.
+2. Upload **mỗi một file** `tex/on-tap.tex` — không cần hình, không cần file phụ.
+3. Compile hai lần cho mục lục hiện đúng.
+
+Preamble lấy nguyên từ `bao-cao/tex/main.tex` (bộ `T5` + `vietnamese` đã compile
+thành công), nên không phải dò lại lỗi font tiếng Việt.
+
+Khác biệt đáng nói giữa hai bản: trong LaTeX thì chữ Việt đặt trong `\text{}`
+**chạy được** — báo cáo đang dùng như vậy ở 29 chỗ. Hạn chế nêu ở khung trên chỉ
+áp cho KaTeX, tức bản Markdown.
+
 Chương 1, 2, 4 (giới thiệu, thu thập dữ liệu, phương pháp nghiên cứu) không nằm
 trong danh sách — thường ra dạng lý thuyết ngắn, không tính toán.
 

@@ -263,12 +263,18 @@ $$\bar p = \frac{10 + 26}{90 + 100} = \frac{36}{190} = 0{,}1895$$
 $$SE = \sqrt{0{,}1895 \times 0{,}8105 \times \left(\frac{1}{90}+\frac{1}{100}\right)}
 = \sqrt{0{,}1536 \times 0{,}02111} = \sqrt{0{,}003243} = 0{,}05694$$
 
-$$z = \frac{0{,}1111 - 0{,}26}{0{,}05694} = \frac{-0{,}1489}{0{,}05694} = -2{,}62$$
+$$z = \frac{0{,}1111 - 0{,}26}{0{,}05694} = \frac{-0{,}14889}{0{,}05694} = -2{,}615$$
 
 **Bước 3.** Miền bác bỏ: $|z| > 1{,}96$
 
-**Bước 4.** $2{,}62 > 1{,}96$ → **bác bỏ $H_0$**. Hai tỉ lệ nhiễm khác nhau có ý
+**Bước 4.** $2{,}615 > 1{,}96$ → **bác bỏ $H_0$**. Hai tỉ lệ nhiễm khác nhau có ý
 nghĩa; nhóm dùng DDT nhiễm ít hơn.
+
+> Giữ tử số ở 5 chữ số ($-0{,}14889$) là có chủ ý. Lấy tử số làm tròn thành
+> $-0{,}1489$ rồi chia sẽ ra $2{,}61503$, làm tròn thành $2{,}62$; tính đủ chữ số
+> mới ra $2{,}61487$, tức $2{,}615$. Cùng cái bẫy làm tròn ở
+> [file 06](06-hoi-quy-tuyen-tinh.md) — chỉ khác là ở đây nó đủ sức đổi chữ số
+> cuối của đáp án.
 
 > Tử số dùng $\hat p_1, \hat p_2$ riêng, mẫu số dùng $\bar p$ gộp. Nhớ bằng logic:
 > mẫu số được tính **dưới giả định $H_0$ đúng**, mà $H_0$ nói hai tỉ lệ bằng nhau.
