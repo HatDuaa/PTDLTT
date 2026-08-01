@@ -25,6 +25,15 @@ $$r = \frac{S_{xy}}{\sqrt{S_{xx}S_{yy}}} \qquad
 
 $$\sum(x_i-\bar x)^2 = \sum x_i^2 - \frac{(\sum x_i)^2}{n} \quad \text{(tính nhanh)}$$
 
+Lệch phải → $\bar x >$ trung vị · lệch trái → $\bar x <$ trung vị (**trung bình bị
+đuôi kéo**)
+
+Đối xứng → báo cáo $\bar x$ và $s$ · lệch hoặc có ngoại lệ → báo cáo **trung vị và
+IQR** (cặp bền)
+
+Rút gọn Spearman chỉ đúng khi **không trùng hạng**; có trùng hạng thì tính Pearson
+trên cột hạng
+
 ## [Khoảng tin cậy](02-khoang-tin-cay.md)
 
 $$\text{ước lượng điểm} \pm z^{*} \times SE$$
