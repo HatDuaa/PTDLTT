@@ -13,7 +13,7 @@ export function ChanTrang() {
   const { duLieu: manifest } = useManifest();
 
   return (
-    <footer className="mt-16 border-t bg-muted/30">
+    <footer data-khung-web className="mt-16 border-t bg-muted/30">
       <div className="mx-auto max-w-6xl px-4 py-8 text-xs text-muted-foreground">
         <p>
           Nguồn pháp lý: Nghị quyết 174/2024/QH15 (thuế suất 10%, hiệu lực tới 30/06/2025) và

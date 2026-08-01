@@ -21,7 +21,10 @@ export function DieuHuong() {
   const [moMenu, setMoMenu] = useState(false);
 
   return (
-    <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/80">
+    <header
+      data-khung-web
+      className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/80"
+    >
       <div className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-4 px-4">
         <Link href="/" className="shrink-0 font-heading text-sm font-semibold">
           Thuế GTGT → giá bán lẻ

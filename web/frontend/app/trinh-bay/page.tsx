@@ -87,7 +87,6 @@ const THONG_TIN_NHOM: { nhan: string; gt: string }[] = [
   // Trang cá nhân fit.hcmus.edu.vn/~btlen ghi "Dr. BUI TIEN LEN", chức danh
   // Senior Lecturer — không có dấu hiệu phó giáo sư, nên ghi TS. chứ không PGS.TS.
   { nhan: "Giảng viên", gt: "TS. Bùi Tiến Lên" },
-  { nhan: "Lớp", gt: "" },
 ];
 
 const THANH_VIEN: { ten: string; mssv: string }[] = [

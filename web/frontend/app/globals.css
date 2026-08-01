@@ -181,3 +181,23 @@
 [data-slide-noi-dung] :is(th, td) {
   white-space: normal;
 }
+
+/* Khi IN bản trình chiếu: bỏ khung web ra khỏi PDF.
+
+   Thanh điều hướng và chân trang do layout gốc dựng nên nằm ngoài cây của trang
+   trình bày. Không bỏ thì PDF có thêm một trang đầu gần trắng (chỉ logo và nút
+   menu) và một trang cuối chỉ có ghi chú nguồn — đúng hai trang thừa đã thấy khi
+   thử Ctrl+P.
+
+   Chỉ áp khi `KhungTrinhChieu` đang gắn: in các trang phân tích thì chân trang
+   vẫn nên có, vì nó chứa nguồn pháp lý và thông tin tái lập. */
+@media print {
+  html[data-che-do-trinh-chieu] [data-khung-web] {
+    display: none !important;
+  }
+  /* Bỏ luôn khoảng đệm của <main> để slide đầu không bị đẩy xuống nửa trang. */
+  html[data-che-do-trinh-chieu] main {
+    padding: 0 !important;
+    max-width: none !important;
+  }
+}

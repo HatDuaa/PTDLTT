@@ -94,6 +94,23 @@ export function KhungTrinhChieu({ children, tong }: { children: ReactNode; tong:
     return () => document.removeEventListener("fullscreenchange", doi);
   }, []);
 
+  // Đánh dấu <html> để CSS in biết trang này là bản trình chiếu.
+  //
+  // Thanh điều hướng và chân trang do layout gốc dựng, tức nằm NGOÀI cây của
+  // trang này — không thể gắn `print:hidden` từ đây. Khi Ctrl+P, chúng lọt vào
+  // PDF thành một trang đầu gần trắng (chỉ có logo và nút menu) và một trang
+  // cuối chỉ có ghi chú nguồn.
+  //
+  // Không đặt `print:hidden` thẳng lên chúng ở layout: chân trang chứa nguồn
+  // pháp lý và thông tin tái lập, thứ NÊN có khi in các trang phân tích. Chỉ
+  // bản trình chiếu mới cần bỏ.
+  useEffect(() => {
+    document.documentElement.dataset.cheDoTrinhChieu = "1";
+    return () => {
+      delete document.documentElement.dataset.cheDoTrinhChieu;
+    };
+  }, []);
+
   async function batTat() {
     if (document.fullscreenElement) await document.exitFullscreen();
     else await boc.current?.requestFullscreen?.();
