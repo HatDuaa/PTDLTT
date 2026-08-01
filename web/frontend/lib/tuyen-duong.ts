@@ -7,6 +7,9 @@ export interface MucDieuHuong {
 
 export const DANH_SACH_TUYEN: MucDieuHuong[] = [
   { href: "/", nhan: "Tóm tắt", moTaNgan: "Hạn chế và câu hỏi nghiên cứu" },
+  // Demo đứng ngay sau Tóm tắt: nó là trang duy nhất người xem TỰ thao tác được,
+  // nên để sâu trong menu thì gần như không ai vào.
+  { href: "/demo", nhan: "Demo", moTaNgan: "Tra một mặt hàng, tự tính giá, gạt thử độ nhạy" },
   { href: "/du-lieu", nhan: "Dữ liệu", moTaNgan: "Luồng mẫu, độ phủ, cân bằng tiền kỳ" },
   { href: "/thiet-ke", nhan: "Thiết kế", moTaNgan: "Khung Z/D, DAG, giả định" },
   { href: "/ket-qua", nhan: "Kết quả", moTaNgan: "Bốn ước lượng, cổng chẩn đoán, độ nhạy" },

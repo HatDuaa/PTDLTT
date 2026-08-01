@@ -43,6 +43,7 @@ def gop_du_lieu(du_lieu: dict) -> dict:
         "mo_ta_y_theo_nhom": du_lieu["kq-mo-ta-y-theo-nhom.csv"],
         "he_so_mo_hinh": du_lieu["kq-he-so-mo-hinh.csv"],
         "chan_doan_hiep_bien": du_lieu["kq-chan-doan-hiep-bien.csv"],
+        "bam_chuan_chi_tiet": du_lieu["kq-bam-chuan-co-hoc-chi-tiet.csv"],
         "eda": {ten: du_lieu[ten_file] for ten, ten_file in BAN_DO_EDA.items()},
         "manifest": du_lieu[KHOA_MANIFEST],
     }

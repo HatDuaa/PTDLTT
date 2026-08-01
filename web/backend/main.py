@@ -175,6 +175,17 @@ def chan_doan_hiep_bien():
     return _lay("kq-chan-doan-hiep-bien.csv")
 
 
+@app.get("/api/bam-chuan-chi-tiet")
+def bam_chuan_chi_tiet():
+    """Chuẩn giá cơ học cho TỪNG SKU — kq-bam-chuan-co-hoc-chi-tiet.csv.
+
+    287 dòng, mỗi mặt hàng một dòng: giá trước, giá sau, giá lẽ ra phải có sau
+    khi giảm thuế và làm tròn nghìn, và có rơi đúng mức đó không. Đây là dữ
+    liệu cấp chi tiết đằng sau con số tổng hợp ở /api/bam-chuan.
+    """
+    return _lay("kq-bam-chuan-co-hoc-chi-tiet.csv")
+
+
 @app.get("/api/chan-doan-type")
 def chan_doan_type():
     """Bằng chứng loại biến `type` khỏi phân tầng — chan-doan-bien-type.csv.
@@ -230,6 +241,7 @@ def tat_ca():
         "mo_ta_y_theo_nhom": _lay("kq-mo-ta-y-theo-nhom.csv"),
         "he_so_mo_hinh": _lay("kq-he-so-mo-hinh.csv"),
         "chan_doan_hiep_bien": _lay("kq-chan-doan-hiep-bien.csv"),
+        "bam_chuan_chi_tiet": _lay("kq-bam-chuan-co-hoc-chi-tiet.csv"),
         "eda": {ten: _lay(ten_file) for ten, ten_file in BAN_DO_EDA.items()},
         "manifest": _lay(KHOA_MANIFEST),
     }

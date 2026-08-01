@@ -95,6 +95,10 @@ export function useChanDoanHiepBien() {
   return useApi("chan-doan-hiep-bien", apiClient.layChanDoanHiepBien);
 }
 
+export function useBamChuanChiTiet() {
+  return useApi("bam-chuan-chi-tiet", apiClient.layBamChuanChiTiet);
+}
+
 export function useManifest() {
   return useApi("manifest", apiClient.layManifest);
 }

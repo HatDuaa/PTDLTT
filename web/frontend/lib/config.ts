@@ -29,6 +29,7 @@ export const API_ROUTES = {
   moTaYTheoNhom: "/api/mo-ta-y-theo-nhom",
   heSoMoHinh: "/api/he-so-mo-hinh",
   chanDoanHiepBien: "/api/chan-doan-hiep-bien",
+  bamChuanChiTiet: "/api/bam-chuan-chi-tiet",
   manifest: "/api/manifest",
 } as const;
 

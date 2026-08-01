@@ -216,6 +216,29 @@ export interface ChanDoanHiepBienRow {
 }
 
 // ---------------------------------------------------------------------------
+// /api/bam-chuan-chi-tiet — kq-bam-chuan-co-hoc-chi-tiet.csv
+// Một dòng cho mỗi SKU trong mẫu so sánh chính (287 dòng). Đây là dữ liệu cấp
+// chi tiết đằng sau con số tổng hợp "1 trên 135" ở /api/bam-chuan.
+//
+// `du_bao_doi_muc` phân biệt hai tình huống rất khác nhau:
+//   true  — sau khi giảm thuế và làm tròn nghìn, giá PHẢI nhảy sang mức khác
+//   false — làm tròn xong vẫn rơi về đúng mức cũ, nên giữ nguyên giá là hợp lệ
+// Con số 135 trong báo cáo là số SKU nhóm Z=1 có `du_bao_doi_muc = true`.
+// ---------------------------------------------------------------------------
+export interface BamChuanChiTietRow {
+  sku: string;
+  ten_hang: string;
+  Z: number;
+  pre_p: number;
+  pg_hau: number;
+  gia_tien_lam_tron: number;
+  gia_chuan: number;
+  du_bao_doi_muc: boolean;
+  sai_lech_voi_chuan: number;
+  bam_chuan: boolean;
+}
+
+// ---------------------------------------------------------------------------
 // /api/manifest — manifest-tai-lap.json
 // ---------------------------------------------------------------------------
 export interface ManifestData {

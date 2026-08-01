@@ -14,6 +14,7 @@ import type {
   ManifestData,
   MdeRawRow,
   SanLuongRow,
+  BamChuanChiTietRow,
   ChanDoanHiepBienRow,
   HeSoMoHinhRow,
   MoTaYTheoNhomRow,
@@ -76,6 +77,8 @@ export const apiClient = {
   layHeSoMoHinh: () => goiApi<HeSoMoHinhRow[]>(API_ROUTES.heSoMoHinh),
   layChanDoanHiepBien: () =>
     goiApi<ChanDoanHiepBienRow[]>(API_ROUTES.chanDoanHiepBien),
+  layBamChuanChiTiet: () =>
+    goiApi<BamChuanChiTietRow[]>(API_ROUTES.bamChuanChiTiet),
   layManifest: () => goiApi<ManifestData>(API_ROUTES.manifest),
   layEda: <T extends EdaTen>(ten: T) =>
     goiApi<EdaTenRowMap[T][]>(API_ROUTES.eda(ten)),

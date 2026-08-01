@@ -72,6 +72,10 @@ SCHEMA_CSV: dict[str, list[str]] = {
     "kq-chan-doan-hiep-bien.csv": [
         "chi_so", "gia_tri",
     ],
+    "kq-bam-chuan-co-hoc-chi-tiet.csv": [
+        "sku", "ten_hang", "Z", "pre_p", "pg_hau", "gia_tien_lam_tron",
+        "gia_chuan", "du_bao_doi_muc", "sai_lech_voi_chuan", "bam_chuan",
+    ],
     "eda-can-bang-tien-ky.csv": [
         "doi_chung", "n_C", "bien", "T_trung_vi", "C_trung_vi", "T_IQR",
         "C_IQR", "SMD",
