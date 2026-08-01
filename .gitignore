@@ -25,3 +25,6 @@ Thumbs.db
 .idea/
 *.swp
 ~$*.xlsx
+
+# Gói zip dựng tạm để upload Overleaf — sinh lại được từ bao-cao/tex/
+bao-cao/bao-cao-latex.zip
