@@ -59,7 +59,11 @@ là chi tiết kỹ thuật, bỏ đi không ai hỏi. **Đừng bao giờ cắt
 ### Slide 4 — Xử lý dữ liệu · 30s · *cắt được*
 
 > Mỗi bước lọc đều ghi rõ quy tắc và số dòng còn lại, để ai đọc cũng dựng lại được.
-> Cuối cùng còn 287 mã hàng đủ điều kiện so sánh.
+> Từ 233 nghìn dòng thô còn lại **82 nghìn dòng hóa đơn**.
+>
+> Lưu ý đây là số **dòng**, chưa phải số mặt hàng — một chai dầu gội bán 300 lần
+> thì là 300 dòng. Gộp lại theo mã hàng thì ra **2.218 mặt hàng**, và lát nữa nhóm
+> sẽ lọc tiếp còn **287 mặt hàng** đem so sánh.
 
 **Chuyển:** Trước khi chọn cửa sổ thời gian, nhóm rà độ phủ.
 
@@ -112,6 +116,9 @@ là chi tiết kỹ thuật, bỏ đi không ai hỏi. **Đừng bao giờ cắt
 
 ### Slide 9 — Kết quả đo được · 55s · **KHÔNG CẮT**
 
+> Mẫu so sánh gồm **287 mặt hàng** — phần lớn kho hàng vốn đã chịu 8% từ trước nên
+> không có gì để so, nhóm chỉ giữ lại những mặt hàng đổi thuế suất đúng dịp này.
+>
 > Đây là chỗ đầu tiên gây bất ngờ. Nhóm được giảm thuế: 155 mặt hàng, giá trung bình
 > **tăng 0,62 điểm**. Nhóm không được giảm: 132 mặt hàng, **tăng 1,02 điểm**.
 >
