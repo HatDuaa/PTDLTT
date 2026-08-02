@@ -1,0 +1,487 @@
+% =====================================================================
+%  KỊCH BẢN THUYẾT TRÌNH 20 PHÚT — bản in để cầm đọc
+%
+%  Biên dịch: pdflatex -interaction=nonstopmode kich-ban-thuyet-trinh-20-phut.tex
+%             (CHẠY HAI LẦN cho mục lục đúng)
+%
+%  Nội dung lấy nguyên từ kich-ban-thuyet-trinh-20-phut.md, chỉ đổi cách
+%  trình bày: chữ to hơn, lời NÓI tách hẳn khỏi chỉ dẫn sân khấu.
+%
+%  MỌI CON SỐ GÕ TAY từ ket-qua/*.csv. Chạy lại pipeline thì phải đối
+%  chiếu lại — khác với slide và web (đọc thẳng từ pipeline).
+% =====================================================================
+\documentclass[12pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T5]{fontenc}
+\usepackage[vietnamese]{babel}
+\usepackage[a4paper,margin=2cm,bottom=2.2cm]{geometry}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+
+\hypersetup{unicode=true, hidelinks,
+  pdftitle={Kich ban thuyet trinh 20 phut}}
+\setlist{leftmargin=*, topsep=2pt, itemsep=2pt}
+\emergencystretch=3em
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+
+\definecolor{xam}{gray}{0.45}
+\definecolor{vach}{gray}{0.75}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{xam}Kịch bản thuyết trình — 20 phút}
+\fancyhead[R]{\small\color{xam}\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% ---- Tiêu đề một slide: số, tên, thời lượng, ghi chú cắt/không cắt ----
+% Tham số 4 để rỗng nếu slide bình thường.
+\newcommand{\slidemuc}[4]{%
+  \vspace{10pt}%
+  {\color{vach}\hrule height 0.8pt}%
+  \vspace{4pt}%
+  {\large\bfseries Slide #1 — #2}%
+  \hfill{\color{xam}\normalsize #3}%
+  \ifx\relax#4\relax\else\\[2pt]{\bfseries\small #4}\fi%
+  \vspace{4pt}\par%
+}
+
+% ---- Khối LỜI NÓI: gạch dọc bên trái, thụt vào, chữ to hơn ----
+\newenvironment{noi}%
+  {\vspace{3pt}\begin{list}{}{%
+     \setlength{\leftmargin}{14pt}\setlength{\rightmargin}{0pt}%
+     \setlength{\itemindent}{0pt}\setlength{\listparindent}{0pt}%
+     \setlength{\parsep}{5pt}}\item[]%
+   \color{black}}%
+  {\end{list}\vspace{2pt}}
+
+% ---- Chỉ dẫn sân khấu và câu chuyển ----
+\newcommand{\chuyen}[1]{\vspace{2pt}{\color{xam}\small$\rightarrow$\ \emph{#1}}\par}
+\newcommand{\chidan}[1]{{\color{xam}\small\emph{#1}}\par}
+
+\begin{document}
+
+\begin{center}
+  {\LARGE\bfseries Kịch bản thuyết trình}\\[4pt]
+  {\large Thuế GTGT 10\% xuống 8\% và giá bán lẻ --- Nhóm 5}\\[6pt]
+  {\color{xam}20 phút, gồm demo trực tiếp. Bám theo 25 slide ở \texttt{/trinh-bay}.}
+\end{center}
+
+\vspace{6pt}
+
+\begin{center}
+\begin{tabular}{@{}lcc@{}}
+\toprule
+\textbf{Đoạn} & \textbf{Slide} & \textbf{Phút} \\
+\midrule
+Mở đầu và dữ liệu        & 1--7   & 4:05 \\
+Đại lượng đo và vấn đề   & 8--10  & 2:40 \\
+Phương pháp              & 11--19 & 5:40 \\
+Kết quả                  & 20--23 & 3:40 \\
+\textbf{Demo trực tiếp}  & ---    & \textbf{2:30} \\
+Hạn chế và kết luận      & 24--25 & 1:15 \\
+\midrule
+& & \textbf{19:50} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\vspace{4pt}
+
+\textbf{Nếu bị hối, cắt theo thứ tự:} slide 5 $\to$ slide 13 $\to$ slide 4. Ba slide
+này là chi tiết kỹ thuật, bỏ đi không ai hỏi. Cắt cả ba thì dôi ra 1 phút 20.
+
+\textbf{Đừng bao giờ cắt} slide 9, 10, 21, 23 --- cắt là mất mạch lập luận.
+
+\vspace{4pt}
+
+\chidan{Mọi con số trong kịch bản được gõ tay từ \texttt{ket-qua/*.csv} và đã đối
+chiếu 22 trên 22. Chạy lại pipeline thì phải kiểm lại.}
+
+% =====================================================================
+\section*{Phần 1 --- Mở đầu và dữ liệu}
+
+\slidemuc{1}{Bìa}{20s}{\relax}
+\begin{noi}
+Chào thầy và các bạn. Nhóm 5 làm đề tài: việc giảm thuế giá trị gia tăng từ 10\%
+xuống 8\% có thật sự làm giảm giá bán lẻ mà người mua phải trả không.
+\end{noi}
+\chuyen{Vì sao câu hỏi này không hiển nhiên như nghe qua.}
+
+\slidemuc{2}{Đặt vấn đề}{50s}{\relax}
+\begin{noi}
+Nhà nước giảm thuế để hỗ trợ người tiêu dùng. Nhưng nhà nước chỉ quyết định thuế
+suất, còn cửa hàng mới là bên quyết định giá niêm yết. Hai quyết định đó độc lập
+với nhau.
+
+Nên chuyện thuế giảm mà giá có giảm theo hay không là một câu hỏi \textbf{thực
+nghiệm}, phải đi đo, chứ không suy ra được.
+\end{noi}
+\chuyen{Nhóm đo bằng dữ liệu gì.}
+
+\slidemuc{3}{Dữ liệu}{40s}{\relax}
+\begin{noi}
+Hóa đơn điện tử của một cửa hàng tiện lợi ở TP.HCM, ghi ở cấp từng dòng hàng. Mỗi
+dòng có mã hàng, thuế suất được áp, và số tiền sau thuế.
+
+Cấp dòng là điểm quan trọng: nó cho phép theo dõi \textbf{cùng một mã hàng} trước
+và sau ngày chính sách, thay vì so hai giỏ hàng khác nhau.
+\end{noi}
+\chuyen{Dữ liệu thô phải qua vài bước lọc.}
+
+\slidemuc{4}{Xử lý dữ liệu}{30s}{\itshape cắt được}
+\begin{noi}
+Mỗi bước lọc đều ghi rõ quy tắc và số dòng còn lại, để ai đọc cũng dựng lại được.
+Cuối cùng còn 287 mã hàng đủ điều kiện so sánh.
+\end{noi}
+\chuyen{Trước khi chọn cửa sổ thời gian, nhóm rà độ phủ.}
+
+\slidemuc{5}{Phân bổ theo thời gian}{25s}{\itshape cắt được}
+\begin{noi}
+Nhóm đếm số hóa đơn theo từng tháng để xem đoạn nào dữ liệu mỏng, rồi mới chọn cửa
+sổ phân tích --- chứ không chọn trước rồi mới nhìn.
+\end{noi}
+\chuyen{Còn một thứ phải kiểm trước khi phân tích.}
+
+\slidemuc{6}{Đánh giá sơ bộ}{40s}{\relax}
+\begin{noi}
+Nhóm đếm thuế suất ghi trên hóa đơn của từng mặt hàng, trước và sau ngày chính
+sách. Đây là chỗ phát hiện ra một chuyện quan trọng: \textbf{có những mặt hàng luật
+cho giảm nhưng cửa hàng vẫn xuất 10\%.}
+
+Nên phải tách bạch hai thứ: mặt hàng có \textbf{đủ điều kiện} giảm thuế theo luật,
+và thuế suất cửa hàng \textbf{thực sự áp}. Hai cái này không trùng nhau.
+\end{noi}
+\chuyen{Cơ sở pháp lý là thứ tạo ra nhóm đối chứng.}
+
+\slidemuc{7}{Cơ sở pháp lý}{40s}{\relax}
+\begin{noi}
+Nghị quyết 204 năm 2025, hiệu lực mùng 1 tháng 7. Điểm hay là nó \textbf{không giảm
+cho tất cả}: rượu bia, thuốc lá, xăng dầu, viễn thông vẫn giữ 10\%.
+
+Chính chỗ loại trừ đó cho nhóm mình một nhóm đối chứng có sẵn --- cùng cửa hàng,
+cùng khoảng thời gian, chỉ khác ở chỗ được giảm thuế hay không. Đây là một
+\textbf{thí nghiệm tự nhiên}.
+\end{noi}
+\chuyen{Vậy đo cái gì trên từng mặt hàng.}
+
+% =====================================================================
+\section*{Phần 2 --- Đại lượng đo và vấn đề}
+
+\slidemuc{8}{Đại lượng cần đo}{55s}{\relax}
+\begin{noi}
+Mỗi mặt hàng cho đúng một con số: giá sau so với giá trước, tính bằng log rồi nhân
+100.
+
+Dùng log chứ không lấy hiệu giá thô vì hai lý do. Một là giá bán lẻ lệch phải rất
+mạnh --- vài mặt hàng đắt gấp trăm lần mặt hàng rẻ, nếu lấy hiệu thì mấy món đắt
+chi phối hết. Hai là ta quan tâm \textbf{thay đổi bao nhiêu phần trăm}, chứ không
+phải bao nhiêu đồng.
+
+Nhân 100 chỉ để con số dễ đọc: một điểm log xấp xỉ một phần trăm.
+\end{noi}
+\chuyen{Đo xong thì ra thế này.}
+
+\slidemuc{9}{Kết quả đo được}{55s}{KHÔNG CẮT}
+\begin{noi}
+Đây là chỗ đầu tiên gây bất ngờ. Nhóm được giảm thuế: 155 mặt hàng, giá trung bình
+\textbf{tăng 0,62 điểm}. Nhóm không được giảm: 132 mặt hàng, \textbf{tăng 1,02
+điểm}.
+
+Cả hai nhóm đều \textbf{tăng} giá. Không nhóm nào giảm.
+
+Nhưng nhóm được giảm thuế tăng \textbf{ít hơn} --- chênh lệch là 0,40 điểm.
+\end{noi}
+\chuyen{Câu hỏi tiếp theo là 0,40 điểm đó có phải do chính sách không.}
+
+\slidemuc{10}{Vì sao chưa dùng thẳng được}{50s}{KHÔNG CẮT}
+\begin{noi}
+Chưa. Vì hai nhóm này khác nhau sẵn từ đầu --- một bên là rượu bia thuốc lá, một
+bên là hàng tiêu dùng thường ngày. Chúng vốn đã có nhịp đổi giá khác nhau, kể cả
+khi \textbf{không có chính sách nào cả}.
+
+Nên 0,40 điểm này đang trộn hai thứ: phần do chính sách, và phần do hai nhóm vốn
+khác nhau. Việc còn lại của bài là tách hai phần đó ra.
+\end{noi}
+\chuyen{Nhóm dùng khung nào để tách.}
+
+% =====================================================================
+\section*{Phần 3 --- Phương pháp}
+
+\slidemuc{11}{Khung phương pháp}{45s}{\relax}
+\begin{noi}
+Ý tưởng: lấy mức đổi giá của nhóm được giảm thuế, trừ đi mức đổi giá của nhóm đối
+chứng. Phần còn lại là ước lượng tác động.
+
+Cách này đứng được là nhờ một giả định: \textbf{nếu không có chính sách, hai nhóm
+sẽ đổi giá theo cùng một xu hướng.} Lát nữa nhóm sẽ nói thẳng là giả định này có
+vấn đề.
+\end{noi}
+\chuyen{Để nói rõ cái gì cần kiểm soát, nhóm vẽ đồ thị nhân quả.}
+
+\slidemuc{12}{Đồ thị nhân quả}{45s}{\relax}
+\begin{noi}
+Đây là bản đồ cái gì ảnh hưởng cái nào.
+
+Điểm cần chú ý: \textbf{thuế suất cửa hàng thực áp nằm ở giữa} --- giữa việc mặt
+hàng có đủ điều kiện giảm thuế và giá cuối cùng. Nó là \textbf{biến trung gian}.
+
+Vì thế nhóm ước lượng theo \textbf{đủ điều kiện theo luật}, chứ không hồi quy theo
+thuế suất thực áp. Kiểm soát biến trung gian là chặn mất đúng con đường mình cần đo.
+\end{noi}
+\chuyen{Từng biến trong sơ đồ được đo bằng gì.}
+
+\slidemuc{13}{Gắn biến vào dữ liệu}{25s}{\itshape cắt được}
+\begin{noi}
+Mỗi biến trong khung ứng với một trường cụ thể trên hóa đơn --- không có biến nào
+là suy diễn hay gán tay.
+\end{noi}
+\chuyen{Nhóm ước lượng bằng bốn cách.}
+
+\slidemuc{14}{Bốn cách --- tổng quan}{35s}{\relax}
+\begin{noi}
+Bốn cách này \textbf{giống nhau ở đại lượng đo và ở nhóm can thiệp}. Chúng chỉ khác
+nhau ở một chỗ: xử lý các biến kiểm soát thế nào.
+
+Làm bốn cách không phải để chọn ra cái đúng nhất, mà để xem kết luận có đổi khi đổi
+cách làm không.
+\end{noi}
+
+\slidemuc{15}{Cách 1: hồi quy thô}{35s}{\relax}
+\begin{noi}
+Không trừ gì cả, lấy thẳng chênh lệch hai nhóm. Ra \textbf{âm 0,40 điểm}.
+
+Đây không phải để tin, mà là mốc so sánh --- để biết ba cách sau kéo con số đi được
+bao nhiêu.
+\end{noi}
+
+\slidemuc{16}{Cách 2: hồi quy có hiệp biến}{40s}{\relax}
+\begin{noi}
+Thêm các đặc điểm nền vào cùng một phương trình, cho nó hút bớt phần khác biệt sẵn
+có. Ra \textbf{âm 0,27 điểm}.
+
+Một chi tiết đáng nói: thêm biến vào mà \textbf{sai số chuẩn lại tăng}, từ 0,60 lên
+0,73. Nghe như lỗi, nhưng đúng --- vì các biến kiểm soát tương quan với biến can
+thiệp, tức là đa cộng tuyến. Nhóm có kiểm lại bằng công thức và nó khớp.
+\end{noi}
+
+\slidemuc{17}{Cách 3: g-computation}{45s}{\relax}
+\begin{noi}
+Cách này khác hẳn về tư duy. Nhóm dựng mô hình \textbf{chỉ trên nhóm đối chứng} ---
+tức là học xem ``không có chính sách thì giá đổi thế nào''.
+
+Rồi lấy đúng mô hình đó áp lên nhóm được giảm thuế, để dự đoán: nếu nhóm này không
+có chính sách thì giá lẽ ra đã đổi bao nhiêu. Lấy thực tế trừ đi dự đoán đó.
+
+Ra \textbf{âm 0,66 điểm} --- con số lớn nhất trong bốn cách.
+\end{noi}
+
+\slidemuc{18}{Cách 4: phân tầng theo mức giá}{35s}{\relax}
+\begin{noi}
+Chia thành 5 tầng theo mức giá nền, chỉ so những mặt hàng giá gần nhau, rồi gộp lại
+theo trọng số. Ra \textbf{âm 0,26 điểm}.
+\end{noi}
+\chuyen{Trước khi đọc kết quả, phải nói một chuyện.}
+
+\slidemuc{19}{Kiểm tra thiết kế}{35s}{\relax}
+\begin{noi}
+Bốn cách này \textbf{không kiểm chứng lẫn nhau}, vì cả bốn cùng dựa trên một giả
+định gốc là xu hướng song song. Bốn cách cùng ra kết quả giống nhau không chứng
+minh giả định đó đúng.
+
+Và nhóm phải nói thẳng: \textbf{cổng kiểm tra cân bằng đã trượt.} Đó là hạn chế
+thật, lát nữa quay lại.
+\end{noi}
+
+% =====================================================================
+\section*{Phần 4 --- Kết quả}
+
+\slidemuc{20}{Bốn ước lượng}{60s}{KHÔNG CẮT}
+\begin{noi}
+Bốn con số: \textbf{âm 0,40 \quad âm 0,27 \quad âm 0,66 \quad âm 0,26}.
+
+Hai điều đọc được. Thứ nhất, \textbf{cả bốn đều âm} --- tức đều cùng chiều với việc
+chính sách có tác dụng phần nào.
+
+Thứ hai, và quan trọng hơn: \textbf{cả bốn khoảng tin cậy đều phủ qua 0}, p-value
+từ 0,40 tới 0,71. Nghĩa là với cỡ mẫu này, nhóm \textbf{không thể loại trừ khả năng
+tác động bằng 0}.
+\end{noi}
+\chuyen{Từ chênh lệch này ra tỉ lệ chuyển thuế thế nào.}
+
+\slidemuc{21}{Từ chênh lệch ra tỉ lệ}{60s}{KHÔNG CẮT --- CHỖ DỄ HIỂU SAI NHẤT}
+\chidan{Nói chậm slide này. Đây là chỗ người nghe hay hiểu ngược.}
+\begin{noi}
+Gốc so sánh \textbf{không phải số 0}. Nếu không có chính sách, giá lẽ ra đã tăng
+1,02 điểm. Thực tế nhóm được giảm thuế chỉ tăng 0,62. Vậy chính sách kéo lại được
+0,40.
+
+Còn nếu chuyển hết phần thuế vào giá thì lẽ ra phải kéo được \textbf{1,835 điểm}
+--- đó là con số số học từ 1,08 chia 1,10.
+
+Lấy 0,40 chia 1,835 ra \textbf{22\%}.
+
+\textbf{Xin nhấn mạnh: 22\% không có nghĩa là giá giảm 22\%.} Giá vẫn tăng. 22\% là
+phần trăm \emph{của mức lẽ ra kéo được}. Nói cách khác: lẽ ra giá phải thấp hơn
+1,8\%, nhóm chỉ đo được 0,4\%.
+
+Bốn cách cho khoảng \textbf{14\% đến 36\%}.
+\end{noi}
+\chuyen{Nhưng con số này thừa hưởng toàn bộ bất định của giả định. Nên nhóm làm
+thêm một kiểm chứng không cần giả định nào.}
+
+\slidemuc{22}{Hai câu hỏi khác nhau}{45s}{\relax}
+\begin{noi}
+Bảng này để tránh hiểu nhầm là nhóm đang mâu thuẫn với chính mình.
+
+Tỉ lệ chuyển thuế là ước lượng \textbf{nhân quả} --- mạnh về ý nghĩa, nhưng phụ
+thuộc giả định xu hướng song song, mà giả định đó đang lung lay.
+
+Bám chuẩn cơ học thì \textbf{không cần giả định nào}, nhưng nó chỉ \textbf{mô tả}
+--- nó không nói được nguyên nhân.
+
+Mỗi cái mạnh đúng chỗ cái kia yếu.
+\end{noi}
+
+\slidemuc{23}{Chuẩn giá cơ học}{55s}{KHÔNG CẮT}
+\begin{noi}
+Cách làm rất đơn giản, không dùng nhóm đối chứng gì cả. Với mỗi mặt hàng, lấy giá
+trước nhân 1,08 chia 1,10, làm tròn về bội số 1000 đồng. Đó là \textbf{giá lẽ ra
+phải có}. Rồi đối chiếu với giá thật.
+
+Trong 155 mặt hàng được giảm thuế, có \textbf{135 mặt hàng lẽ ra phải đổi giá}. Kết
+quả: \textbf{đúng 1 mặt hàng} rơi vào mức đó. Một trên một trăm ba mươi lăm.
+
+Và \textbf{110 mặt hàng giữ nguyên y nguyên giá cũ}, không xê dịch một đồng.
+
+Nhóm có chạy giả dược trên nhóm đối chứng: 1 trên 92 --- tức là tỉ lệ bám chuẩn ở
+nhóm được giảm thuế \textbf{không hề cao hơn} nhóm lẽ ra không chịu tác động nào.
+\end{noi}
+\chuyen{Để thấy rõ, nhóm demo trực tiếp.}
+
+% =====================================================================
+\section*{Demo trực tiếp --- 2:30}
+
+\chidan{Mở tab \texttt{/demo}. Ba thao tác, không nói gì về phương pháp --- chỉ cho
+thấy kết quả.}
+
+\slidemuc{D1}{Món duy nhất đạt chuẩn}{50s}{\relax}
+\chidan{Bấm nút gợi ý SUNLIGHT NLS Hương Lavender 997ml.}
+\begin{noi}
+Đây là mặt hàng duy nhất trong 135 món rơi đúng mức: 39.000 xuống 38.000.
+\end{noi}
+
+\slidemuc{D2}{Món giữ nguyên giá}{50s}{\relax}
+\chidan{Bấm VASELINE Son dưỡng môi.}
+\begin{noi}
+Còn đây là trường hợp phổ biến hơn nhiều. Giá lẽ ra phải là 94.000. Thực tế vẫn
+96.000 --- y hệt trước ngày chính sách.
+\end{noi}
+
+\slidemuc{D3}{Máy tính giá}{50s}{\relax}
+\chidan{Gõ 10.000 vào ô giá.}
+\begin{noi}
+Và đây là một phần lý do. Với hàng giá thấp, sau khi làm tròn về bội số 1000 đồng
+thì giá quay về đúng mức cũ --- mức giảm không đủ để vượt một bước làm tròn.
+
+Nhóm có mô phỏng: nếu cửa hàng làm tròn tới 100 đồng thì cả 155 mặt hàng đều phải
+đổi giá. Nên làm tròn giải thích được một phần, \textbf{nhưng không giải thích được
+110 mặt hàng đứng yên}.
+\end{noi}
+
+\chidan{Nếu mạng hỏng hoặc web không lên: bỏ qua demo, nói thẳng ba con số 1 trên
+135, 110 mặt hàng, và ví dụ VASELINE. Slide 23 đã có đủ.}
+
+% =====================================================================
+\section*{Phần 5 --- Hạn chế và kết luận}
+
+\slidemuc{24}{Hạn chế}{40s}{\relax}
+\begin{noi}
+Ba hạn chế, nhóm nói thẳng.
+
+Một, \textbf{cỡ mẫu nhỏ} --- 287 mặt hàng, nên khoảng tin cậy rộng và dữ liệu chưa
+đủ mạnh để khẳng định có tác động.
+
+Hai, \textbf{cổng cân bằng đã trượt}, nên giả định xu hướng song song không được dữ
+liệu ủng hộ hoàn toàn.
+
+Ba, \textbf{một cửa hàng}, không suy rộng ra cả thị trường được.
+
+Ba hạn chế này ảnh hưởng tới \textbf{độ lớn} con số ước lượng. Chúng \textbf{không}
+lật ngược được phần đếm cơ học, vì phần đó không dùng giả định nào.
+\end{noi}
+
+\slidemuc{25}{Kết luận}{35s}{\relax}
+\begin{noi}
+Kết luận của nhóm: \textbf{cửa hàng đã không chuyển hết phần giảm thuế vào giá bán
+lẻ.}
+
+Chỗ dựa chắc nhất không phải con số 14 đến 36\% --- con số đó còn bất định. Chỗ dựa
+chắc nhất là phép đếm: \textbf{1 trên 135 mặt hàng rơi đúng mức, và 110 mặt hàng
+giữ nguyên giá cũ.} Phép đếm đó không cần giả định nào.
+
+Và dù lý do là gì đi nữa --- làm tròn, chi phí đổi nhãn, hay cửa hàng giữ lại phần
+chênh --- thì \textbf{người mua vẫn đang trả giá cũ}.
+
+Nhóm xin hết. Cảm ơn thầy và các bạn.
+\end{noi}
+
+% =====================================================================
+\newpage
+\section*{Hỏi đáp dự phòng}
+
+\textbf{``Khoảng tin cậy phủ 0 mà sao vẫn kết luận được?''}
+\begin{noi}
+Nhóm không kết luận từ phần ước lượng nhân quả. Phần đó nhóm báo cáo là \emph{chưa
+đủ bằng chứng}. Kết luận dựa trên phép đếm cơ học: 1 trên 135. Phép đếm đó không
+cần giả định xu hướng song song, cũng không cần nhóm đối chứng.
+\end{noi}
+
+\textbf{``Sao không hồi quy theo thuế suất cửa hàng thực áp?''}
+\begin{noi}
+Vì nó là biến trung gian, nằm giữa việc đủ điều kiện giảm thuế và giá. Kiểm soát
+biến trung gian sẽ chặn mất chính con đường cần đo. Nhóm ước lượng theo đủ điều
+kiện pháp lý, tức là ITT.
+\end{noi}
+
+\textbf{``Bốn cách ra bốn số khác nhau, tin cái nào?''}
+\begin{noi}
+Không tin riêng cái nào. Khoảng 14 đến 36\% chính là câu trả lời trung thực --- nó
+cho thấy kết quả nhạy với cách xử lý biến kiểm soát tới mức nào. Nếu chỉ báo một
+con số thì là giấu bớt thông tin.
+\end{noi}
+
+\textbf{``Có phải chỉ vì làm tròn 1000 đồng không?''}
+\begin{noi}
+Một phần, với hàng giá thấp. Nhưng nhóm mô phỏng lại: ở bước 1000 đồng vẫn có 135
+trên 155 mặt hàng lẽ ra phải đổi giá. Làm tròn không giải thích được 110 mặt hàng
+đứng yên.
+\end{noi}
+
+\textbf{``Một cửa hàng thì nói lên được gì?''}
+\begin{noi}
+Không suy rộng ra thị trường được, và nhóm ghi rõ điều đó trong phần hạn chế. Nhưng
+nó đủ để bác bỏ mệnh đề ``giảm thuế thì đương nhiên giá giảm'' --- chỉ cần một phản
+ví dụ là đủ.
+\end{noi}
+
+\textbf{``Nhóm đối chứng là rượu bia thuốc lá, so vậy có hợp lý không?''}
+\begin{noi}
+Đây là điểm yếu nhóm tự nhận. Nhóm có chạy thêm ba định nghĩa nhóm đối chứng khác
+nhau, kết quả vẫn cùng chiều. Nhưng cổng cân bằng vẫn trượt, nên nhóm không nhận
+phần ước lượng nhân quả là bằng chứng mạnh.
+\end{noi}
+
+\textbf{``Sao thêm biến kiểm soát mà sai số lại tăng?''}
+\begin{noi}
+Do đa cộng tuyến --- các biến kiểm soát tương quan với biến can thiệp. Nhóm kiểm
+lại bằng công thức hệ số phóng đại phương sai và con số khớp.
+\end{noi}
+
+\end{document}
