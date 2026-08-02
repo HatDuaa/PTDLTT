@@ -179,6 +179,24 @@ function nhanThue(tiLe: number) {
   return `${Math.round(tiLe * 100)}%`;
 }
 
+/**
+ * Bỏ tiền tố "§3.1", "§3.3a", "§6"... khỏi tên quy tắc lọc — CHỈ khi lên slide.
+ *
+ * `b1_lam_sach.py` và `b2_dung_mau.py` gắn số mục của `dac-ta-khoa.md` vào mỗi
+ * bước để truy vết được từ dòng dữ liệu mất đi về đúng điều khoản đặc tả. Việc đó
+ * đáng giá trong CSV, trong báo cáo và ở trang /du-lieu — những nơi người đọc có
+ * bản đặc tả bên cạnh.
+ *
+ * Trên slide thì ngược lại: khán giả không có đặc tả, nên "§3.3a" chỉ là nhiễu,
+ * và trên màn hình nhỏ ký tự § còn dễ bị đọc nhầm thành dấu đô la.
+ *
+ * Bóc ở tầng hiển thị chứ KHÔNG sửa nhãn trong pipeline: sửa ở đó là mất truy vết
+ * ở mọi nơi khác chỉ để dọn một slide.
+ */
+function bocSoMucDacTa(quyTac: string) {
+  return quyTac.replace(/^§[\d.]+[a-z]?\s+/u, "");
+}
+
 /** Đổi điểm log ×100 sang phần trăm giá, để nói "≈0,4%" cạnh "−0,398". */
 function phanTramTuDiemLog(diem: number, soLe = 1) {
   return dinhDangPhanTram(Math.abs(Math.expm1(diem / 100)), soLe);
@@ -307,7 +325,8 @@ export default function TrangTrinhBay() {
               <BangDuLieu<LuongMauRow>
                 cot={[
                   { khoa: "buoc", nhan: "#" },
-                  { khoa: "quy_tac", nhan: "Quy tắc lọc" },
+                  { khoa: "quy_tac", nhan: "Quy tắc lọc",
+                    dinhDang: (h) => bocSoMucDacTa(h.quy_tac) },
                   { khoa: "dong_ra", nhan: "Còn lại", dinhDang: (h) => dinhDangSoNguyen(h.dong_ra) },
                   { khoa: "mat", nhan: "Mất", dinhDang: (h) => dinhDangSoNguyen(h.mat) },
                 ]}
