@@ -19,7 +19,11 @@ THU_MUC_QUET = ["bao-cao", "web/frontend/app", "web/frontend/components",
                 # Kế hoạch nội dung slide: nó CHÉP câu chữ sẽ lên slide, nên phải
                 # chịu đúng bộ quy tắc của slide. Không quét thì câu sai lọt từ
                 # kế hoạch sang sản phẩm mà không ai chặn ở giữa.
-                "plans/2026-07-31-noi-dung-slide-thuyet-trinh"]
+                "plans/2026-07-31-noi-dung-slide-thuyet-trinh",
+                # Kịch bản thuyết trình: đây là câu chữ sẽ được NÓI RA trước hội
+                # đồng. Một câu quá lời nói miệng còn khó rút lại hơn viết trên
+                # slide, nên nó chịu đúng bộ quy tắc đó.
+                "thuyet-trinh"]
 DUOI_FILE = {".md", ".tsx", ".ts", ".jsx", ".js", ".html"}
 
 # Các file CỐ Ý chứa câu cấm để định nghĩa chúng — không tính là vi phạm
